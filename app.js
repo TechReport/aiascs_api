@@ -11,8 +11,8 @@ app.use(json());
 
 
 ///hare attache routes,middlware for rsourcess 
-app.use('/aiascs',//rotest +middleware
-);
+// app.use('/aiascs',//rotest +middleware
+// );
 
 
 
