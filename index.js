@@ -11,7 +11,7 @@ socketServer(server)
 
 
 const connect = () => {
-    return mongoose.connect(ENV.DB_URL)
+    return mongoose.connect(ENV.DB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
 }
 
 connect()
