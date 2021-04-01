@@ -37,7 +37,7 @@ module.exports = {
                 return res.status(401).json({
                     status: false,
                     category: 'unauthorized',
-                    message: 'Sorry User not registered',
+                    message: 'Invalid credentials',
                     developerMessage: '',
                     stack: ''
                 });
@@ -49,7 +49,7 @@ module.exports = {
                     return res.status(401).json({
                         status: false,
                         category: 'unauthorized',
-                        message: 'Sorry User not registered',
+                        message: 'Invalid credentials',
                         developerMessage: '',
                         stack: ''
                     })

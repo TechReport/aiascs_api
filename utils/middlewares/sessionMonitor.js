@@ -11,7 +11,8 @@ module.exports = async function validateToken(req, res, next) {
             category: 'unauthorized',
             message: `user not authorized`,
             developerMessage: 'Authorization type not specified',
-            stack: ''
+            stack: '',
+            src: 'sessionCheck'
         })
     }
     var token = req.headers.authorization.split(' ')[1]
@@ -22,7 +23,8 @@ module.exports = async function validateToken(req, res, next) {
                 category: 'unauthorized',
                 message: `user not authorized`,
                 developerMessage: err.message,
-                stack: err
+                stack: err,
+                src: 'sessionCheck'
             })
         }
         let authToken = await (await UserModel.findById(decoded.id, '+authToken authToken')).authToken
@@ -33,7 +35,8 @@ module.exports = async function validateToken(req, res, next) {
                 category: 'unauthorized',
                 message: `user is not authorized`,
                 developerMessage: `Token mismatch:::: ${token}}`,
-                stack: ''
+                stack: '',
+                src: 'sessionCheck'
             })
         }
         req.body.userId = decoded.id
