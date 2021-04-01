@@ -34,5 +34,5 @@ app.use((err, req, res, next) => {
     console.log('global', err);
   }
 });
-0
+
 module.exports = app;
