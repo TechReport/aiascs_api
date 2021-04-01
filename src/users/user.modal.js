@@ -70,6 +70,9 @@ let userSchema = mongoose.Schema({
         type: Boolean,
         default: false,
     },
+    authToken:{
+        type: String,
+    }
 },
     { timestamps: true }
 )
