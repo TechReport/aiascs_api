@@ -53,6 +53,13 @@ module.exports = {
                     approvalStatus: 1,
                     permissions: (await Permission.find({}, '_id')).map(item => item._id)
                 },
+                {
+                    name: 'Operation Personnel',
+                    description: 'Role for the operation personnel',
+                    type: 1,
+                    approvalStatus: 1,
+                    permissions: []
+                },
             ]
             roles.forEach(async role => {
                 await createNewRole(role)
@@ -62,18 +69,15 @@ module.exports = {
     },
     seedAdministrator: async () => {
         try {
-            const { hashSync } = require('bcrypt')
             console.log('seed staff here')
             const admin = {
                 firstName: 'Root',
                 lastName: 'Admin',
                 email: 'root@aiascsadmin.com',
                 phoneNumber: '255713000000',
-                password: hashSync('root@aiascsadmin.com', 8),
                 gender: 'male',
                 role: (await Role.findOne({ name: 'Administrator' }).select('_id'))._id
             }
-            // console.log(admin)
             await registerUser(admin)
             console.log('seed staff done')
             return true
