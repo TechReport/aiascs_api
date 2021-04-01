@@ -98,6 +98,33 @@ module.exports = {
             });
         }
     },
+    checkSession: async (req, res) => {
+        try {
+            if (req.body.userId) {
+                return res.status(201).json({
+                    status: true,
+                    category: 'authorized',
+                    message: 'User is authorized'
+                })
+            } else {
+                return res.status(401).json({
+                    status: false,
+                    category: 'unauthorized',
+                    message: 'User is not authorized'
+                })
+            }
+        } catch (error) {
+            return res.status(401).json({
+                status: false,
+                category: 'unauthorized',
+                message: `user is not authorized`,
+                developerMessage: error.message,
+                stack: error
+            })
+        }
+
+        // console.log(auth)
+    },
     //     updateRole: async (req, res) => {
     //         try {
     //             var query = {
