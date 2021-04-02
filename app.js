@@ -4,6 +4,8 @@ const app =express();
 const logger =require("morgan");
 const {urlencoded,json} = require("body-parser");
 const cors =require("cors");
+const routes = require('./src/routes')
+const seeder = require('./utils/seeder')
 
 app.use(cors());
 if (app.get('env') === 'production') {
@@ -19,12 +21,12 @@ app.use(json());
 ///hare attache routes,middlware for rsourcess 
 // app.use('/aiascs',//rotest +middleware
 // );
-const routes = require('./src/routes')
+
 routes(app)
 
 
 //init seeder
-const seeder = require('./utils/seeder')
+
 seeder.init()
 
 
