@@ -10,7 +10,9 @@ const server = http.createServer(app);
 // const io = require('socket.io')(server)
 
 const connect = () => {
-  return mongoose.connect(ENV.DB_URL)
+
+    return mongoose.connect(ENV.DB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
+
 }
 
 
