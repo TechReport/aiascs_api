@@ -16,22 +16,10 @@ if (app.get('env') === 'production') {
 app.use(urlencoded({extended:true}));
 
 app.use(json());
-
-
 ///hare attache routes,middlware for rsourcess 
-// app.use('/aiascs',//rotest +middleware
-// );
-
 routes(app)
-
-
 //init seeder
-
 seeder.init()
-
-
-
-
 
 
 //general app middelare for handle errors
