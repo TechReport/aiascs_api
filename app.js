@@ -1,6 +1,6 @@
 const express = require("express");
 const app =express();
-const morgan =require("morgan");
+const logger =require("morgan");
 const {urlencoded,json} = require("body-parser");
 const cors =require("cors");
 
