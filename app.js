@@ -1,14 +1,18 @@
 const express = require("express");
-const app = express();
-const morgan = require("morgan");
-const { urlencoded, json } = require("body-parser");
-const cors = require("cors");
-require('dotenv').config()
 
+const app =express();
+const logger =require("morgan");
+const {urlencoded,json} = require("body-parser");
+const cors =require("cors");
 
 app.use(cors());
-app.use(morgan('dev'));
-app.use(urlencoded({ extended: true }));
+if (app.get('env') === 'production') {
+  app.use(logger('combined'));
+} else {
+  app.use(logger('dev'));
+}
+app.use(urlencoded({extended:true}));
+
 app.use(json());
 
 
