@@ -1,13 +1,14 @@
-const Router = require('express')
+const Router = require('express');
+
 const router = new Router();
-const manufactureController = require("./manufacture.controller");
+const manufactureController = require('./manufacture.controller');
 
-
-
-router.get('/:id',(req,res,next)=>{
+router.get(
+  '/:id',
+  (req, res, next) => {
     req.manufactureId = req.params.id;
-},manufactureController.getManufuctureById);
-
-
+  },
+  manufactureController.getManufuctureById,
+);
 
 module.exports = router;

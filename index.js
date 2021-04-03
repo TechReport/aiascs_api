@@ -1,21 +1,18 @@
-const mongoose = require('mongoose')
-const app = require('./app')
-const ENV = require('./config/development')
-const socketServer = require("./utils/notification/nofication_setup");
-const http = require("http");
-
+const mongoose = require('mongoose');
+const http = require('http');
+const app = require('./app');
+const ENV = require('./config/development');
+const socketServer = require('./utils/notification/nofication_setup');
 
 // app.set("port", ENV.PORT);
 const server = http.createServer(app);
 // const io = require('socket.io')(server)
 
-const connect = () => {
-
-    return mongoose.connect(ENV.DB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
-
-}
-
-
+const connect = () =>
+  mongoose.connect(ENV.DB_URL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 // io.on("connection", (socket) => {
 //   console.log("New client connected");
@@ -38,12 +35,12 @@ const connect = () => {
 //   console.log("Listening to PORT :"+ ENV.PORT);
 // });
 connect()
-    .then(async (connection) => {
-        server.listen(ENV.PORT,()=>{
-          console.log("Listening to PORT :"+ ENV.PORT);
-          socketServer(server);
-        });
-    })
-    .catch((e) => {
-        console.log('error  DB/SERVER : ' + e)
-    })
+  .then(async (connection) => {
+    server.listen(ENV.PORT, () => {
+      console.log(`Listening to PORT :${ENV.PORT}`);
+      socketServer(server);
+    });
+  })
+  .catch((e) => {
+    console.log(`error  DB/SERVER : ${e}`);
+  });

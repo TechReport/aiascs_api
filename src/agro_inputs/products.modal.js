@@ -1,30 +1,31 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
-let agroInputsSchema = mongoose.Schema({
+const agroInputsSchema = mongoose.Schema(
+  {
     name: {
-        type: String,
-        trim: true,
-        required: true
+      type: String,
+      trim: true,
+      required: true,
     },
     batchId: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
     },
     qrCodeRef: {
-        type: String,
-        unique: true,
+      type: String,
+      unique: true,
     },
     qrCodeData: {
-        type: Object,
-        // unique: true,
-        // required: true,
+      type: Object,
+      // unique: true,
+      // required: true,
     },
     expiry: {
-        type: mongoose.Schema.Types.Date,
-        trim: true,
+      type: mongoose.Schema.Types.Date,
+      trim: true,
     },
-},
-    { timestamps: true }
-)
+  },
+  { timestamps: true }
+);
 
-module.exports = mongoose.model('agroInputs', agroInputsSchema)
+module.exports = mongoose.model('agroInputs', agroInputsSchema);

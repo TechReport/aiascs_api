@@ -1,12 +1,12 @@
-const Router = require('express')
-const router = new Router()
-const userController = require('./user.controller')
-const sessionMonitor = require('../../utils/middlewares/sessionMonitor')
+const Router = require('express');
 
-router.get('/', userController.getAll)
-router.post('/login', userController.login)
-router.post('/register', userController.register)
-router.patch('/resetPassword', sessionMonitor, userController.resetPassword)
+const router = new Router();
+const userController = require('./user.controller');
+const sessionMonitor = require('../../utils/middlewares/sessionMonitor');
 
-module.exports = router
+router.get('/', userController.getAll);
+router.post('/login', userController.login);
+router.post('/register', userController.register);
+router.patch('/resetPassword', sessionMonitor, userController.resetPassword);
 
+module.exports = router;
