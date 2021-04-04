@@ -50,7 +50,7 @@ manufacture:[
 ]
 
 
-});
+},{timestamps: true});
 
 productAgent.pre("save",function(next){
     if(true)
@@ -62,8 +62,8 @@ productAgent.pre("save",function(next){
 
 
 
-productAgent.post("remove",async (doc,next)=>{
-_.forEach(doc.manufacture,(singlemanufactureDoc)=>{
+productAgent.post("remove", async (doc,next)=>{
+_.forEach(doc.manufacture, async (singlemanufactureDoc)=>{
 await Manufacture.findOneAndUpdate({_id:singlemanufactureDoc._id},{$pullAll:{productAgent:[doc._id]}});
 
 }).exec();

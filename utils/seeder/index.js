@@ -2,11 +2,14 @@ const Role = require('../../src/access_control/roles.model');
 const Permission = require('../../src/access_control/permission.model');
 const Users = require('../../src/users/user.modal');
 const Manufacture = require("../../src/manufacturer/manufacture.model");
+const ProductAgent = require("../../src/product_agent/product_agent.model");
+
 const {
   createNewPermission,
   createNewRole,
 } = require('../../src/access_control/access_controller.controller');
 const { registerUser } = require('../../src/users/user.controller');
+const productsController = require('../../src/agro_inputs/products.controller');
 
 module.exports = {
   init: async () => {
@@ -22,6 +25,7 @@ module.exports = {
       
     }
     await module.exports.manafuctureCompany();
+    await module.exports.productAgent();
     console.log('Seed check done ###');
   },
   seedPermissions: async () => {
@@ -197,9 +201,58 @@ if(manufacture.length == 0)
   manafuctureCompanies.forEach(async (manufactureCompany) =>{
     await Manufacture.create(manufactureCompany);
   })
-}
+}  },
 
 
-
+productAgent: async () =>{
+    
+  const productAgents = await ProductAgent.find({}).exec();
+  if(productAgents.length == 0)
+  {
+    const productAgnties = [
+      {
+        regno:"08983343845",
+        name:"TFDA",
+        phonenumber:655623419226,
+        email:"kj0a@gmail.com",
+        location:{
+          country:"Tanzania",
+          district:"Kinondoni",
+          ward:"Sayansi"
+          
+        }
+      },
+      {
+        regno:"0892091845",
+        name:"BIRWARO Seed",
+        phonenumber:295620410226,
+        email:"birraro@gmail.com",
+        location:{
+          country:"Tanzania",
+          district:"Kinondoni",
+          ward:"Sayansi"
+          
+        }
+      },
+      {
+        regno:"0898093835",
+        name:"Swaswa Hill",
+        phonenumber:255620410296,
+        email:"hillswalso@gmail.com",
+        location:{
+          country:"Tanznkaai",
+          district:"Kinondoni",
+          
+        }
+      }
+    ];
+    productAgnties.forEach(async (product_Agent) =>{
+      await ProductAgent.create(product_Agent);
+    })
   }
+  
+  
+  
+    }
+
 };
