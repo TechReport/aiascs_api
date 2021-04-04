@@ -25,6 +25,7 @@ module.exports = {
     registerUser,
     login: async (req, res, next) => {
         try {
+            // CHECK IF USER EXISTS
             let user = await User.findOne({ email: req.body.email }, '+password')
                 .populate({
                     path: 'role',
@@ -33,64 +34,123 @@ module.exports = {
                     ],
                 })
 
-            if (!user) {
+            let passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
+
+            if (!passwordIsValid) {
                 return res.status(401).json({
                     status: false,
                     category: 'unauthorized',
                     message: 'Invalid credentials',
                     developerMessage: '',
                     stack: ''
-                });
-            } else {
-                const pass = req.body.password.toUpperCase();
-                let passwordIsValid = await bcrypt.compareSync(pass, user.password);
-                console.log(passwordIsValid)
-                if (!passwordIsValid) {
-                    return res.status(401).json({
-                        status: false,
-                        category: 'unauthorized',
-                        message: 'Invalid credentials',
-                        developerMessage: '',
-                        stack: ''
-                    })
-                }
-                else {
-                    const displayName = user.firstName + ' ' + user.lastName
-
-                    if (user.firstTimeLoginStatus === 0) {
-                        console.log('hi')
-                        let tempToken = jwt.sign({ id: user._id, email: user.email, displayName: displayName }, process.env.JWT_SECRET, { expiresIn: 20 * 60 });
-                        await User.updateOne({ email: req.body.email }, { authToken: tempToken }, { useFindAndModify: false })
-
-                        return res.status(200).json({
-                            data: {
-                                tempToken,
-                                target: 'firstTimeLoginStatus',
-                            },
-                            message: 'First time login',
-                        })
-                    } else {
-
-                        // PREPARE USER AUTH TOKEN
-                        const token = jwt.sign({ id: user._id, email: user.email, displayName: displayName, roleId: user.role._id }, process.env.JWT_SECRET, { expiresIn: 86400 });
-                        // REMOVE PASSWORD FROM USER OBJECT, (dont return password to client)
-                        let rawResponse = user.toObject()
-                        delete rawResponse.password
-
-                        // UPDATE USER AUTHTOKEN
-                        await User.updateOne({ email: req.body.email }, { authToken: token }, { useFindAndModify: false })
-
-                        return res.status(200).json({
-                            message: "Logged in successfully",
-                            data: {
-                                target: 'authenticated',
-                                token,
-                                user: rawResponse
-                            }
-                        })
-                    }
-                }
+                })
             }
+
+            const displayName = user.firstName + ' ' + user.lastName
+
+            if (user.firstTimeLoginStatus === 0) {
+                console.log('hi')
+                let tempToken = jwt.sign({ id: user._id, email: user.email, displayName: displayName }, process.env.JWT_SECRET, { expiresIn: 20 * 60 });
+                await User.updateOne({ email: req.body.email }, { authToken: tempToken }, { useFindAndModify: false })
+
+                return res.status(200).json({
+                    data: {
+                        tempToken,
+                        target: 'firstTimeLoginStatus',
+                    },
+                    message: 'First time login',
+                })
+            }
+
+            // PREPARE USER AUTH TOKEN
+            const token = jwt.sign({ id: user._id, email: user.email, displayName: displayName, roleId: user.role._id }, process.env.JWT_SECRET, { expiresIn: 86400 });
+            
+            // REMOVE PASSWORD FROM USER OBJECT, (dont return password to client)
+            let rawResponse = user.toObject()
+            delete rawResponse.password
+
+            // UPDATE USER AUTHTOKEN
+            await User.updateOne({ email: req.body.email }, { authToken: token }, { useFindAndModify: false })
+
+            return res.status(200).json({
+                message: "Logged in successfully",
+                data: {
+                    target: 'authenticated',
+                    token,
+                    user: rawResponse
+                }
+            })
+
+
+
+
+
+            // let user = await User.findOne({ email: req.body.email }, '+password')
+            //     .populate({
+            //         path: 'role',
+            //         populate: [
+            //             { path: 'permission', select: 'genericName moduleName' },
+            //         ],
+            //     })
+
+            // if (!user) {
+            //     return res.status(401).json({
+            //         status: false,
+            //         category: 'unauthorized',
+            //         message: 'Invalid credentials',
+            //         developerMessage: '',
+            //         stack: ''
+            //     });
+            // } else {
+            //     const pass = req.body.password.toUpperCase();
+            //     let passwordIsValid = await bcrypt.compareSync(pass, user.password);
+            //     console.log(passwordIsValid)
+            //     if (!passwordIsValid) {
+            //         return res.status(401).json({
+            //             status: false,
+            //             category: 'unauthorized',
+            //             message: 'Invalid credentials',
+            //             developerMessage: '',
+            //             stack: ''
+            //         })
+            //     }
+            // else {
+            //     const displayName = user.firstName + ' ' + user.lastName
+
+            //     if (user.firstTimeLoginStatus === 0) {
+            //         console.log('hi')
+            //         let tempToken = jwt.sign({ id: user._id, email: user.email, displayName: displayName }, process.env.JWT_SECRET, { expiresIn: 20 * 60 });
+            //         await User.updateOne({ email: req.body.email }, { authToken: tempToken }, { useFindAndModify: false })
+
+            //         return res.status(200).json({
+            //             data: {
+            //                 tempToken,
+            //                 target: 'firstTimeLoginStatus',
+            //             },
+            //             message: 'First time login',
+            //         })
+            //     } else {
+
+            //         // PREPARE USER AUTH TOKEN
+            //         const token = jwt.sign({ id: user._id, email: user.email, displayName: displayName, roleId: user.role._id }, process.env.JWT_SECRET, { expiresIn: 86400 });
+            //         // REMOVE PASSWORD FROM USER OBJECT, (dont return password to client)
+            //         let rawResponse = user.toObject()
+            //         delete rawResponse.password
+
+            //         // UPDATE USER AUTHTOKEN
+            //         await User.updateOne({ email: req.body.email }, { authToken: token }, { useFindAndModify: false })
+
+            //         return res.status(200).json({
+            //             message: "Logged in successfully",
+            //             data: {
+            //                 target: 'authenticated',
+            //                 token,
+            //                 user: rawResponse
+            //             }
+            //         })
+            //     }
+            // }
+            // }
         } catch (e) {
             console.log(e)
             return res.status(500).json({
