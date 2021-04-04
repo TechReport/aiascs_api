@@ -1,11 +1,10 @@
-const socketIo = require("socket.io").Server;
+const socketIo = require("socket.io");
 
 
 const socketServer = (appServer) =>{
-    const io = new socketIo(appServer);
-
-console.log("were in");
-io.on("connection", (socket) => {
+  console.log("in socket");
+    const io =  socketIo(appServer);
+io.on("connect", (socket) => {
     console.log("New client connected");
     if (interval) {
       clearInterval(interval);
@@ -19,11 +18,17 @@ io.on("connection", (socket) => {
 
 
 }
-  const setNotificationEvent =async (socket) => {
 
+
+
+
+  const setNotificationEvent =async (socket) => {
+print("in  set noti");
     // Emitting a new message. Will be consumed by the client
-    socket.emit("e1",await blogs());
+    socket.emit("product","Kijacode");
   };
+
+
 
 
 
