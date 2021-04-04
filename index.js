@@ -1,9 +1,8 @@
 const mongoose = require('mongoose')
 const app = require('./app')
-const ENV = require('./config/development')
+// const ENV = require('./config/development')
 const socketServer = require("./utils/notification/nofication_setup");
 const http = require("http");
-
 
 // app.set("port", ENV.PORT);
 const server = http.createServer(app);
@@ -11,7 +10,7 @@ const server = http.createServer(app);
 
 const connect = () => {
 
-    return mongoose.connect(ENV.DB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
+    return mongoose.connect(process.env.DB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
 
 }
 
@@ -39,8 +38,8 @@ const connect = () => {
 // });
 connect()
     .then(async (connection) => {
-        server.listen(ENV.PORT,()=>{
-          console.log("Listening to PORT :"+ ENV.PORT);
+        server.listen(process.env.PORT,()=>{
+          console.log("Listening to PORT :"+ process.env.PORT);
           socketServer(server);
         });
     })
