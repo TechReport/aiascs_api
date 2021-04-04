@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const _ = require("lodash");
+const ProductAgent = require("../product_agent/product_agent.model");
+
 const manufacture = new mongoose.Schema({
   regno: {
     type: String,
@@ -53,7 +55,7 @@ manufacture.pre('save', function (next) {
 
 manufacture.post('remove', async (doc, next) => {
   _.forEach(doc.productAgent, (singlemanufactureDoc) => {
-    productAgent.findOneAndUpdate(
+    ProductAgent.findOneAndUpdate(
       { _id: singlemanufactureDoc._id },
       { $pullAll: { manufacture: [doc._id] } }
     );

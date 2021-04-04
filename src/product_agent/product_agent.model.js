@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const manufacture = require("../manufacturer/manufacture.model");
+const Manufacture = require("../manufacturer/manufacture.model");
 const _ = require("lodash");
 
 const productAgent = new mongoose.Schema({
@@ -64,7 +64,7 @@ productAgent.pre("save",function(next){
 
 productAgent.post("remove",async (doc,next)=>{
 _.forEach(doc.manufacture,(singlemanufactureDoc)=>{
-await manufacture.findOneAndUpdate({_id:singlemanufactureDoc._id},{$pullAll:{productAgent:[doc._id]}});
+await Manufacture.findOneAndUpdate({_id:singlemanufactureDoc._id},{$pullAll:{productAgent:[doc._id]}});
 
 }).exec();
 
