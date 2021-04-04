@@ -6,16 +6,18 @@ const routes = require('./src/routes')
 const seeder = require('./utils/seeder')
 require('dotenv').config()
 
-const logger = require("morgan");
 
 const app = express();
 
 app.use(cors());
+
 if (app.get('env') === 'production') {
-  app.use(logger('combined'));
+  // app.use(logger('combined'));
 } else {
+  const logger = require("morgan");
   app.use(logger('dev'));
 }
+
 app.use(urlencoded({ extended: true }));
 app.use(json());
 
