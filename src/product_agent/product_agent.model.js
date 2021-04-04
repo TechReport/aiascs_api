@@ -18,14 +18,16 @@ name:{
 
 phonenumber:{
 type:Number,
-max:12,
-min:12,
 unique:true,
 required:true
 },
 email:{
 type:String,
-required:true
+required:true ,
+unique:true,
+match: [/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/, 'Please enter a valid email'],
+ 
+
 },
 
 location:{
@@ -52,7 +54,7 @@ manufacture:[
 });
 
 productAgent.pre("save",function(next){
-    if((this.email).contain("@"))
+    if(true)
     {
         next();
     }
