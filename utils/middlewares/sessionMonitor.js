@@ -21,7 +21,7 @@ module.exports = async function validateToken(req, res, next) {
             return res.status(401).json({
                 status: false,
                 category: 'unauthorized',
-                message: `user not authorized`,
+                message: `session has expired`,
                 developerMessage: err.message,
                 stack: err,
                 src: 'sessionCheck'
@@ -41,6 +41,7 @@ module.exports = async function validateToken(req, res, next) {
         }
         req.body.userId = decoded.id
         req.body.roleId = decoded.roleId
+        req.body.companyId = decoded.companyId
         console.log('SESSION CHECK COMPLETED')
         next()
     })
