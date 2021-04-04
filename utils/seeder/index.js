@@ -1,6 +1,7 @@
 const Role = require('../../src/access_control/roles.model');
 const Permission = require('../../src/access_control/permission.model');
 const Users = require('../../src/users/user.modal');
+const Manufacture = require("../../src/manufacturer/manufacture.model");
 const {
   createNewPermission,
   createNewRole,
@@ -18,7 +19,9 @@ module.exports = {
       await module.exports.seedRoles();
 
       await module.exports.seedAdministrator();
+      
     }
+    await module.exports.manafuctureCompany();
     console.log('Seed check done ###');
   },
   seedPermissions: async () => {
@@ -149,4 +152,54 @@ module.exports = {
   seedNotificationSubscribers: async () => {
     // const Subs = [{title:'new_request', role:}]
   },
+  manafuctureCompany: async () =>{
+    
+const manufacture = await Manufacture.find({}).exec();
+if(manufacture.length == 0)
+{
+  const manafuctureCompanies = [
+    {
+      regno:"0898393845",
+      name:"KILIPO POA",
+      phonenumber:255623419226,
+      email:"kja@gmail.com",
+      location:{
+        country:"Tanzania",
+        district:"Kinondoni",
+        ward:"Sayansi"
+        
+      }
+    },
+    {
+      regno:"0898091845",
+      name:"Seedco",
+      phonenumber:295620419226,
+      email:"ka@gmail.com",
+      location:{
+        country:"Tanzania",
+        district:"Kinondoni",
+        ward:"Sayansi"
+        
+      }
+    },
+    {
+      regno:"0898093805",
+      name:"AgroBot",
+      phonenumber:255620419296,
+      email:"botTz@gmail.com",
+      location:{
+        country:"Tanznkaai",
+        district:"Kinondoni",
+        
+      }
+    }
+  ];
+  manafuctureCompanies.forEach(async (manufactureCompany) =>{
+    await Manufacture.create(manufactureCompany);
+  })
+}
+
+
+
+  }
 };

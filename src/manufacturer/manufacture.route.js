@@ -1,14 +1,29 @@
-const Router = require('express');
+const express = require("express");
+const router = express.Router();
+const manufactureController = require("./manufacture.controller");
+const manufactureMiddlware = require("../../utils/middlewares/manufacture_middleware");
 
-const router = new Router();
-const manufactureController = require('./manufacture.controller');
-
+router.get("/all", manufactureController.getAllManufacture);
 router.get(
-  '/:id',
-  (req, res, next) => {
-    req.manufactureId = req.params.id;
-  },
-  manufactureController.getManufuctureById,
+  "/:id",
+  manufactureMiddlware.getId,
+  manufactureController.getManufuctureById
+);
+router.post("/register", manufactureController.createManufacture);
+router.delete(
+  "/:id",
+  manufactureMiddlware.getId,
+  manufactureController.removeManufactureyId
+);
+router.put(
+  "/update/:id",
+  manufactureMiddlware.getId,
+  manufactureController.updateManufactureById
+);
+router.post(
+  "/addproductAgent/:id",
+  manufactureMiddlware.getId,
+  manufactureController.addProductAgentToManufacture
 );
 
 module.exports = router;
