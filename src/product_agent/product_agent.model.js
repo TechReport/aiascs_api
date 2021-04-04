@@ -44,7 +44,6 @@ createdAt:{
 manufacture:[
     {
         type: mongoose.Schema.Types.ObjectId,
-        required: true,
         ref: 'manufacture',
   
     }
