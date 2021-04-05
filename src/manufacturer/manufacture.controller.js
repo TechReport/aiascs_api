@@ -9,7 +9,7 @@ module.exports = {
         next(error)
       }
     res.status(200).json(doc);
-    }).exec();
+    }).populate("productAgent"),exec();
      
 
     },
@@ -21,7 +21,7 @@ module.exports = {
       next(error)
     }
   res.status(200).json(doc);
-  }).
+  }).populate("productAgent").
   sort('-createdAt').
   lean().
   exec();
@@ -42,21 +42,26 @@ module.exports = {
   },
   updateManufactureById: (req, res, next) => {
     const update = req.body;
-    return Manufacture.findByIdAndUpdate(req.manufactureId, update, { new: true },(error,doc)=>{
-      res.status(204).json({
-        "message":"sucess fully updated"
-       })
-    }).exec();
+    return Manufacture.findByIdAndUpdate(req.manufactureId, update, { new: true },(error,updatedManufacture)=>{
+      if(error)
+      {
+        next(error)
+      }
+      res.status(204).json(updatedManufacture);
+    },{ new: true }).exec();
   },
   addProductAgentToManufacture: (req, res, next) => {
     const productAgents = req.body;
-    return Manufacture.findByIdAndUpdate( req.manufactureId,{
+    console.log(productAgents);
+  let manufactures =  Manufacture.findByIdAndUpdate( req.manufactureId,{
       $push:{
         productAgent:{
           $each:productAgents
         }
       }
-    }, { new: true }).exec();
+    } , { new: true }).exec();
+
+    res.status(201).json(manufactures);
   },
 };
 

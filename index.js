@@ -12,6 +12,7 @@ const connect = () =>
   mongoose.connect(ENV.DB_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+  useFindAndModify:false,
 });
 
 // io.on("connection", (socket) => {
