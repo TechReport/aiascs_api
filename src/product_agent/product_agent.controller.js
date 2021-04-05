@@ -2,24 +2,26 @@ const ProductAgent = require('./product_agent.model');
 
 module.exports = {
   getProductAgentById:async (req, res, next) =>{
-    let productAgent = await ProductAgent.findById(req.productAgentId).exec();
-    if(typeof(productAgent) == undefined || productAgent.length <0)
-    {
-      next(new Error("No productAgent in database"));
-    }
+ await ProductAgent.findById(req.productAgentId,(error,productAgent)=>{
+      if(error)
+      {
+        next(error)
+      }
     res.status(200).json(productAgent);
+    }).exec();
     },
   
   getAllProductAgent :async (req, res, next) => {
-  let productAgent = await   ProductAgent.find({}).
+ await   ProductAgent.find({},(error,productAgent)=>{
+    if(error)
+    {
+      next(error)
+    }
+  res.status(200).json(productAgent);
+  }).
   sort('-createdAt').
   lean().
   exec();
-  if(typeof(productAgent) == undefined || productAgent.length <0)
-  {
-    next(new Error("No ProductAgent in database"));
-  }
-  res.status(200).json(productAgent);
   },
 
   createProductAgent: async (req, res, next) => {

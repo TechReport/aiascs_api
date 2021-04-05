@@ -1,25 +1,31 @@
+const { isNull } = require('lodash');
 const Manufacture = require('./manufacture.model');
 
 module.exports = {
   getManufuctureById:async (req, res, next) =>{
-    let manufacture = await Manufacture.findById(req.manufactureId).exec();
-    if(typeof(manufacture) == undefined || manufacture.length <0)
-    {
-      next(new Error("No manufacture in database"));
-    }
-    res.status(200).json(manufacture);
+  - await Manufacture.findById(req.manufactureId,(error,doc)=>{
+      if(error)
+      {
+        next(error)
+      }
+    res.status(200).json(doc);
+    }).exec();
+     
+
     },
   
   getAllManufacture :async (req, res, next) => {
-  let manufacture = await   Manufacture.find({}).
+  await   Manufacture.find({},(error,doc)=>{
+    if(error)
+    {
+      next(error)
+    }
+  res.status(200).json(doc);
+  }).
   sort('-createdAt').
   lean().
   exec();
-  if(typeof(manufacture) == undefined || manufacture.length <0)
-  {
-    next(new Error("No manufacture in database"));
-  }
-  res.status(200).json(manufacture);
+ 
   },
 
   createManufacture: async (req, res, next) => {
@@ -28,12 +34,19 @@ module.exports = {
   },
 
 
-  removeManufactureyId: (req, res, next) => {
-    return Manufacture.findByIdAndDelete(req.manufactureId).exec();
+  removeManufactureyId: async (req, res, next) => {
+   await Manufacture.findByIdAndDelete(req.manufactureId).exec();
+   res.status(202).json({
+    "message":"sucess fully deleted"
+   });
   },
   updateManufactureById: (req, res, next) => {
     const update = req.body;
-    return Manufacture.findByIdAndUpdate(req.manufactureId, update, { new: true }).exec();
+    return Manufacture.findByIdAndUpdate(req.manufactureId, update, { new: true },(error,doc)=>{
+      res.status(204).json({
+        "message":"sucess fully updated"
+       })
+    }).exec();
   },
   addProductAgentToManufacture: (req, res, next) => {
     const productAgents = req.body;
