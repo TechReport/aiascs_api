@@ -18,7 +18,7 @@ module.exports = {
       next(error)
     }
   res.status(200).json(productAgent);
-  }).
+  }).populate("manufacture").
   sort('-createdAt').
   lean().
   exec();
@@ -30,22 +30,32 @@ module.exports = {
   },
 
 
-  removeProductAgentId: (req, res, next) => {
-    return ProductAgent.findByIdAndDelete(req.productAgentId).exec();
+  removeProductAgentId: async (req, res, next) => {
+   await  ProductAgent.findByIdAndDelete(req.productAgentId).exec();
+   res.status(202).json({
+    "message":"sucess fully deleted"
+   });
   },
-  updateProductAgentById: (req, res, next) => {
+  updateProductAgentById:async (req, res, next) => {
     const update = req.body;
-    return ProductAgent.findByIdAndUpdate(req.productAgentId, update, { new: true }).exec();
+    return await ProductAgent.findByIdAndUpdate(req.productAgentId, update, { new: true },(error,updatedProductAgent)=>{
+      if(error)
+      {
+        next(error)
+      }
+      res.status(204).json(updatedProductAgent);
+    }, { new: true }).exec();
   },
-  addManufactureToProductAgent: (req, res, next) => {
+  addManufactureToProductAgent:async (req, res, next) => {
     const manufacture = req.body;
-    return ProductAgent.findByIdAndUpdate( req.productAgentId,{
+    let productAgent = await ProductAgent.findByIdAndUpdate( req.productAgentId,{
       $push:{
         productAgent:{
           $each:manufacture
         }
       }
     }, { new: true }).exec();
+    res.status(201).json(productAgent);
   },
 };
 

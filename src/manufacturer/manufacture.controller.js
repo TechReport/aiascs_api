@@ -15,12 +15,12 @@ module.exports = {
     },
   
   getAllManufacture :async (req, res, next) => {
-  await   Manufacture.find({},(error,doc)=>{
+  await   Manufacture.find({},(error,manufactures)=>{
     if(error)
     {
       next(error)
     }
-  res.status(200).json(doc);
+  res.status(200).json(manufactures);
   }).populate("productAgent").
   sort('-createdAt').
   lean().
@@ -40,9 +40,9 @@ module.exports = {
     "message":"sucess fully deleted"
    });
   },
-  updateManufactureById: (req, res, next) => {
+  updateManufactureById: async (req, res, next) => {
     const update = req.body;
-    return Manufacture.findByIdAndUpdate(req.manufactureId, update, { new: true },(error,updatedManufacture)=>{
+    return  await Manufacture.findByIdAndUpdate(req.manufactureId, update, { new: true },(error,updatedManufacture)=>{
       if(error)
       {
         next(error)
@@ -50,10 +50,10 @@ module.exports = {
       res.status(204).json(updatedManufacture);
     },{ new: true }).exec();
   },
-  addProductAgentToManufacture: (req, res, next) => {
+  addProductAgentToManufacture:async (req, res, next) => {
     const productAgents = req.body;
-    console.log(productAgents);
-  let manufactures =  Manufacture.findByIdAndUpdate( req.manufactureId,{
+
+  let manufactures = await  Manufacture.findByIdAndUpdate( req.manufactureId,{
       $push:{
         productAgent:{
           $each:productAgents
