@@ -27,9 +27,19 @@ module.exports = async function validateToken(req, res, next) {
                 src: 'sessionCheck'
             })
         }
-        let authToken = await (await UserModel.findById(decoded.id, '+authToken authToken')).authToken
-
-        if (authToken !== token) {
+        let authToken
+        try {
+            authToken = await (await UserModel.findById(decoded.id, '+authToken authToken')).authToken
+            if (authToken !== token) {
+                throw 'unauthorized'
+            }
+            req.body.userId = decoded.id
+            req.body.roleId = decoded.roleId
+            req.body.companyId = decoded.companyId
+            console.log('SESSION CHECK COMPLETED')
+            next()
+        }
+        catch (e) {
             return res.status(401).json({
                 status: false,
                 category: 'unauthorized',
@@ -39,11 +49,22 @@ module.exports = async function validateToken(req, res, next) {
                 src: 'sessionCheck'
             })
         }
-        req.body.userId = decoded.id
-        req.body.roleId = decoded.roleId
-        req.body.companyId = decoded.companyId
-        console.log('SESSION CHECK COMPLETED')
-        next()
+
+        // if (authToken !== token) {
+        //     return res.status(401).json({
+        //         status: false,
+        //         category: 'unauthorized',
+        //         message: `user is not authorized`,
+        //         developerMessage: `Token mismatch:::: ${token}}`,
+        //         stack: '',
+        //         src: 'sessionCheck'
+        //     })
+        // }
+        // req.body.userId = decoded.id
+        // req.body.roleId = decoded.roleId
+        // req.body.companyId = decoded.companyId
+        // console.log('SESSION CHECK COMPLETED')
+        // next()
     })
 }
 
