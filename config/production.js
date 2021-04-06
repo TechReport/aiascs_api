@@ -9,4 +9,4 @@ module.exports = {
   CLOUDINARY_ENV_VARIABLE: process.env.CLOUDINARY_ENV_VARIABLE,
   DB_URL: process.env.DB_URL,
   PORT: process.env.PORT,
-}
+};
