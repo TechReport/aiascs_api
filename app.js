@@ -34,14 +34,8 @@ require('./utils/cronjobs/qrcode.cron')
 
 //general app middelare for handle errors
 app.use((err, req, res, next) => {
-  console.log('object')
-
-  if (err) {
-    return res.status(500).json({
-      userMessage: 'Whoops! Something went wrong.',
-      developerMessage: err.message
-    })
-  }
+  if (err)
+    return res.status(err.code ? err.code : 500).json(err)
 });
 
 module.exports = app;

@@ -1,13 +1,5 @@
 const mongoose = require('mongoose')
 
-// var Item = new ItemSchema({
-//     img: {
-//         data: Buffer,
-//         contentType: String
-//     }
-// }
-// );
-
 let qrCodeSchema = mongoose.Schema({
     qrCodeImage: {
         type: mongoose.Schema.Types.Buffer,
@@ -21,11 +13,6 @@ let qrCodeSchema = mongoose.Schema({
         validator: (value) => {
             value.length === 16 ? true : false
         }
-    },
-    qrcodeRef: {
-        type: String,
-        // required: true,
-        trim: true
     },
     expiry: {
         type: mongoose.Schema.Types.Boolean,
