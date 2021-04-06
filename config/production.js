@@ -1,3 +1,7 @@
+/**
+ * @deprecated it will be deleted in the later release
+ * @author daniel ernest
+ */
 module.exports = {
   CLOUD_NAME: process.env.CLOUD_NAME,
   API_KEY_CLOUDINARY: process.env.API_KEY_CLOUDINARY,

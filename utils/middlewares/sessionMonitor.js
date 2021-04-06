@@ -27,6 +27,7 @@ module.exports = async function validateToken(req, res, next) {
         src: 'sessionCheck',
       });
     }
+<<<<<<< HEAD
     const authToken = await (
       await UserModel.findById(decoded.id, '+authToken authToken')
     ).authToken;
@@ -47,5 +48,59 @@ module.exports = async function validateToken(req, res, next) {
     next();
   });
 };
+=======
+    var token = req.headers.authorization.split(' ')[1]
+    jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
+        if (err) {
+            return res.status(401).json({
+                status: false,
+                category: 'unauthorized',
+                message: `session has expired`,
+                developerMessage: err.message,
+                stack: err,
+                src: 'sessionCheck'
+            })
+        }
+        let authToken
+        try {
+            authToken = await (await UserModel.findById(decoded.id, '+authToken authToken')).authToken
+            if (authToken !== token) {
+                throw 'unauthorized'
+            }
+            req.body.userId = decoded.id
+            req.body.roleId = decoded.roleId
+            req.body.companyId = decoded.companyId
+            console.log('SESSION CHECK COMPLETED')
+            next()
+        }
+        catch (e) {
+            return res.status(401).json({
+                status: false,
+                category: 'unauthorized',
+                message: `user is not authorized`,
+                developerMessage: `Token mismatch:::: ${token}}`,
+                stack: '',
+                src: 'sessionCheck'
+            })
+        }
+
+        // if (authToken !== token) {
+        //     return res.status(401).json({
+        //         status: false,
+        //         category: 'unauthorized',
+        //         message: `user is not authorized`,
+        //         developerMessage: `Token mismatch:::: ${token}}`,
+        //         stack: '',
+        //         src: 'sessionCheck'
+        //     })
+        // }
+        // req.body.userId = decoded.id
+        // req.body.roleId = decoded.roleId
+        // req.body.companyId = decoded.companyId
+        // console.log('SESSION CHECK COMPLETED')
+        // next()
+    })
+}
+>>>>>>> 84c9433133ab8feaa83d356a114c25cd8ef2ee9c
 
 // module.exports = { validateToken }

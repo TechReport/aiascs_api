@@ -1,31 +1,47 @@
 const mongoose = require('mongoose');
 
-const agroInputsSchema = mongoose.Schema(
-  {
+let productsSchema = mongoose.Schema({
     name: {
       type: String,
       trim: true,
       required: true,
     },
-    batchId: {
-      type: mongoose.Schema.Types.ObjectId,
-      required: true,
+    photoInfo: {
+        type: String,
+        trim: true
     },
-    qrCodeRef: {
-      type: String,
-      unique: true,
+    isRevoked: {
+        type: Boolean,
+        default: false
     },
-    qrCodeData: {
-      type: Object,
-      // unique: true,
-      // required: true,
+    qrcode: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'qrcode',
+        unique: true
     },
     expiry: {
-      type: mongoose.Schema.Types.Date,
-      trim: true,
+        type: mongoose.Schema.Types.Date,
+        trim: true,
+        required: true
     },
-  },
-  { timestamps: true }
-);
+    companyId: {
+        type: String,
+        // type: mongoose.Schema.Types.ObjectId,
+        // ref: 'manufacturingCompany',
+    }
+},
+    { timestamps: true }
+)
 
-module.exports = mongoose.model('agroInputs', agroInputsSchema);
+productsSchema.virtual('batchInfo').get(function () {
+    console.log('i am called')
+    return this.createdAt
+})
+
+productsSchema.virtual('hasExpired').get(function () {
+    console.log('i am called')
+    return this.expiry > Date.now() ? true : false
+})
+
+
+module.exports = mongoose.model('agroInputs', productsSchema)
