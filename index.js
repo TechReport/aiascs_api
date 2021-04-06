@@ -38,9 +38,9 @@ const connect = () => {
 // });
 connect()
     .then(async (connection) => {
-        server.listen(process.env.PORT,()=>{
-          console.log("Listening to PORT :"+ process.env.PORT);
-          socketServer(server);
+        server.listen(process.env.PORT, () => {
+            console.log("Listening to PORT :" + process.env.PORT);
+            socketServer(server);
         });
     })
     .catch((e) => {
