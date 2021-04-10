@@ -1,13 +1,11 @@
-const express = require("express");
-const { urlencoded, json } = require("body-parser");
-const cors = require("cors");
-
-const routes = require('./src/routes')
-const seeder = require('./utils/seeder')
-require('dotenv').config()
-
+const express = require('express');
 
 const app = express();
+const logger = require('morgan');
+const { urlencoded, json } = require('body-parser');
+const cors = require('cors');
+const routes = require('./src/routes');
+const seeder = require('./utils/seeder');
 
 app.use(cors());
 
@@ -19,20 +17,20 @@ if (app.get('env') === 'production') {
 }
 
 app.use(urlencoded({ extended: true }));
+
 app.use(json());
+/// hare attache routes,middlware for rsourcess
+routes(app);
+// init seeder
+seeder.init();
 
-// Set app routes
-routes(app)
-
-// Seed Initial Data
-seeder.init()
 
 // INITIALIZE CRON JOB
 require('./utils/cronjobs/qrcode.cron')
 
 
 
-//general app middelare for handle errors
+// general app middelare for handle errors
 app.use((err, req, res, next) => {
   if (err)
     return res.status(err.code ? err.code : 500).json(err)
