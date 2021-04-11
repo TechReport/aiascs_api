@@ -3,6 +3,7 @@ const Permission = require('../../src/access_control/permission.model')
 const Users = require('../../src/users/user.modal')
 const { createNewPermission, createNewRole } = require('../../src/access_control/access_controller.controller')
 const { registerUser } = require('../../src/users/user.controller')
+const permissionList = require('./permissionList')
 
 module.exports = {
     init: async () => {
@@ -20,19 +21,9 @@ module.exports = {
     },
     seedPermissions: async () => {
         try {
-            const PERMISSIONS = [
-                { displayName: 'Create user', moduleName: 'user', genericName: 'createUser', description: '' },
-                { displayName: 'Delete User', moduleName: 'user', genericName: 'deleteUser', description: '' },
-                { displayName: 'Update User', moduleName: 'user', genericName: 'updateUser', description: '' },
-                { displayName: 'View one User', moduleName: 'user', genericName: 'view_one_user', description: '' },
-                { displayName: 'View all User', moduleName: 'user', genericName: 'view_all_users', description: '' },
-            ];
             const count = await Permission.countDocuments();
             if (count === 0) {
-                console.log('seed permissions start')
-                PERMISSIONS.forEach(async (permission) => {
-                    await createNewPermission(permission)
-                });
+                await createNewPermission(permissionList)
                 console.log('seed permissions done')
             }
         } catch (e) {
