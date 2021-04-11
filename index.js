@@ -1,8 +1,16 @@
 const mongoose = require('mongoose');
 const http = require('http');
 const app = require('./app');
-const ENV = require('./config/development');
-const socketServer = require('./utils/notification/nofication_setup');
+const socketServer = require('./utils/notification/nofication_setup')
+if(process.env.STATUS == "production")
+{
+ 
+  const ENV = require('./config/production');
+}
+else {
+  const ENV = require('./config/development');
+}
+
 
 // app.set("port", ENV.PORT);
 const server = http.createServer(app);
