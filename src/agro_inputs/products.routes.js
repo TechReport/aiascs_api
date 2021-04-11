@@ -7,7 +7,7 @@ const productController = require('./products.controller');
 
 router.get('/', productController.getAll)
 router.post('/', productController.register)
-// router.post('/register', userController.register)
+router.delete('/:productID', productController.deleteOne)
 // router.patch('/resetPassword', sessionMonitor, userController.resetPassword)
 
 // router.post('/route', middleware, controller)

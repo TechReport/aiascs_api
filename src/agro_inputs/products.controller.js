@@ -55,7 +55,7 @@ module.exports = {
     },
     getAll: async (req, res, next) => {
         try {
-            const products = await Products.find().populate('qrcode').sort('-createdAt').exec()
+            const products = await Products.find().select('+hasExpired +batchInfo').populate('qrcode').sort('-createdAt').exec()
             res.status(200).json({
                 message: 'Products loaded successfully',
                 data: products
@@ -64,5 +64,20 @@ module.exports = {
             console.log(error)
             next(error)
         }
+    },
+    deleteOne: async (req, res, next) => {
+        console.log(req.params)
+        await Products.deleteOne({ _id: req.params.productID })
+            .then(response => res.status(200).json({
+                status: true,
+                data: {
+                    deletedCount: response.deletedCount,
+                    deletedProduct: req.params.productID
+                }
+            }))
+            .catch(err => {
+                console.log(err)
+                next(err)
+            })
     }
 }
