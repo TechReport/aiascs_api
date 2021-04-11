@@ -23,28 +23,17 @@ async function createNewRole({ name, description, permissions, type = 0, approva
     }
 }
 
-async function createNewPermission({ displayName, genericName, description, moduleName }) {
-    try {
-        const permission = await Permission.create({
-            displayName,
-            genericName,
-            moduleName,
-            description
-        });
-
-        return permission
-
-    } catch (error) {
-        throw error
-    }
-}
-
-
 
 
 module.exports = {
     createNewRole,
-    createNewPermission,
+    createNewPermission: async (permissions) => {
+        await Permission.insertMany(permissions)
+            .then(res => res)
+            .catch(err => {
+                throw err
+            })
+    },
     createRole: async (req, res) => {
         try {
             const {
