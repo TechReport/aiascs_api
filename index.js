@@ -2,13 +2,15 @@ const mongoose = require('mongoose');
 const http = require('http');
 const app = require('./app');
 const socketServer = require('./utils/notification/nofication_setup')
-if(process.env.STATUS == "production")
+var ENV ='';
+if(process.env.STATUS != "production" || process.env.STATUS == undefined)
 {
- 
-  const ENV = require('./config/production');
+   ENV = require('./config/development');
+   
 }
 else {
-  const ENV = require('./config/development');
+   ENV = require('./config/production');
+
 }
 
 
