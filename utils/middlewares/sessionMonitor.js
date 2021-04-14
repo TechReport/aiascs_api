@@ -1,10 +1,24 @@
 const jwt = require('jsonwebtoken');
 const UserModel = require('../../src/users/user.modal');
-// root@aiascsadmin.com
+
+/**
+ * *** Parameters are issued by express middleware ***
+ * @param {any} req http request object
+ * @param {any} res http response object
+ * @callback next callback by express  
+ * 
+ * @returns {object} {userId} and {roleId} in req.body
+ * 
+ * @example
+ * // Access the passed parameters as follows 
+ * const userId = req.body.userId;
+ * const userRoleId = req.body.roleId;
+ * 
+ */
 
 module.exports = async function validateToken(req, res, next) {
-    console.log('SESSION CHECK START');
-
+    
+    // Check if the Authorization Header is present
     if (typeof req.headers.authorization === 'undefined') {
         return res.status(401).json({
             status: false,
@@ -15,6 +29,8 @@ module.exports = async function validateToken(req, res, next) {
             src: 'sessionCheck',
         });
     }
+
+    // Obtain and verifyy the copy of token from Authorization Header
     const token = req.headers.authorization.split(' ')[1];
     jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
         if (err) {
@@ -28,10 +44,12 @@ module.exports = async function validateToken(req, res, next) {
             });
         }
         try {
+            // Query authToken stored in db, issued when user logged in
             const authToken = await (
                 await UserModel.findById(decoded.id, '+authToken authToken')
             ).authToken;
 
+            // Check if the two tokens match
             if (authToken !== token) {
                 return res.status(401).json({
                     status: false,
@@ -42,10 +60,12 @@ module.exports = async function validateToken(req, res, next) {
                     src: 'sessionCheck',
                 });
             }
+
+            // Pass userId and roleId to body object
             req.body.userId = decoded.id;
             req.body.roleId = decoded.roleId;
-            console.log('SESSION CHECK COMPLETED');
             next();
+
         } catch (err) {
             return res.status(401).json({
                 status: false,
@@ -58,5 +78,3 @@ module.exports = async function validateToken(req, res, next) {
         }
     });
 };
-
-// module.exports = { validateToken }
