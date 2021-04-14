@@ -50,8 +50,19 @@ module.exports = {
             console.log('seed roles start');
             const roles = [
                 {
+                    name: 'Super Admin',
+                    description: 'Role for a Super Admin',
+                    genericName:'ROLE_SUPER_ADMINISTRATOR',
+                    type: 1,
+                    approvalStatus: 1,
+                    permissions: (await Permission.find({}, '_id')).map(
+                        (item) => item._id
+                    ),
+                },
+                {
                     name: 'Administrator',
                     description: 'Role for an Admin',
+                    genericName:'ROLE_ADMINISTRATOR',
                     type: 1,
                     approvalStatus: 1,
                     permissions: (await Permission.find({}, '_id')).map(
@@ -62,6 +73,15 @@ module.exports = {
                     name: 'Operation Personnel',
                     description: 'Role for the operation personnel',
                     type: 1,
+                    genericName:'ROLE_OPERATION_PERSONNEL',
+                    approvalStatus: 1,
+                    permissions: [],
+                },
+                {
+                    name: 'Manufacturer',
+                    description: 'Role for the Manufacture',
+                    type: 1,
+                    genericName:'ROLE_OPERATION_MANUFACTURER',
                     approvalStatus: 1,
                     permissions: [],
                 },
@@ -81,7 +101,7 @@ module.exports = {
                 email: 'root@aiascsadmin.com',
                 phoneNumber: '255713000000',
                 gender: 'male',
-                role: (await Role.findOne({ name: 'Administrator' }).select('_id'))._id,
+                role: (await Role.findOne({ genericName: 'ROLE_SUPER_ADMINISTRATOR' }).select('_id'))._id,
             };
             await registerUser(admin);
             console.log('seed staff done');
