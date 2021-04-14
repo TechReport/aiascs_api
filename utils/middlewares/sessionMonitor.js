@@ -27,24 +27,35 @@ module.exports = async function validateToken(req, res, next) {
                 src: 'sessionCheck',
             });
         }
-        const authToken = await (
-            await UserModel.findById(decoded.id, '+authToken authToken')
-        ).authToken;
+        try {
+            const authToken = await (
+                await UserModel.findById(decoded.id, '+authToken authToken')
+            ).authToken;
 
-        if (authToken !== token) {
+            if (authToken !== token) {
+                return res.status(401).json({
+                    status: false,
+                    category: 'unauthorized',
+                    message: 'user is not authorized',
+                    developerMessage: `Token mismatch:::: ${token}}`,
+                    stack: '',
+                    src: 'sessionCheck',
+                });
+            }
+            req.body.userId = decoded.id;
+            req.body.roleId = decoded.roleId;
+            console.log('SESSION CHECK COMPLETED');
+            next();
+        } catch (err) {
             return res.status(401).json({
                 status: false,
                 category: 'unauthorized',
-                message: 'user is not authorized',
-                developerMessage: `Token mismatch:::: ${token}}`,
-                stack: '',
+                message: 'user not authorized',
+                developerMessage: err.message,
+                stack: err,
                 src: 'sessionCheck',
             });
         }
-        req.body.userId = decoded.id;
-        req.body.roleId = decoded.roleId;
-        console.log('SESSION CHECK COMPLETED');
-        next();
     });
 };
 
