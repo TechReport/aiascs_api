@@ -24,6 +24,14 @@ module.exports = {
                         { path: 'permission', select: 'genericName moduleName' },
                     ],
                 })
+            if (!user)
+                return res.status(401).json({
+                    status: false,
+                    category: 'unauthorized',
+                    message: 'Invalid credentials',
+                    developerMessage: '',
+                    stack: ''
+                })
 
             let passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
 
