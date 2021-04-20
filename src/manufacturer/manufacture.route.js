@@ -2,28 +2,35 @@ const express = require("express");
 const router = express.Router();
 const manufactureController = require("./manufacture.controller");
 const manufactureMiddlware = require("../../utils/middlewares/manufacture_middleware");
+const sessionMonitor = require('../../utils/middlewares/sessionMonitor')
 
-router.get("/all", manufactureController.getAllManufacture);
+router.get("/all", sessionMonitor, manufactureController.getAllManufacture);
 router.get(
-  "/:id",
-  manufactureMiddlware.getId,
-  manufactureController.getManufuctureById
+    "/:id",
+    manufactureMiddlware.getId,
+    sessionMonitor,
+    manufactureController.getManufuctureById
 );
-router.post("/register", manufactureController.createManufacture);
+router.post("/register", sessionMonitor, manufactureController.createManufacture);
 router.delete(
-  "/:id",
-  manufactureMiddlware.getId,
-  manufactureController.removeManufactureyId
+    "/:id",
+    sessionMonitor,
+    manufactureMiddlware.getId,
+    manufactureController.removeManufactureyId
 );
 router.put(
-  "/update/:id",
-  manufactureMiddlware.getId,
-  manufactureController.updateManufactureById
+    "/update/:id",
+    sessionMonitor,
+    manufactureMiddlware.getId,
+    manufactureController.updateManufactureById
 );
 router.post(
-  "/addproductAgent/:id",
-  manufactureMiddlware.getId,
-  manufactureController.addProductAgentToManufacture
+    "/addproductAgent/:id",
+    sessionMonitor,
+    manufactureMiddlware.getId,
+    manufactureController.addProductAgentToManufacture
 );
+
+router.put('/assignAdmin/:companyId/:adminId', sessionMonitor, manufactureController.assignAdmin)
 
 module.exports = router;
