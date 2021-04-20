@@ -65,6 +65,15 @@ module.exports = {
             next(error)
         }
     },
+    getOne: async (req, res, next) => {
+        console.log(req.params)
+        await Products.findOne({ _id: req.params.productID })
+            .then(product => {
+                res.json(product);
+            }).catch(err => {
+                next(err)
+            })
+    },
     deleteOne: async (req, res, next) => {
         console.log(req.params)
         await Products.deleteOne({ _id: req.params.productID })
@@ -79,5 +88,19 @@ module.exports = {
                 console.log(err)
                 next(err)
             })
+    },
+    revokeProduct: async (req, res, next) => {
+        console.log(req.body)
+        const { productID } = req.body.params
+
+        await Products.findByIdAndUpdate(productID, { isRevoked: true }, { new: true, useFindAndModify: false })
+            .then(resp => {
+                console.log(resp)
+                res.status(204).json(resp);
+            }).catch(err => {
+                console.log(err)
+                next(err)
+            })
+
     }
 }
