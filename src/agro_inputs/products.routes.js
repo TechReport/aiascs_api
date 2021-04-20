@@ -3,12 +3,13 @@ const Router = require('express');
 const router = new Router();
 const productController = require('./products.controller');
 // const validateSession = require('../../middlewares/validateToken')
-// const sessionMonitor = require('../../utils/middlewares/sessionMonitor')
+const sessionMonitor = require('../../utils/middlewares/sessionMonitor')
 
-router.get('/', productController.getAll)
-router.post('/', productController.register)
-router.delete('/:productID', productController.deleteOne)
-// router.patch('/resetPassword', sessionMonitor, userController.resetPassword)
+router.get('/', sessionMonitor, productController.getAll)
+router.post('/', sessionMonitor, productController.register)
+router.get('/:productID', sessionMonitor, productController.getOne)
+router.delete('/:productID', sessionMonitor, productController.deleteOne)
+router.patch('/revoke/:productID', sessionMonitor, productController.revokeProduct)
 
 // router.post('/route', middleware, controller)
 

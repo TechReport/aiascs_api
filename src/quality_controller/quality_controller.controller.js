@@ -18,6 +18,12 @@ module.exports = {
 
     getAll: async (req, res, next) => {
         await QualityController.find()
+            .populate({
+                path: 'admin',
+                populate: [
+                    { path: 'role', select: 'name' },
+                ],
+            })
             .sort('-createdAt')
             .then(response => {
                 console.log(response)
@@ -61,4 +67,24 @@ module.exports = {
                 return next(err)
             })
     },
+    assignAdmin: async (req, res, next) => {
+        console.log(req.body)
+        console.log(req.params)
+        const { companyId, adminId } = req.params
+
+        await QualityController.findByIdAndUpdate(companyId, { admin: adminId }, { new: true, useFindAndModify: false })
+            .populate({
+                path: 'admin',
+                populate: [
+                    { path: 'role', select: 'name' },
+                ],
+            })
+            .then(resp => {
+                console.log(resp)
+                res.status(201).json(resp);
+            }).catch(err => {
+                console.log(err)
+                next(err)
+            })
+    }
 };
