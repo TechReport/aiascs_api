@@ -24,11 +24,14 @@ let productsSchema = mongoose.Schema({
         trim: true,
         required: true
     },
-    companyId: {
-        type: String,
-        // type: mongoose.Schema.Types.ObjectId,
-        // ref: 'manufacturingCompany',
-    }
+    manufacture:   {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'manufacture',
+      },
+  productAgent:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'productAgent',
+  }
 },
     { timestamps: true }
 )
