@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Manufacture = require("../manufacturer/manufacture.model");
 const _ = require("lodash");
+const Product = require("../agro_inputs/products.modal");
 
 const productAgent = new mongoose.Schema({
     regno:{
@@ -26,7 +27,6 @@ type:String,
 required:true ,
 unique:true,
 match: [/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/, 'Please enter a valid email'],
- 
 
 },
 
@@ -43,6 +43,7 @@ createdAt:{
 
 manufacture:[
     {
+        
         type: mongoose.Schema.Types.ObjectId,
         ref: 'manufacture',
   
@@ -72,6 +73,16 @@ next();
 
 });
 
+
+productAgent.post("remove", async (doc, next) => {
+    Product.deleteMany({ manufacture: doc._id }, (error, response) => {
+      if (error) {
+        next(error);
+      }
+      console.log(response);
+      next();
+    });
+  });
 
 
 
