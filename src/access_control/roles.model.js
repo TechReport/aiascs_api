@@ -15,6 +15,10 @@ const RoleSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
+        target: {
+            type: String,
+            required: true,
+        },
         permissions: [
             {
                 type: mongoose.Schema.Types.ObjectId,

@@ -6,13 +6,14 @@ const User = require('../users/user.modal')
 // const mongoose = require('mongoose')
 
 
-async function createNewRole({ name, description, permissions, genericName, type = 0, approvalStatus = 0 }) {
+async function createNewRole({ name, description, permissions, genericName, type = 0, approvalStatus = 0 , target}) {
     try {
         const role = await Roles.create({
             name,
             description,
             permissions,
             genericName,
+            target,
             approvalStatus,
             type
         });
