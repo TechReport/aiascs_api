@@ -2,16 +2,17 @@ const Roles = require('./roles.model')
 const Permission = require('./permission.model')
 
 // const RolePermission = require('./role_permission.model')
-// const User = require('../users/user.model')
+const User = require('../users/user.modal')
 // const mongoose = require('mongoose')
 
 
-async function createNewRole({ name, description, permissions, type = 0, approvalStatus = 0 }) {
+async function createNewRole({ name, description, permissions, genericName, type = 0, approvalStatus = 0 }) {
     try {
         const role = await Roles.create({
             name,
             description,
             permissions,
+            genericName,
             approvalStatus,
             type
         });
@@ -90,10 +91,18 @@ module.exports = {
     checkSession: async (req, res) => {
         try {
             if (req.body.userId) {
+                const user = await User.findById(req.body.userId)
+                    .populate({
+                        path: 'role',
+                        populate: [
+                            { path: 'permissions', select: 'genericName moduleName -_id' },
+                        ],
+                    })
                 return res.status(201).json({
                     status: true,
                     category: 'authorized',
-                    message: 'User is authorized'
+                    message: 'User is authorized',
+                    user
                 })
             } else {
                 return res.status(401).json({

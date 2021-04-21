@@ -50,8 +50,9 @@ module.exports = {
             console.log('seed roles start');
             const roles = [
                 {
-                    name: 'Administrator',
-                    description: 'Role for an Admin',
+                    name: 'Super Admin',
+                    description: 'Role for a Super Admin',
+                    genericName:'ROLE_SUPER_ADMIN',
                     type: 1,
                     approvalStatus: 1,
                     permissions: (await Permission.find({}, '_id')).map(
@@ -59,12 +60,42 @@ module.exports = {
                     ),
                 },
                 {
-                    name: 'Operation Personnel',
-                    description: 'Role for the operation personnel',
+                    name: 'Manufacturer Admin',
+                    description: 'Role for an Admin',
+                    genericName:'ROLE_MANUFACTURING_COMPANY_ADMIN',
                     type: 1,
                     approvalStatus: 1,
-                    permissions: [],
+                    permissions: (await Permission.find({}, '_id')).map(
+                        (item) => item._id
+                    ),
                 },
+                {
+                    name: 'Q. C. Admin',
+                    description: 'Role for a Quality Controller Admin',
+                    genericName:'ROLE_QUALITY_CONTROLLER_ADMIN',
+                    type: 1,
+                    approvalStatus: 1,
+                    permissions: (await Permission.find({}, '_id')).map(
+                        (item) => item._id
+                    ),
+                },
+                
+                // {
+                //     name: 'Operation Personnel',
+                //     description: 'Role for the operation personnel',
+                //     type: 1,
+                //     genericName:'ROLE_OPERATION_PERSONNEL',
+                //     approvalStatus: 1,
+                //     permissions: [],
+                // },
+                // {
+                //     name: 'Manufacturer',
+                //     description: 'Role for the Manufacture',
+                //     type: 1,
+                //     genericName:'ROLE_OPERATION_MANUFACTURER',
+                //     approvalStatus: 1,
+                //     permissions: [],
+                // },
             ];
             roles.forEach(async (role) => {
                 await createNewRole(role);
@@ -81,7 +112,7 @@ module.exports = {
                 email: 'root@aiascsadmin.com',
                 phoneNumber: '255713000000',
                 gender: 'male',
-                role: (await Role.findOne({ name: 'Administrator' }).select('_id'))._id,
+                role: (await Role.findOne({ genericName: 'ROLE_SUPER_ADMIN' }).select('_id'))._id,
             };
             await registerUser(admin);
             console.log('seed staff done');
@@ -92,6 +123,43 @@ module.exports = {
             };
         }
     },
+
+    // {
+    //     name: 'Super Admin',
+    //     description: 'Role for a Super Admin',
+    //     genericName:'ROLE_SUPER_ADMIN',
+    //     type: 1,
+    //     approvalStatus: 1,
+    //     permissions: (await Permission.find({}, '_id')).map(
+    //         (item) => item._id
+    //     ),
+    // },
+    // {
+    //     name: 'Company Administrator',
+    //     description: 'Role for the Manufacturing Company Administrator',
+    //     genericName:'ROLE_MANUFACTURING_COMPANY_ADMIN',
+    //     type: 1,
+    //     approvalStatus: 1,
+    //     permissions: (await Permission.find({}, '_id')).map(
+    //         (item) => item._id
+    //     ),
+    // },
+    // {
+    //     name: 'Operation Personnel',
+    //     description: 'Role for the operation personnel',
+    //     type: 1,
+    //     genericName:'ROLE_OPERATION_PERSONNEL',
+    //     approvalStatus: 1,
+    //     permissions: [],
+    // },
+    // {
+    //     name: 'Manufacturer Personnel',
+    //     description: 'Role for the Manufacture',
+    //     type: 1,
+    //     genericName:'ROLE_MANUFACTURER_OPERATOR',
+    //     approvalStatus: 1,
+    //     permissions: [],
+    // },
 
     seedSettings: async () => {
         const settingsCount = await Settings.find().countDocuments();

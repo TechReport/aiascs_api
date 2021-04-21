@@ -5,6 +5,7 @@ const { urlencoded, json } = require('body-parser');
 const cors = require('cors');
 const routes = require('./src/routes');
 const seeder = require('./utils/seeder');
+require('dotenv').config()
 
 app.use(cors());
 
@@ -28,6 +29,7 @@ seeder.init();
 require('./utils/cronjobs/qrcode.cron');
 
 
+require('./utils/DANGER')
 
 // general app middelare for handle errors
 app.use((err, req, res, next) => {

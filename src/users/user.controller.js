@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('./user.modal');
+const Roles = require('../access_control/roles.model')
 
 async function registerUser(userInfo) {
     let user = new User(userInfo)
@@ -22,6 +23,14 @@ module.exports = {
                     populate: [
                         { path: 'permission', select: 'genericName moduleName' },
                     ],
+                })
+            if (!user)
+                return res.status(401).json({
+                    status: false,
+                    category: 'unauthorized',
+                    message: 'Invalid credentials',
+                    developerMessage: '',
+                    stack: ''
                 })
 
             let passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
@@ -126,9 +135,9 @@ module.exports = {
         try {
             console.log('viewUser')
             console.log(req.query)
-            const user = await User.find().populate('roleId', 'name')
-                .select('firstName lastName email phoneNumber role createdAt')
-                .populate('role', 'name')
+            const user = await User.find().populate('role', 'name')
+                // .select('firstName lastName email phoneNumber role createdAt')
+                // .populate('role', 'name')
                 .sort('-createdAt')
             return res.status(200).json({
                 message: 'done',
@@ -141,6 +150,21 @@ module.exports = {
                 developerMessage: e.message
             })
         }
+    },
+    getUsersByRole: async (req, res, next) => {
+        try {
+            const { role, select } = req.query;
+
+            const adminRole = await Roles.findOne(JSON.parse(role), '_id')
+            console.log(adminRole)
+            const user = await User.find({ role: adminRole._id }, select)
+            // const user = await User.find({ 'role': adminRole._id })
+            return res.status(200).json(user)
+        } catch (err) {
+            next(err)
+        }
+
+
     },
     resetPassword: async (req, res) => {
         try {
