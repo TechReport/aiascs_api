@@ -74,6 +74,15 @@ const userSchema = mongoose.Schema(
         authToken: {
             type: String,
         },
+        /**
+         * status 0: temporary
+         * status 1: day token
+         */
+        tokenStatus: {
+            type: Number,
+            default: 0,
+            enum: [0, 1]
+        }
     },
     { timestamps: true }
 );
