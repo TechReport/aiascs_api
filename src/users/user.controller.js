@@ -47,15 +47,21 @@ module.exports = {
 
             const displayName = user.firstName + ' ' + user.lastName
 
+            // REMOVE PASSWORD FROM USER OBJECT, (dont return password to client)
+            let rawResponse = user.toObject()
+            delete rawResponse.password
+
+
             if (user.firstTimeLoginStatus === 0) {
                 console.log('hi')
-                let tempToken = jwt.sign({ id: user._id, email: user.email, displayName: displayName }, process.env.JWT_SECRET, { expiresIn: 20 * 60 });
-                await User.updateOne({ email: req.body.email }, { authToken: tempToken }, { useFindAndModify: false })
+                let tempToken = jwt.sign({ id: user._id, email: user.email, displayName: displayName, valid: false }, process.env.JWT_SECRET, { expiresIn: 20 * 60 });
+                await User.updateOne({ email: req.body.email }, { authToken: tempToken, tokenStatus: 0 }, { useFindAndModify: false })
 
                 return res.status(200).json({
                     data: {
                         tempToken,
                         target: 'firstTimeLoginStatus',
+                        user: rawResponse
                     },
                     message: 'First time login',
                 })
@@ -64,12 +70,8 @@ module.exports = {
             // PREPARE USER AUTH TOKEN
             const token = jwt.sign({ id: user._id, email: user.email, displayName: displayName, roleId: user.role._id }, process.env.JWT_SECRET, { expiresIn: 86400 });
 
-            // REMOVE PASSWORD FROM USER OBJECT, (dont return password to client)
-            let rawResponse = user.toObject()
-            delete rawResponse.password
-
             // UPDATE USER AUTHTOKEN
-            await User.updateOne({ email: req.body.email }, { authToken: token }, { useFindAndModify: false })
+            await User.updateOne({ email: req.body.email }, { authToken: token, tokenStatus: 1 }, { useFindAndModify: false })
 
             return res.status(200).json({
                 message: "Logged in successfully",

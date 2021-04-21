@@ -54,6 +54,7 @@ module.exports = {
                     description: 'Role for a Super Admin',
                     genericName:'ROLE_SUPER_ADMIN',
                     type: 1,
+                    target:'System',
                     approvalStatus: 1,
                     permissions: (await Permission.find({}, '_id')).map(
                         (item) => item._id
@@ -64,6 +65,7 @@ module.exports = {
                     description: 'Role for an Admin',
                     genericName:'ROLE_MANUFACTURING_COMPANY_ADMIN',
                     type: 1,
+                    target:'Manufacturing Company',
                     approvalStatus: 1,
                     permissions: (await Permission.find({}, '_id')).map(
                         (item) => item._id
@@ -73,29 +75,31 @@ module.exports = {
                     name: 'Q. C. Admin',
                     description: 'Role for a Quality Controller Admin',
                     genericName:'ROLE_QUALITY_CONTROLLER_ADMIN',
+                    target:'Quality Controlling Organization',
                     type: 1,
                     approvalStatus: 1,
                     permissions: (await Permission.find({}, '_id')).map(
                         (item) => item._id
                     ),
                 },
-                
-                // {
-                //     name: 'Operation Personnel',
-                //     description: 'Role for the operation personnel',
-                //     type: 1,
-                //     genericName:'ROLE_OPERATION_PERSONNEL',
-                //     approvalStatus: 1,
-                //     permissions: [],
-                // },
-                // {
-                //     name: 'Manufacturer',
-                //     description: 'Role for the Manufacture',
-                //     type: 1,
-                //     genericName:'ROLE_OPERATION_MANUFACTURER',
-                //     approvalStatus: 1,
-                //     permissions: [],
-                // },
+                {
+                    name: 'Operation Personnel',
+                    description: 'Role for the operation personnel',
+                    type: 1,
+                    target:'Quality Controlling Organization',
+                    genericName:'ROLE_OPERATION_PERSONNEL_QC',
+                    approvalStatus: 1,
+                    permissions: [],
+                },
+                {
+                    name: 'Operation Personnel',
+                    description: 'Role for the Manufacture',
+                    target:'Manufacturering Company',
+                    type: 1,
+                    genericName:'ROLE_OPERATION_PERSONNEL_MAN',
+                    approvalStatus: 1,
+                    permissions: [],
+                },
             ];
             roles.forEach(async (role) => {
                 await createNewRole(role);
