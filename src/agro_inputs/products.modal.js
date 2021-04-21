@@ -32,7 +32,6 @@ const productsSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'productAgent',
   },
-  timestamps: true,
 });
 
 productsSchema.virtual('batchInfo').get(function () {

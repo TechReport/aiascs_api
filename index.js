@@ -1,18 +1,16 @@
+/* eslint-disable implicit-arrow-linebreak */
+/* eslint-disable global-require */
 const mongoose = require('mongoose');
 const http = require('http');
 const app = require('./app');
-const socketServer = require('./utils/notification/nofication_setup')
-var ENV ='';
-if(process.env.STATUS != "production" || process.env.STATUS == undefined)
-{
-   ENV = require('./config/development');
-   
-}
-else {
-   ENV = require('./config/production');
+const socketServer = require('./utils/notification/nofication_setup');
 
+let ENV = '';
+if (process.env.STATUS !== 'production' || process.env.STATUS === undefined) {
+  ENV = require('./config/development');
+} else {
+  ENV = require('./config/production');
 }
-
 
 // app.set("port", ENV.PORT);
 const server = http.createServer(app);
@@ -20,10 +18,10 @@ const server = http.createServer(app);
 
 const connect = () =>
   mongoose.connect(ENV.DB_URL, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useFindAndModify:false,
-});
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false,
+  });
 
 // io.on("connection", (socket) => {
 //   console.log("New client connected");
@@ -46,6 +44,7 @@ const connect = () =>
 //   console.log("Listening to PORT :"+ ENV.PORT);
 // });
 connect()
+  // eslint-disable-next-line no-unused-vars
   .then(async (connection) => {
     server.listen(ENV.PORT, () => {
       console.log(`Listening to PORT :${ENV.PORT}`);
