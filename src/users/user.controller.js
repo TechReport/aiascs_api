@@ -18,19 +18,11 @@ module.exports = {
         try {
             // CHECK IF USER EXISTS
             let user = await User.findOne({ email: req.body.email }, '+password')
-                .populate({
-                    path: 'role',
-                    populate: [
-                        { path: 'permission', select: 'genericName moduleName' },
-                    ],
-                })
             if (!user)
                 return res.status(401).json({
-                    status: false,
-                    category: 'unauthorized',
+                    status: 'unauthorized',
                     message: 'Invalid credentials',
                     developerMessage: '',
-                    stack: ''
                 })
 
             let passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
@@ -59,7 +51,7 @@ module.exports = {
 
                 return res.status(200).json({
                     user: authenticatedUser,
-                    target: 'firstTimeLoginStatus',
+                    status: 'firstTimeLogin',
                     message: 'First time login',
                 })
             }
@@ -69,16 +61,14 @@ module.exports = {
 
             // UPDATE USER AUTHTOKEN
             const authenticatedUser = await User.findOneAndUpdate({ email: req.body.email }, { token }, { useFindAndModify: false, new: true })
+                .populate({
+                    path: 'role',
+                    populate: [
+                        { path: 'permission', select: 'genericName moduleName' },
+                    ],
+                })
 
-            return res.status(200).json({
-                message: "Logged in successfully",
-                user: authenticatedUser,
-                // data: {
-                //     target: 'authenticated',
-                //     token,
-                //     user: rawResponse
-                // }
-            })
+            return res.status(200).json({ user: authenticatedUser, status: 'authenticated' })
         } catch (e) {
             console.log(e)
             return res.status(500).json({
