@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('./user.modal');
-const Roles = require('../access_control/roles.model')
+const Roles = require('../access_control/roles.model');
 
 async function registerUser(userInfo) {
     let user = new User(userInfo)
@@ -48,21 +48,18 @@ module.exports = {
             const displayName = user.firstName + ' ' + user.lastName
 
             // REMOVE PASSWORD FROM USER OBJECT, (dont return password to client)
-            let rawResponse = user.toObject()
-            delete rawResponse.password
+            // let rawResponse = user.toObject()
+            // delete rawResponse.password
 
 
             if (user.firstTimeLoginStatus === 0) {
                 console.log('hi')
-                let tempToken = jwt.sign({ id: user._id, email: user.email, displayName: displayName, valid: false }, process.env.JWT_SECRET, { expiresIn: 20 * 60 });
-                await User.updateOne({ email: req.body.email }, { authToken: tempToken, tokenStatus: 0 }, { useFindAndModify: false })
+                let authToken = jwt.sign({ id: user._id, email: user.email, displayName, accept: 'resetPassword' }, process.env.JWT_SECRET, { expiresIn: 20 * 60 });
+                const authenticatedUser = await User.findOneAndUpdate({ email: req.body.email }, { token: authToken }, { useFindAndModify: false, new: true })
 
                 return res.status(200).json({
-                    data: {
-                        tempToken,
-                        target: 'firstTimeLoginStatus',
-                        user: rawResponse
-                    },
+                    user: authenticatedUser,
+                    target: 'firstTimeLoginStatus',
                     message: 'First time login',
                 })
             }
@@ -71,15 +68,16 @@ module.exports = {
             const token = jwt.sign({ id: user._id, email: user.email, displayName: displayName, roleId: user.role._id }, process.env.JWT_SECRET, { expiresIn: 86400 });
 
             // UPDATE USER AUTHTOKEN
-            await User.updateOne({ email: req.body.email }, { authToken: token, tokenStatus: 1 }, { useFindAndModify: false })
+            const authenticatedUser = await User.findOneAndUpdate({ email: req.body.email }, { token }, { useFindAndModify: false, new: true })
 
             return res.status(200).json({
                 message: "Logged in successfully",
-                data: {
-                    target: 'authenticated',
-                    token,
-                    user: rawResponse
-                }
+                user: authenticatedUser,
+                // data: {
+                //     target: 'authenticated',
+                //     token,
+                //     user: rawResponse
+                // }
             })
         } catch (e) {
             console.log(e)
@@ -134,24 +132,16 @@ module.exports = {
             })
     },
     getAll: async (req, res) => {
-        try {
-            console.log('viewUser')
-            console.log(req.query)
-            const user = await User.find().populate('role', 'name')
-                // .select('firstName lastName email phoneNumber role createdAt')
-                // .populate('role', 'name')
-                .sort('-createdAt')
-            return res.status(200).json({
-                message: 'done',
-                status: true,
-                data: user
+        await User.find().populate('role', 'name')
+            .sort('-createdAt')
+            .then(users => res.status(200).json(users))
+            .catch(err => {
+                return res.status(500).json({
+                    message: err.message,
+                    developerMessage: err.message,
+                    stack: err
+                })
             })
-        } catch (e) {
-            return res.status(500).json({
-                userMessage: 'Whoops! Something went wrong.',
-                developerMessage: e.message
-            })
-        }
     },
     getUsersByRole: async (req, res, next) => {
         try {
@@ -172,7 +162,7 @@ module.exports = {
         try {
             const { password, userId } = req.body
             let encryPassword = bcrypt.hashSync(password, 8);
-            await User.updateOne({ _id: userId }, { password: encryPassword, firstTimeLoginStatus: 1, forgotPasswordToken: '' });
+            await User.updateOne({ _id: userId }, { password: encryPassword, firstTimeLoginStatus: 1, token: '' });
             res.status(201).json({
                 message: 'you have successfully changed the password, Login to proceed',
                 status: true,

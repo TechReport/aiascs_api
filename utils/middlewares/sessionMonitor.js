@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const UserModel = require('../../src/users/user.modal');
+const UserController = require('../../src/users/user.controller');
 
 /**
  * *** Parameters are issued by express middleware ***
@@ -21,61 +22,81 @@ module.exports = async function validateToken(req, res, next) {
     // Check if the Authorization Header is present
     if (typeof req.headers.authorization === 'undefined') {
         return res.status(401).json({
-            status: false,
-            category: 'unauthorized',
-            message: 'user not authorized',
+            message: 'Authentication error',
             developerMessage: 'Authorization type not specified',
-            stack: '',
-            src: 'sessionCheck',
         });
     }
 
-    // Obtain and verifyy the copy of token from Authorization Header
+    // Obtain and verify the copy of token from Authorization Header
     const token = req.headers.authorization.split(' ')[1];
     jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
-        if (err) {
+        if (err)
             return res.status(401).json({
-                status: false,
-                category: 'unauthorized',
-                message: 'user not authorized',
+                message: 'Authentication error',
                 developerMessage: err.message,
-                stack: err,
-                src: 'sessionCheck',
             });
-        }
-        try {
-            // Query authToken stored in db, issued when user logged in
-            const authToken = await (
-                // await UserModel.findById(decoded.id, '+authToken authToken tokenStatus')
-                await UserModel.findOne({ _id: decoded.id, tokenStatus: 1 }, '+authToken authToken tokenStatus')
-            ).authToken;
 
-            // Check if the two tokens match
-            if (authToken !== token) {
+        try {
+            const userToAuth = await UserModel.findById(decoded.id, 'token')
+            // console.log(userToAuth.token)
+
+            if (userToAuth && userToAuth.token !== token) {
                 return res.status(401).json({
-                    status: false,
-                    category: 'unauthorized',
-                    message: 'user is not authorized',
+                    message: 'Authentication error',
                     developerMessage: `Token mismatch:::: ${token}}`,
-                    stack: '',
-                    src: 'sessionCheck',
                 });
             }
 
-            // Pass userId and roleId to body object
             req.body.userId = decoded.id;
             req.body.roleId = decoded.roleId;
+            if (decoded.accept === 'resetPassword') {
+                return UserController.resetPassword(req, res)
+            }
             next();
-
         } catch (err) {
+            console.log(err)
             return res.status(401).json({
-                status: false,
-                category: 'unauthorized',
-                message: 'user not authorized',
+                message: 'Authentication error',
                 developerMessage: err.message,
-                stack: err,
-                src: 'sessionCheck',
             });
         }
     });
 };
+
+
+        // Query authToken stored in db, issued when user logged in
+        // const authToken = await (
+        //     await UserModel.findById(decoded.id, '+authToken authToken tokenStatus')
+        //     // await UserModel.findOne({ _id: decoded.id, tokenStatus: 1 }, '+authToken authToken tokenStatus')
+        // ).authToken;
+
+
+        // Check if the two tokens match
+        // if (authToken !== token) {
+        //     return res.status(401).json({
+        //         // status: false,
+        //         // category: 'unauthorized',
+        //         message: 'Authentication error',
+        //         developerMessage: `Token mismatch:::: ${token}}`,
+        //         // stack: '',
+        //         // src: 'sessionCheck',
+        //     });
+        // }
+
+        // Pass userId and roleId to body object
+        // req.body.userId = decoded.id;
+        // req.body.roleId = decoded.roleId;
+        // next();
+
+        // } catch (err) {
+        //     return res.status(401).json({
+        //         // status: false,
+        //         // category: 'unauthorized',
+        //         message: 'Authentication error',
+        //         developerMessage: err.message,
+        //         // stack: err,
+        //         // src: 'sessionCheck',
+        //     });
+        // }
+//     });
+// };
