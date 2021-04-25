@@ -58,6 +58,16 @@ const userSchema = mongoose.Schema(
             enum: [0, 1],
             default: 0,
         },
+        companyId: {
+            type: mongoose.Schema.Types.ObjectId,
+            // required: true,
+            refPath: 'onModel'
+        },
+        onModel: {
+            type: String,
+            // required: true,
+            enum: ['manufacture', 'productAgent', 'qualityController']
+        },
         /*
          *for first login, before user changes password, firstTimeLoginStats is set to 0
          *after resetting password, the firstTimeLoginStats is set to 1

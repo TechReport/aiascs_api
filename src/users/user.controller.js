@@ -81,7 +81,7 @@ module.exports = {
         }
     },
     register: async (req, res, next) => {
-        await registerUser(req.body.newUser, next)
+        await registerUser(req.body.newUser)
             .then(newUser => {
                 delete newUser.password
                 return res.status(200).json({
@@ -122,7 +122,16 @@ module.exports = {
             })
     },
     getAll: async (req, res) => {
-        await User.find().populate('role', 'name')
+        console.log('get all users')
+        let filter = {}
+        const { companyId } = req.query
+
+        if (companyId)
+            filter = { companyId }
+
+        await User.find(filter)
+            .populate('role', 'name')
+            .populate('companyId', 'name')
             .sort('-createdAt')
             .then(users => res.status(200).json(users))
             .catch(err => {
@@ -133,20 +142,30 @@ module.exports = {
                 })
             })
     },
+    getById: async (req, res) => {
+        await User.findById(req.params.id).populate('role', 'name')
+            .then(user => res.status(200).json(user))
+            .catch(err => {
+                return res.status(500).json({
+                    message: err.message,
+                    developerMessage: err.message,
+                    stack: err
+                })
+            })
+    },
     getUsersByRole: async (req, res, next) => {
         try {
-            const { role, select } = req.query;
-
+            const { role, select, companyId } = req.query;
             const adminRole = await Roles.findOne(JSON.parse(role), '_id')
-            console.log(adminRole)
-            const user = await User.find({ role: adminRole._id }, select)
-            // const user = await User.find({ 'role': adminRole._id })
+            const user = await User.find({ role: adminRole._id, companyId }, select)
             return res.status(200).json(user)
         } catch (err) {
-            next(err)
+            return res.status(500).json({
+                message: err.message,
+                developerMessage: err.message,
+                stack: err
+            })
         }
-
-
     },
     resetPassword: async (req, res) => {
         try {

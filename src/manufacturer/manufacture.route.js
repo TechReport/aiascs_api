@@ -31,6 +31,8 @@ router.post(
     manufactureController.addProductAgentToManufacture
 );
 
+// router.get('/users/:companyId', sessionMonitor, manufactureController.getUsers)
 router.put('/assignAdmin/:companyId/:adminId', sessionMonitor, manufactureController.assignAdmin)
+router.put('/addUser', sessionMonitor, manufactureController.addUser)
 
 module.exports = router;
