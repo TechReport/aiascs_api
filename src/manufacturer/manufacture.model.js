@@ -79,6 +79,7 @@ manufacture.post('remove', async (doc, next) => {
     if (error) {
       next(error);
     }
+    // eslint-disable-next-line no-console
     console.log(response);
     next();
   });
