@@ -16,7 +16,7 @@ const UserModel = require('../../src/users/user.modal');
  * 
  */
 
-module.exports = async function validateToken(req, res, next) {
+module.exports = async function resetPasswordValidator(req, res, next) {
 
     // Check if the Authorization Header is present
     if (typeof req.headers.authorization === 'undefined') {
@@ -47,7 +47,7 @@ module.exports = async function validateToken(req, res, next) {
             // Query authToken stored in db, issued when user logged in
             const authToken = await (
                 // await UserModel.findById(decoded.id, '+authToken authToken tokenStatus')
-                await UserModel.findOne({ _id: decoded.id, tokenStatus: 1 }, '+authToken authToken tokenStatus')
+                await UserModel.findOne({ _id: decoded.id, tokenStatus: 0 }, '+authToken authToken tokenStatus')
             ).authToken;
 
             // Check if the two tokens match

@@ -55,19 +55,22 @@ module.exports = {
 
       const displayName = `${user.firstName} ${user.lastName}`
 
+      // REMOVE PASSWORD FROM USER OBJECT, (dont return password to client)
+      const rawResponse = user.toObject()
+      delete rawResponse.password
+
       if (user.firstTimeLoginStatus === 0) {
         console.log('hi')
-        // eslint-disable-next-line max-len
-        // eslint-disable-next-line no-underscore-dangle
-        // eslint-disable-next-line max-len
-        const tempToken = jwt.sign({ id: user._id, email: user.email, displayName }, process.env.JWT_SECRET, { expiresIn: 20 * 60 });
-        // eslint-disable-next-line max-len
-        await User.updateOne({ email: req.body.email }, { authToken: tempToken }, { useFindAndModify: false })
+        const tempToken = jwt.sign({
+          id: user._id, email: user.email, displayName, valid: false,
+        }, process.env.JWT_SECRET, { expiresIn: 20 * 60 });
+        await User.updateOne({ email: req.body.email }, { authToken: tempToken, tokenStatus: 0 }, { useFindAndModify: false })
 
         return res.status(200).json({
           data: {
             tempToken,
             target: 'firstTimeLoginStatus',
+            user: rawResponse,
           },
           message: 'First time login',
         })
@@ -78,12 +81,8 @@ module.exports = {
         id: user._id, email: user.email, displayName, roleId: user.role._id,
       }, process.env.JWT_SECRET, { expiresIn: 86400 });
 
-      // REMOVE PASSWORD FROM USER OBJECT, (dont return password to client)
-      const rawResponse = user.toObject()
-      delete rawResponse.password
-
       // UPDATE USER AUTHTOKEN
-      await User.updateOne({ email: req.body.email }, { authToken: token }, { useFindAndModify: false })
+      await User.updateOne({ email: req.body.email }, { authToken: token, tokenStatus: 1 }, { useFindAndModify: false })
 
       return res.status(200).json({
         message: 'Logged in successfully',
