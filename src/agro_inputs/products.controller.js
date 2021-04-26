@@ -91,6 +91,17 @@ module.exports = {
         next(err);
       });
   },
+
+  getProductByToken: async (req, res, next) => {
+    console.log(req.params);
+    await Products.findOne({ token: req.params.token })
+      .then((product) => {
+        res.json(product);
+      })
+      .catch((err) => {
+        next(err);
+      });
+  },
   // deleteOne: async (req, res, next) => {
   //   console.log(req.params);
   //   await Products.deleteOne({ _id: req.params.productID })

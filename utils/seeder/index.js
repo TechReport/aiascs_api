@@ -4,7 +4,7 @@ const Permission = require('../../src/access_control/permission.model');
 const Users = require('../../src/users/user.modal');
 const Manufacture = require('../../src/manufacturer/manufacture.model');
 const ProductAgent = require('../../src/product_agent/product_agent.model');
-
+const Product = require('../../src/agro_inputs/products.modal');
 const {
   createNewPermission,
   createNewRole,
@@ -26,6 +26,7 @@ module.exports = {
     }
     await module.exports.manafuctureCompany();
     await module.exports.productAgent();
+    await module.exports.agroInput();
     console.log('Seed check done ###');
   },
   // eslint-disable-next-line consistent-return
@@ -200,6 +201,40 @@ module.exports = {
   },
   seedNotificationSubscribers: async () => {
     // const Subs = [{title:'new_request', role:}]
+  },
+  agroInput: async () => {
+    const product = await Product.find({}).exec();
+    if (product.length === 0) {
+      // eslint-disable-next-line no-lone-blocks
+      {
+        const productLists = [
+          {
+            name: 'Product 1',
+            token: 'xxyxxvxxw',
+            // eslint-disable-next-line prettier/prettier
+            // eslint-disable-next-line comma-dangle
+            expiry: '12:03:2002',
+            qrcode: 'jkjljkd',
+          },
+          {
+            name: 'Product 2',
+            token: 'xxyxxv6xw',
+            expiry: '12:03:2002',
+            qrcode: 'jkjljkd',
+          },
+          {
+            name: 'Product 3',
+            token: 'xxyxxvpxw',
+            expiry: '12:03:2002',
+            qrcode: 'jkjljkd',
+          },
+        ];
+        // eslint-disable-next-line no-shadow
+        productLists.forEach(async (product) => {
+          await Product.create(product);
+        });
+      }
+    }
   },
   manafuctureCompany: async () => {
     const manufacture = await Manufacture.find({}).exec();
