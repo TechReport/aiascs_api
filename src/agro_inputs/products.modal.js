@@ -14,6 +14,10 @@ const productsSchema = mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  token: {
+    type: String,
+    default: 'token',
+  },
   qrcode: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'qrcode',

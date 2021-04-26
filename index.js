@@ -1,3 +1,4 @@
+/* eslint-disable comma-dangle */
 /* eslint-disable implicit-arrow-linebreak */
 /* eslint-disable global-require */
 const mongoose = require('mongoose');
@@ -17,11 +18,16 @@ const server = http.createServer(app);
 // const io = require('socket.io')(server)
 
 const connect = () =>
-  mongoose.connect(ENV.DB_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useFindAndModify: false,
-  });
+  mongoose.connect(
+    // 'mongodb://localhost:27017/aiascs',
+    // // eslint-disable-next-line spaced-comment
+    ENV.DB_URL,
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useFindAndModify: false,
+    }
+  );
 
 // io.on("connection", (socket) => {
 //   console.log("New client connected");
