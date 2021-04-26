@@ -203,7 +203,7 @@ module.exports = {
   },
   manafuctureCompany: async () => {
     const manufacture = await Manufacture.find({}).exec();
-    if (manufacture.length == 0) {
+    if (manufacture.length === 0) {
       const manafuctureCompanies = [
         {
           regno: '0898393845',

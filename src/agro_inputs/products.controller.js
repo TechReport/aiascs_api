@@ -1,3 +1,4 @@
+/* eslint-disable comma-dangle */
 const Products = require('./products.modal');
 const QRCodeModel = require('../qrCode/qrcode.model');
 const QRCodeController = require('../qrCode/qrcode.controller');
@@ -90,24 +91,24 @@ module.exports = {
         next(err);
       });
   },
-  deleteOne: async (req, res, next) => {
-    console.log(req.params);
-    await Products.deleteOne({ _id: req.params.productID })
-      // eslint-disable-next-line
-      .then((response) => res.status(200).json({
-        // eslint-disable-next-line prettier/prettier
-        status: true,
-        data: {
-          deletedCount: response.deletedCount,
-          deletedProduct: req.params.productID,
-        },
-      })
-      )
-      .catch((err) => {
-        console.log(err);
-        next(err);
-      });
-  },
+  // deleteOne: async (req, res, next) => {
+  //   console.log(req.params);
+  //   await Products.deleteOne({ _id: req.params.productID })
+  //     // eslint-disable-next-line
+  //     .then((response) => res.status(200).json({
+  //         // eslint-disable-next-line prettier/prettier
+  //       status: true,
+  //         data: {
+  //           deletedCount: response.deletedCount,
+  //           deletedProduct: req.params.productID,
+  //         },
+  //       })
+  //     )
+  //     .catch((err) => {
+  //       console.log(err);
+  //       next(err);
+  //     });
+  // },
   revokeProduct: async (req, res, next) => {
     console.log(req.body);
     const { productID } = req.body.params;
