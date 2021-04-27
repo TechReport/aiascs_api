@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const _ = require("lodash");
 const ProductAgent = require("../product_agent/product_agent.model");
+const AgroInputsModal = require('../agro_inputs/products.modal');
+// const userModal = require('../users/user.modal');
 
 const manufacture = new mongoose.Schema({
     regno: {
@@ -66,5 +68,12 @@ manufacture.post('remove', async (doc, next) => {
 
     next();
 });
+
+manufacture.post('deleteOne', async (doc, next) => {
+    console.log('delete manufacturer')
+    // await userModal.deleteMany({ companyId: this._id })
+    await AgroInputsModal.deleteMany({ companyId: this._id })
+    next()
+})
 
 module.exports = mongoose.model('manufacture', manufacture);
