@@ -61,6 +61,7 @@ module.exports = {
 
             // UPDATE USER AUTHTOKEN
             const authenticatedUser = await User.findOneAndUpdate({ email: req.body.email }, { token }, { useFindAndModify: false, new: true })
+                .populate('companyId', 'name')
                 .populate({
                     path: 'role',
                     populate: [
@@ -122,14 +123,8 @@ module.exports = {
             })
     },
     getAll: async (req, res) => {
-        console.log('get all users')
-        let filter = {}
-        const { companyId } = req.query
-
-        if (companyId)
-            filter = { companyId }
-
-        await User.find(filter)
+        const { filter } = req.query
+        await User.find(JSON.parse(filter))
             .populate('role', 'name')
             .populate('companyId', 'name')
             .sort('-createdAt')
@@ -167,6 +162,12 @@ module.exports = {
             })
         }
     },
+    deleteUser: async (req, res) => {
+        await User.deleteOne({ _id: req.params.userId }).exec();
+        res.status(202).json({
+            "message": "sucess fully deleted"
+        });
+    },
     resetPassword: async (req, res) => {
         try {
             const { password, userId } = req.body
@@ -177,10 +178,11 @@ module.exports = {
                 status: true,
                 data: {}
             })
-        } catch (e) {
+        } catch (err) {
             return res.status(500).json({
-                userMessage: 'Whoops! Something went wrong.',
-                developerMessage: e.message
+                message: err.message,
+                developerMessage: err.message,
+                stack: err
             })
         }
     },
