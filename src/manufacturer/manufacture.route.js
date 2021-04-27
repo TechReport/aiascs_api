@@ -33,6 +33,6 @@ router.post(
 
 // router.get('/users/:companyId', sessionMonitor, manufactureController.getUsers)
 router.put('/assignAdmin/:companyId/:adminId', sessionMonitor, manufactureController.assignAdmin)
-router.put('/addUser', sessionMonitor, manufactureController.addUser)
+// router.put('/addUser', sessionMonitor, manufactureController.addUser)
 
 module.exports = router;

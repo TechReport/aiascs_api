@@ -58,7 +58,7 @@ module.exports = {
     },
     getRoles: async (req, res) => {
         const { filter, select } = req.query
-        await Roles.find({ genericName: filter }).select(select)
+        await Roles.find(JSON.parse(filter)).select(select)
             .then(roles => res.json(roles))
             .catch(error => {
                 return res.status(500).json({
