@@ -137,7 +137,6 @@ module.exports = {
     },
     getUnregisteredProducts: async (req, res) => {
         await UnregisteredProducts.find().then(response => {
-            console.log(response)
             res.status(200).json(response)
         }).catch(error => {
             console.log(error)
