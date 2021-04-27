@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const manufactureModel = require('../manufacturer/manufacture.model');
 
 const userSchema = mongoose.Schema(
     {
@@ -87,6 +88,12 @@ const userSchema = mongoose.Schema(
     },
     { timestamps: true }
 );
+
+userSchema.pre('deleteOne', async (next) => {
+    await manufactureModel.findOneAndUpdate({ admin: this._id }, { admin: undefined }, { useFindAndModify: false })
+    next();
+});
+
 userSchema.virtual('fullName').get(function () {
     return this.firstName + ' ' + this.lastName;
 });
