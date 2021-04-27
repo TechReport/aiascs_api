@@ -1,6 +1,7 @@
 const Products = require('./products.modal')
 const QRCodeModel = require('../qrCode/qrcode.model')
 const QRCodeController = require('../qrCode/qrcode.controller')
+const UnregisteredProducts = require('./unregisteredProducts.model')
 
 
 module.exports = {
@@ -11,7 +12,7 @@ module.exports = {
             for (var i = 0; i < req.body.newProduct.count; i++) {
                 productData.push({
                     ...req.body.newProduct,
-                    companyId: req.body.companyId,
+                    // companyId: req.body.companyId,
                     qrcode: qrcodeIds[i]
                 })
             }
@@ -55,7 +56,8 @@ module.exports = {
     },
     getAll: async (req, res, next) => {
         try {
-            const products = await Products.find().select('+hasExpired +batchInfo').populate('qrcode').sort('-createdAt').exec()
+            const { filter } = req.query
+            const products = await Products.find(JSON.parse(filter)).select('+hasExpired +batchInfo').populate('qrcode').sort('-createdAt').exec()
             res.status(200).json({
                 message: 'Products loaded successfully',
                 data: products
@@ -102,5 +104,48 @@ module.exports = {
                 next(err)
             })
 
+    },
+    reportUnregisteredProduct: async (req, res) => {
+        try {
+            const formidable = require('formidable');
+            const form = formidable({ multiples: true });
+            const { cloudinary } = require('../../utils/Cloudinary')
+
+            form.parse(req, async (err, fields, files) => {
+                console.log(files.photo.path)
+                const uploadedResponse = await cloudinary.uploader.upload(files.photo.path, {
+                    upload_preset: 'aiascs'
+                })
+
+                console.log(uploadedResponse)
+                fields.photo = uploadedResponse
+                const unregistered = await UnregisteredProducts.create(fields)
+                console.log(unregistered)
+                return res.status(201).json({
+                    message: 'product added successfully'
+                })
+            });
+
+        } catch (error) {
+            console.log(error)
+            res.status(500).json({
+                message: error.message,
+                developerMessage: error.message,
+                stack: error
+            })
+        }
+    },
+    getUnregisteredProducts: async (req, res) => {
+        await UnregisteredProducts.find().then(response => {
+            console.log(response)
+            res.status(200).json(response)
+        }).catch(error => {
+            console.log(error)
+            res.status(500).json({
+                message: error.message,
+                developerMessage: error.message,
+                stack: error
+            })
+        })
     }
 }

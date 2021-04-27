@@ -8,7 +8,7 @@ let unregisteredProductsSchema = mongoose.Schema({
     },
     photo: [
         {
-            type: String,
+            type: Object,
             trim: true
         }
     ],
@@ -16,18 +16,17 @@ let unregisteredProductsSchema = mongoose.Schema({
         type: Boolean,
         default: false
     },
-    expiry: {
-        type: mongoose.Schema.Types.Date,
-        trim: true,
-        required: true
-    },
     companyName: {
         type: String,
     },
     descriptions: {
         type: String,
-    }
-
+    },
+    location: {
+        country: String,
+        district: String,
+        ward: String,
+    },
 },
     { timestamps: true }
 )
