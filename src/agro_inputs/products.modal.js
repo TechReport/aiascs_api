@@ -26,7 +26,7 @@ let productsSchema = mongoose.Schema({
     },
     companyId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'manufacturingCompany',
+        ref: 'manufacture',
     }
 },
     { timestamps: true }
