@@ -38,11 +38,21 @@ const productsSchema = mongoose.Schema({
   },
 });
 
+productsSchema.pre('save', (next) => {
+  // eslint-disable-next-line no-console
+  console.log(' this is the qrcode before it have being saved');
+  // eslint-disable-next-line no-console
+  console.log(this.qrcode);
+  next(new Error('Enter valid Email'));
+});
+
+// eslint-disable-next-line func-names
 productsSchema.virtual('batchInfo').get(function () {
   console.log('i am called');
   return this.createdAt;
 });
 
+// eslint-disable-next-line func-names
 productsSchema.virtual('hasExpired').get(function () {
   console.log('i am called');
   return this.expiry > Date.now();
