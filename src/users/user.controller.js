@@ -1,15 +1,22 @@
+/* eslint-disable max-len */
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable no-console */
+/* eslint-disable prettier/prettier */
+/* eslint-disable semi */
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('./user.modal');
 const Roles = require('../access_control/roles.model');
 
 async function registerUser(userInfo) {
-    let user = new User(userInfo)
+    const user = new User(userInfo)
+    // eslint-disable-next-line indent
     user.password = bcrypt.hashSync(userInfo.lastName.toUpperCase(), 8)
 
+    // eslint-disable-next-line no-return-await
     return await user.save()
-        .then(response => response.toJSON())
-        .catch(error => { throw error })
+        .then((response) => response.toJSON())
+        .catch((error) => { throw error })
 }
 
 module.exports = {
@@ -183,6 +190,67 @@ module.exports = {
                 message: err.message,
                 developerMessage: err.message,
                 stack: err
+            })
+        }
+    },
+    signOut: async (req, res) => {
+        console.log('sign out')
+        await User.updateOne({ _id: req.body.userId }, { authToken: '' }, { useFindAndModify: false })
+            .then(() => res.status(200).json({}))
+            .catch((err) => {
+                console.log(err)
+                return err
+            })
+    },
+    getAll: async (req, res) => {
+        try {
+            console.log('viewUser')
+            console.log(req.query)
+            const user = await User.find().populate('role', 'name')
+                // .select('firstName lastName email phoneNumber role createdAt')
+                // .populate('role', 'name')
+                .sort('-createdAt')
+            return res.status(200).json({
+                message: 'done',
+                status: true,
+                data: user,
+            })
+        } catch (e) {
+            return res.status(500).json({
+                userMessage: 'Whoops! Something went wrong.',
+                developerMessage: e.message,
+            })
+        }
+    },
+    // eslint-disable-next-line consistent-return
+    getUsersByRole: async (req, res, next) => {
+        try {
+            const { role, select } = req.query;
+
+            const adminRole = await Roles.findOne(JSON.parse(role), '_id')
+            console.log(adminRole)
+            const user = await User.find({ role: adminRole._id }, select)
+            // const user = await User.find({ 'role': adminRole._id })
+            return res.status(200).json(user)
+        } catch (err) {
+            next(err)
+        }
+    },
+    // eslint-disable-next-line consistent-return
+    resetPassword: async (req, res) => {
+        try {
+            const { password, userId } = req.body
+            const encryPassword = bcrypt.hashSync(password, 8);
+            await User.updateOne({ _id: userId }, { password: encryPassword, firstTimeLoginStatus: 1, forgotPasswordToken: '' });
+            res.status(201).json({
+                message: 'you have successfully changed the password, Login to proceed',
+                status: true,
+                data: {},
+            })
+        } catch (e) {
+            return res.status(500).json({
+                userMessage: 'Whoops! Something went wrong.',
+                developerMessage: e.message,
             })
         }
     },

@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 
+
 let qrCodeSchema = mongoose.Schema({
     qrCodeImage: {
         type: mongoose.Schema.Types.Buffer,
