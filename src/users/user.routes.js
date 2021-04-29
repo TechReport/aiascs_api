@@ -4,8 +4,9 @@ const router = new Router();
 const userController = require('./user.controller');
 const sessionMonitor = require('../../utils/middlewares/sessionMonitor');
 
-router.get('/role', sessionMonitor, userController.getUsersByRole)
 router.get('/', sessionMonitor, userController.getAll)
+router.get('/role', sessionMonitor, userController.getUsersByRole)
+
 router.get('/:id', sessionMonitor, userController.getById)
 router.post('/login', userController.login)
 router.post('/signout', sessionMonitor, userController.signOut)
