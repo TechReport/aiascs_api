@@ -3,18 +3,16 @@ const Router = require('express');
 const router = new Router();
 const userController = require('./user.controller');
 const sessionMonitor = require('../../utils/middlewares/sessionMonitor');
-const resetPasswoordValidator = require('../../utils/middlewares/resetPasswordValidator');
 
-router.get('/', sessionMonitor, userController.getAll);
-router.get('/role', sessionMonitor, userController.getUsersByRole);
-router.post('/login', userController.login);
-router.post('/signout', sessionMonitor, userController.signOut);
-router.post('/register', sessionMonitor, userController.register);
-router.patch(
-  '/resetPassword',
-  resetPasswoordValidator,
-  // eslint-disable-next-line comma-dangle
-  userController.resetPassword
-);
+router.get('/', sessionMonitor, userController.getAll)
+router.get('/role', sessionMonitor, userController.getUsersByRole)
+
+router.get('/:id', sessionMonitor, userController.getById)
+router.post('/login', userController.login)
+router.post('/signout', sessionMonitor, userController.signOut)
+router.post('/register', sessionMonitor, userController.register)
+router.patch('/resetPassword', sessionMonitor, userController.resetPassword)
+router.delete('/:userId', sessionMonitor, userController.deleteUser)
+
 
 module.exports = router;
