@@ -202,26 +202,6 @@ module.exports = {
                 return err
             })
     },
-    getAll: async (req, res) => {
-        try {
-            console.log('viewUser')
-            console.log(req.query)
-            const user = await User.find().populate('role', 'name')
-                // .select('firstName lastName email phoneNumber role createdAt')
-                // .populate('role', 'name')
-                .sort('-createdAt')
-            return res.status(200).json({
-                message: 'done',
-                status: true,
-                data: user,
-            })
-        } catch (e) {
-            return res.status(500).json({
-                userMessage: 'Whoops! Something went wrong.',
-                developerMessage: e.message,
-            })
-        }
-    },
     // eslint-disable-next-line consistent-return
     getUsersByRole: async (req, res, next) => {
         try {
