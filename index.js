@@ -19,9 +19,9 @@ const server = http.createServer(app);
 
 const connect = () =>
   mongoose.connect(
-    'mongodb://localhost:27017/aiascs',
+    // 'mongodb://localhost:27017/aiascs',
     // // eslint-disable-next-line spaced-comment
-    // ENV.DB_URL,
+    ENV.DB_URL,
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,
