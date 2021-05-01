@@ -6,7 +6,7 @@ const User = require('../users/user.modal')
 // const mongoose = require('mongoose')
 
 
-async function createNewRole({ name, description, permissions, genericName, type = 0, approvalStatus = 0 , target}) {
+async function createNewRole({ name, description, permissions, genericName, type = 0, approvalStatus = 0, target }) {
     try {
         const role = await Roles.create({
             name,
@@ -57,21 +57,44 @@ module.exports = {
         }
     },
     getRoles: async (req, res) => {
-        try {
-            console.log(req.query)
-            const roles = await Roles.find({}).select(req.query.select);
-            return res.status(201).json({
-                data: roles,
-                message: 'roles list'
+        const { filter, select } = req.query
+        await Roles.find(JSON.parse(filter)).select(select)
+            .then(roles => res.json(roles))
+            .catch(error => {
+                return res.status(500).json({
+                    message: error.message,
+                    developerMessage: error.message,
+                    stack: error
+                });
             })
-        } catch (e) {
-            console.log(e)
-            return res.status(500).json({
-                message: 'Unexpected Error occured',
-                developerMessage: e.message,
-                stack: e
-            });
+    },
+    getRolesByRole: async (req, res) => {
+        let filter = ''
+        switch (req.body.roleName) {
+            case 'ROLE_SUPER_ADMIN':
+                filter = ['ROLE_MANUFACTURING_COMPANY_ADMIN', 'ROLE_QUALITY_CONTROLLER_ADMIN', 'ROLE_SUPER_ADMIN']
+                break;
+            case 'ROLE_MANUFACTURING_COMPANY_ADMIN':
+                filter = ['ROLE_OPERATION_PERSONNEL_QC', 'ROLE_MANUFACTURING_COMPANY_ADMIN']
+                break;
+            case 'ROLE_QUALITY_CONTROLLER_ADMIN':
+                filter = ['ROLE_OPERATION_PERSONNEL_MAN', 'ROLE_QUALITY_CONTROLLER_ADMIN']
+                break;
+            default:
+                break;
         }
+        await Roles.find({ genericName: filter }).select(req.query.select)
+            .then(roles => {
+                console.log(roles)
+                res.json(roles)
+            })
+            .catch(error => {
+                return res.status(500).json({
+                    message: error.message,
+                    developerMessage: error.message,
+                    stack: error
+                });
+            })
     },
     getPermission: async (req, res) => {
         try {
@@ -85,6 +108,7 @@ module.exports = {
         } catch (e) {
             console.log(e)
             return res.status(500).json({
+                message: e.message,
                 developerMessage: e.message
             });
         }
@@ -100,28 +124,21 @@ module.exports = {
                         ],
                     })
                 return res.status(201).json({
-                    status: true,
-                    category: 'authorized',
-                    message: 'User is authorized',
+                    status: 'authorized',
                     user
                 })
             } else {
                 return res.status(401).json({
-                    status: false,
-                    category: 'unauthorized',
+                    status: 'unauthorized',
                     message: 'User is not authorized'
                 })
             }
         } catch (error) {
             return res.status(401).json({
-                status: false,
-                category: 'unauthorized',
+                status: 'unauthorized',
                 message: `user is not authorized`,
                 developerMessage: error.message,
-                stack: error
             })
         }
-
-        // console.log(auth)
     }
 }

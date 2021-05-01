@@ -44,7 +44,7 @@ module.exports = {
 
 
     removeManufactureyId: async (req, res, next) => {
-        await Manufacture.findByIdAndDelete(req.manufactureId).exec();
+        await Manufacture.deleteOne({ _id: req.manufactureId }).exec();
         res.status(202).json({
             "message": "sucess fully deleted"
         });
@@ -72,10 +72,7 @@ module.exports = {
         res.status(201).json(manufactures);
     },
     assignAdmin: async (req, res, next) => {
-        console.log(req.body)
-        console.log(req.params)
         const { companyId, adminId } = req.params
-
         await Manufacture.findByIdAndUpdate(companyId, { admin: adminId }, { new: true, useFindAndModify: false })
             .populate({
                 path: 'admin',
@@ -83,10 +80,8 @@ module.exports = {
                     { path: 'role', select: 'name' },
                 ],
             })
-            .then(updatedManufacturer => {
-                console.log(updatedManufacturer)
-                res.status(201).json(updatedManufacturer);
-            }).catch(err => {
+            .then(updatedManufacturer => res.status(201).json(updatedManufacturer))
+            .catch(err => {
                 console.log(err)
                 next(err)
             })
