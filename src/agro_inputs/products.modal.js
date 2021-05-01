@@ -28,7 +28,7 @@ const productsSchema = mongoose.Schema({
     trim: true,
     required: true,
   },
-  manufacture: {
+  companyId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'manufacture',
   },

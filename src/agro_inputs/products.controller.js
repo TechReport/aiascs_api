@@ -1,7 +1,10 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable import/no-unresolved */
 /* eslint-disable comma-dangle */
 const Products = require('./products.modal');
 const QRCodeModel = require('../qrCode/qrcode.model');
 const QRCodeController = require('../qrCode/qrcode.controller');
+const UnregisteredProducts = require('./unregisteredProducts.model');
 
 module.exports = {
   register: async (req, res) => {
@@ -102,24 +105,24 @@ module.exports = {
         next(err);
       });
   },
-  // deleteOne: async (req, res, next) => {
-  //   console.log(req.params);
-  //   await Products.deleteOne({ _id: req.params.productID })
-  //     // eslint-disable-next-line
-  //     .then((response) => res.status(200).json({
-  //         // eslint-disable-next-line prettier/prettier
-  //       status: true,
-  //         data: {
-  //           deletedCount: response.deletedCount,
-  //           deletedProduct: req.params.productID,
-  //         },
-  //       })
-  //     )
-  //     .catch((err) => {
-  //       console.log(err);
-  //       next(err);
-  //     });
-  // },
+  deleteOne: async () => {
+    // console.log(req.params);
+    // await Products.deleteOne({ _id: req.params.productID })
+    //   // eslint-disable-next-line
+    //   .then((response) => res.status(200).json({
+    //       // eslint-disable-next-line prettier/prettier
+    //     status: true,
+    //     data: {
+    //         deletedCount: response.deletedCount,
+    //       deletedProduct: req.params.productID,
+    //       },
+    //     })
+    //   )
+    //   .catch((err) => {
+    //     console.log(err);
+    //     next(err);
+    //   });
+  },
   revokeProduct: async (req, res, next) => {
     console.log(req.body);
     const { productID } = req.body.params;
@@ -136,6 +139,54 @@ module.exports = {
       .catch((err) => {
         console.log(err);
         next(err);
+      });
+  },
+  reportUnregisteredProduct: async (req, res) => {
+    try {
+      // eslint-disable-next-line global-require
+      const formidable = require('formidable');
+      const form = formidable({ multiples: true });
+      // eslint-disable-next-line global-require
+      const { cloudinary } = require('../../utils/Cloudinary');
+
+      form.parse(req, async (err, fields, files) => {
+        console.log(files.photo.path);
+        const uploadedResponse = await cloudinary.uploader.upload(
+          files.photo.path,
+          {
+            upload_preset: 'aiascs',
+          }
+        );
+
+        console.log(uploadedResponse);
+        fields.photo = uploadedResponse;
+        const unregistered = await UnregisteredProducts.create(fields);
+        console.log(unregistered);
+        return res.status(201).json({
+          message: 'product added successfully',
+        });
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({
+        message: error.message,
+        developerMessage: error.message,
+        stack: error,
+      });
+    }
+  },
+  getUnregisteredProducts: async (req, res) => {
+    await UnregisteredProducts.find()
+      .then((response) => {
+        res.status(200).json(response);
+      })
+      .catch((error) => {
+        console.log(error);
+        res.status(500).json({
+          message: error.message,
+          developerMessage: error.message,
+          stack: error,
+        });
       });
   },
 };

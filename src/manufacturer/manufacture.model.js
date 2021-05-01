@@ -85,4 +85,11 @@ manufacture.post('remove', async (doc, next) => {
   });
 });
 
+manufacture.post('deleteOne', async (doc, next) => {
+    console.log('delete manufacturer')
+    // await userModal.deleteMany({ companyId: this._id })
+    await AgroInputsModal.deleteMany({ companyId: this._id })
+    next()
+})
+
 module.exports = mongoose.model('manufacture', manufacture);
