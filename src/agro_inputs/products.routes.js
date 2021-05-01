@@ -6,8 +6,8 @@ const productController = require('./products.controller');
 const sessionMonitor = require('../../utils/middlewares/sessionMonitor');
 
 router.get('/:token', productController.getProductByToken);
-router.get('/', sessionMonitor, productController.getAll);
-router.post('/', sessionMonitor, productController.register);
+router.get('/', productController.getAll);
+router.post('/', productController.register);
 router.get('/:productID', sessionMonitor, productController.getOne);
 
 /**

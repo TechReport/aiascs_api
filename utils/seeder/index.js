@@ -16,6 +16,7 @@ module.exports = {
   init: async () => {
     const userCount = await Users.countDocuments();
 
+    // eslint-disable-next-line no-console
     console.log('Seed check...');
     if (userCount === 0) {
       await module.exports.seedPermissions();
@@ -26,7 +27,8 @@ module.exports = {
     }
     await module.exports.manafuctureCompany();
     await module.exports.productAgent();
-    await module.exports.agroInput();
+    // await module.exports.agroInput();
+    // eslint-disable-next-line no-console
     console.log('Seed check done ###');
   },
   // eslint-disable-next-line consistent-return
@@ -206,34 +208,34 @@ module.exports = {
     const product = await Product.find({}).exec();
     if (product.length === 0) {
       // eslint-disable-next-line no-lone-blocks
-      {
-        const productLists = [
-          {
-            name: 'Product 1',
-            token: 'xxyxxvxxw',
-            // eslint-disable-next-line prettier/prettier
-            // eslint-disable-next-line comma-dangle
-            expiry: '12:03:2002',
-            qrcode: 'jkjljkd',
-          },
-          {
-            name: 'Product 2',
-            token: 'xxyxxv6xw',
-            expiry: '12:03:2002',
-            qrcode: 'jkjljkd',
-          },
-          {
-            name: 'Product 3',
-            token: 'xxyxxvpxw',
-            expiry: '12:03:2002',
-            qrcode: 'jkjljkd',
-          },
-        ];
-        // eslint-disable-next-line no-shadow
-        productLists.forEach(async (product) => {
-          await Product.create(product);
-        });
-      }
+      // {
+      //   const productLists = [
+      //     {
+      //       name: 'Product 1',
+      //       token: 'xxyxxvxxw',
+      //       // eslint-disable-next-line prettier/prettier
+      //       // eslint-disable-next-line comma-dangle
+      //       expiry: '12:03:2002',
+      //       qrcode: 'jkjljkd',
+      //     },
+      //     {
+      //       name: 'Product 2',
+      //       token: 'xxyxxv6xw',
+      //       expiry: '12:03:2002',
+      //       qrcode: 'jkjljkd',
+      //     },
+      //     {
+      //       name: 'Product 3',
+      //       token: 'xxyxxvpxw',
+      //       expiry: '12:03:2002',
+      //       qrcode: 'jkjljkd',
+      //     },
+      //   ];
+      //   // eslint-disable-next-line no-shadow
+      //   productLists.forEach(async (product) => {
+      //     await Product.create(product);
+      //   });
+      // }
     }
   },
   manafuctureCompany: async () => {
