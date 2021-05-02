@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable import/no-unresolved */
 /* eslint-disable comma-dangle */
 const Products = require('./products.modal');
 const QRCodeModel = require('../qrCode/qrcode.model');
@@ -103,24 +105,25 @@ module.exports = {
         next(err);
       });
   },
-  deleteOne: async (req, res, next) => {
-    console.log(req.params);
-    await Products.deleteOne({ _id: req.params.productID })
-      // eslint-disable-next-line
-      .then((response) =>
-        res.status(200).json({
-          // eslint-disable-next-line prettier/prettier
-          status: true,
-          data: {
-            deletedCount: response.deletedCount,
-            deletedProduct: req.params.productID,
-          },
-        })
-      )
-      .catch((err) => {
-        console.log(err);
-        next(err);
-      });
+
+  deleteOne: async () => {
+    // console.log(req.params);
+    // await Products.deleteOne({ _id: req.params.productID })
+    //   // eslint-disable-next-line
+    //   .then((response) => res.status(200).json({
+    //       // eslint-disable-next-line prettier/prettier
+    //     status: true,
+    //     data: {
+    //         deletedCount: response.deletedCount,
+    //       deletedProduct: req.params.productID,
+    //       },
+    //     })
+    //   )
+    //   .catch((err) => {
+    //     console.log(err);
+    //     next(err);
+    //   });
+
   },
   revokeProduct: async (req, res, next) => {
     console.log(req.body);
@@ -142,8 +145,11 @@ module.exports = {
   },
   reportUnregisteredProduct: async (req, res) => {
     try {
+
+      // eslint-disable-next-line global-require
       const formidable = require('formidable');
       const form = formidable({ multiples: true });
+      // eslint-disable-next-line global-require
       const { cloudinary } = require('../../utils/Cloudinary');
 
       form.parse(req, async (err, fields, files) => {
