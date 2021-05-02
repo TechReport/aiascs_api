@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const QrCode = require('../qrCode/qrcode.model');
 
 const productsSchema = mongoose.Schema({
   name: {
@@ -38,10 +39,11 @@ const productsSchema = mongoose.Schema({
   },
 });
 
-productsSchema.pre('save', (next) => {
+productsSchema.pre('save', async (next) => {
   // eslint-disable-next-line no-console
   console.log(' this is the qrcode before it have being saved');
-
+  const qrcodeObject = await QrCode.findById({ _id: this.qrcode }).exec();
+  this.token = qrcodeObject.productToken;
   // eslint-disable-next-line no-console
   console.log(this.qrcode);
   next(new Error('Enter valid Email'));
