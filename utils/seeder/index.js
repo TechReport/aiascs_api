@@ -11,6 +11,7 @@ const {
 } = require('../../src/access_control/access_controller.controller');
 const { registerUser } = require('../../src/users/user.controller');
 const permissionList = require('./permissionList');
+const qrcodeController = require('../../src/qrCode/qrcode.controller');
 
 module.exports = {
   init: async () => {
@@ -58,7 +59,6 @@ module.exports = {
           target: 'System',
           approvalStatus: 1,
           permissions: (await Permission.find({}, '_id')).map(
-            // eslint-disable-next-line comma-dangle
             (item) => item._id
           ),
         },
@@ -208,6 +208,7 @@ module.exports = {
     const product = await Product.find({}).exec();
     if (product.length === 0) {
       // eslint-disable-next-line no-lone-blocks
+
       // {
       //   const productLists = [
       //     {
@@ -236,6 +237,7 @@ module.exports = {
       //     await Product.create(product);
       //   });
       // }
+
     }
   },
   manafuctureCompany: async () => {

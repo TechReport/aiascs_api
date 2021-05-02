@@ -20,7 +20,6 @@ module.exports = {
       ) {
         productData.push({
           ...req.body.newProduct,
-          companyId: req.body.companyId,
           qrcode: qrcodeIds[productIndex],
         });
       }
@@ -71,7 +70,8 @@ module.exports = {
   },
   getAll: async (req, res, next) => {
     try {
-      const products = await Products.find()
+      const { filter } = req.query;
+      const products = await Products.find(JSON.parse(filter))
         .select('+hasExpired +batchInfo')
         .populate('qrcode')
         .sort('-createdAt')
@@ -106,6 +106,7 @@ module.exports = {
         next(err);
       });
   },
+
   deleteOne: async () => {
     // console.log(req.params);
     // await Products.deleteOne({ _id: req.params.productID })
@@ -123,6 +124,7 @@ module.exports = {
     //     console.log(err);
     //     next(err);
     //   });
+
   },
   revokeProduct: async (req, res, next) => {
     console.log(req.body);
@@ -144,6 +146,7 @@ module.exports = {
   },
   reportUnregisteredProduct: async (req, res) => {
     try {
+
       // eslint-disable-next-line global-require
       const formidable = require('formidable');
       const form = formidable({ multiples: true });
