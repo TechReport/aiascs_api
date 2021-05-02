@@ -11,6 +11,7 @@ const {
 } = require('../../src/access_control/access_controller.controller');
 const { registerUser } = require('../../src/users/user.controller');
 const permissionList = require('./permissionList');
+const qrcodeController = require('../../src/qrCode/qrcode.controller');
 
 module.exports = {
   init: async () => {
@@ -56,7 +57,6 @@ module.exports = {
           target: 'System',
           approvalStatus: 1,
           permissions: (await Permission.find({}, '_id')).map(
-            // eslint-disable-next-line comma-dangle
             (item) => item._id
           ),
         },
@@ -206,34 +206,34 @@ module.exports = {
     const product = await Product.find({}).exec();
     if (product.length === 0) {
       // eslint-disable-next-line no-lone-blocks
-      {
-        const productLists = [
-          {
-            name: 'Product 1',
-            token: 'xxyxxvxxw',
-            // eslint-disable-next-line prettier/prettier
-            // eslint-disable-next-line comma-dangle
-            expiry: '12:03:2002',
-            qrcode: 'jkjljkd',
-          },
-          {
-            name: 'Product 2',
-            token: 'xxyxxv6xw',
-            expiry: '12:03:2002',
-            qrcode: 'jkjljkd',
-          },
-          {
-            name: 'Product 3',
-            token: 'xxyxxvpxw',
-            expiry: '12:03:2002',
-            qrcode: 'jkjljkd',
-          },
-        ];
-        // eslint-disable-next-line no-shadow
-        productLists.forEach(async (product) => {
-          await Product.create(product);
-        });
-      }
+      //   {
+      //     const productLists = [
+      //       {
+      //         name: 'Product 1',
+      //         token: qrcodeController.generateQRCode(1),
+      //         // eslint-disable-next-line prettier/prettier
+      //         // eslint-disable-next-line comma-dangle
+      //         expiry: new Date('12:03:2022'),
+      //         qrcode: qrcodeController.generateQRCode(),
+      //       },
+      //       {
+      //         name: 'Product 2',
+      //         token: 'xxyxxv6xw',
+      //         expiry: '12:03:2002',
+      //         qrcode: 'jkjljkd',
+      //       },
+      //       {
+      //         name: 'Product 3',
+      //         token: 'xxyxxvpxw',
+      //         expiry: '12:03:2002',
+      //         qrcode: 'jkjljkd',
+      //       },
+      //     ];
+      //     // eslint-disable-next-line no-shadow
+      //     productLists.forEach(async (product) => {
+      //       await Product.create(product);
+      //     });
+      //   }
     }
   },
   manafuctureCompany: async () => {
