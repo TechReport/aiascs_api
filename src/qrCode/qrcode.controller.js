@@ -36,9 +36,9 @@ module.exports = {
             return datas
         })
 
-        let resp = await (await QRCodeModel.insertMany(qrs, { rawResult: true })).insertedIds
+        let insertedIds = await (await QRCodeModel.insertMany(qrs, { rawResult: true })).insertedIds
 
-        return resp
+        return insertedIds
     },
     markIssued: async (id) => {
         await QRCodeModel.updateOne({ _id: id }, { status: 1 }, { useFindAndModify: true, })
