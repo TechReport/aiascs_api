@@ -39,7 +39,7 @@ const productsSchema = mongoose.Schema({
   },
 });
 
-productsSchema.pre('validate', async (next) => {
+productsSchema.pre('validate', true, async function (next) {
   // eslint-disable-next-line no-console
   console.log(' this is the qrcode before it have being saved');
   console.log(this.qrcode);
