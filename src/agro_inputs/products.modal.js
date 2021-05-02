@@ -17,6 +17,7 @@ const productsSchema = mongoose.Schema({
   },
   token: {
     type: String,
+    default: 'token',
   },
   qrcode: {
     type: mongoose.Schema.Types.ObjectId,
@@ -41,7 +42,7 @@ const productsSchema = mongoose.Schema({
 productsSchema.pre('validate', true, async function (next) {
   // eslint-disable-next-line no-console
   const qrcodeObject = await QrCode.findById({ _id: this.qrcode }).exec();
-  console.log(`product token${qrcodeObject.productToken}`);
+  this.token = qrcodeObject.productToken;
   // eslint-disable-next-line no-console
   // next(new Error('Enter valid Email'));
   next();
