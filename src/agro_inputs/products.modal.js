@@ -42,6 +42,7 @@ const productsSchema = mongoose.Schema({
 productsSchema.pre('validate', async (next) => {
   // eslint-disable-next-line no-console
   console.log(' this is the qrcode before it have being saved');
+  console.log(this.qrcode);
   const qrcodeObject = await QrCode.findById({ _id: this.qrcode }).exec();
   this.token = qrcodeObject.productToken;
   // eslint-disable-next-line no-console
