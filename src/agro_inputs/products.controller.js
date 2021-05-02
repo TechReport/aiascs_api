@@ -18,7 +18,6 @@ module.exports = {
       ) {
         productData.push({
           ...req.body.newProduct,
-          companyId: req.body.companyId,
           qrcode: qrcodeIds[productIndex],
         });
       }
@@ -68,10 +67,11 @@ module.exports = {
   },
   getAll: async (req, res, next) => {
     try {
-      const products = await Products.find()
+      const { filter } = req.query;
+      const products = await Products.find(JSON.parse(filter))
         .select('+hasExpired +batchInfo')
         .populate('qrcode')
-        .sort('createdAt')
+        .sort('-createdAt')
         .exec();
       res.status(200).json({
         message: 'Products loaded successfully',
