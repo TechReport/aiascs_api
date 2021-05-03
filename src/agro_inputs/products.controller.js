@@ -107,25 +107,24 @@ module.exports = {
       });
   },
 
-  deleteOne: async () => {
-    // console.log(req.params);
-    // await Products.deleteOne({ _id: req.params.productID })
-    //   // eslint-disable-next-line
-    //   .then((response) => res.status(200).json({
-    //       // eslint-disable-next-line prettier/prettier
-    //     status: true,
-    //     data: {
-    //         deletedCount: response.deletedCount,
-    //       deletedProduct: req.params.productID,
-    //       },
-    //     })
-    //   )
-    //   .catch((err) => {
-    //     console.log(err);
-    //     next(err);
-    //   });
-
-  },
+  // deleteOne: async (req) => {
+  //   console.log(req.params);
+  //   await Products.deleteOne({ _id: req.params.productID })
+  //     // eslint-disable-next-line
+  //     .then((response) => res.status(200).json({
+  //       // eslint-disable-next-line prettier/prettier
+  //       status: true,
+  //       data: {
+  //         deletedCount: response.deletedCount,
+  //         deletedProduct: req.params.productID,
+  //       },
+  //     })
+  //     )
+  //     .catch((err) => {
+  //       console.log(err);
+  //       next(err);
+  //     });
+  // },
   revokeProduct: async (req, res, next) => {
     console.log(req.body);
     const { productID } = req.body.params;
@@ -146,7 +145,6 @@ module.exports = {
   },
   reportUnregisteredProduct: async (req, res) => {
     try {
-
       // eslint-disable-next-line global-require
       const formidable = require('formidable');
       const form = formidable({ multiples: true });
