@@ -50,7 +50,6 @@ module.exports = {
       const unusedQRCodes = await QRCodeModel.find({ status: 0 }, '_id', {
         limit: Number(req.body.newProduct.count),
       });
-
       if (unusedQRCodes.length < req.body.newProduct.count) {
         await QRCodeController.generateQRCode(
           req.body.newProduct.count - unusedQRCodes.length
@@ -61,7 +60,6 @@ module.exports = {
           const previousPresentQRCodeIds = unusedQRCodes.map(
             (code) => code._id
           );
-
           const allQRCodes = idsForCreatedQRCode.concat(
             previousPresentQRCodeIds
           );
@@ -124,7 +122,6 @@ module.exports = {
         next(err);
       });
   },
-
   deleteOne: async () => {
     // console.log(req.params);
     // await Products.deleteOne({ _id: req.params.productID })
