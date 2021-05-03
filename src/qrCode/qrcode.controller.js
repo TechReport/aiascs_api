@@ -41,6 +41,7 @@ module.exports = {
         return insertedIds
     },
     markIssued: async (id) => {
+        console.log('mark issued')
         await QRCodeModel.updateOne({ _id: id }, { status: 1 }, { useFindAndModify: true, })
             .then(response => response.ok)
             .catch(error => error)
