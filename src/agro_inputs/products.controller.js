@@ -45,6 +45,11 @@ module.exports = {
           })
           .catch((error) => {
             console.log(error);
+            return res.status(500).json({
+              message: error.message,
+              developerMessage: error.message,
+              stack: error,
+            });
           });
       }
       const unusedQRCodes = await QRCodeModel.find({ status: 0 }, '_id', {
