@@ -1,27 +1,27 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const productAgentController = require("./product_agent.controller");
-const productMiddlware = require("../../utils/middlewares/productAgent_middleware");
+const productAgentController = require('./product_agent.controller');
+const productMiddlware = require('../../utils/middlewares/productAgent_middleware');
 
-router.get("/all", productAgentController.getAllProductAgent);
+router.get('/all', productAgentController.getAllProductAgent);
 router.get(
-  "/:id",
+  '/:id',
   productMiddlware.getId,
   productAgentController.getProductAgentById
 );
-router.post("/register", productAgentController.createProductAgent);
+router.post('/register', productAgentController.createProductAgent);
 router.delete(
-  "/:id",
+  '/:id',
   productMiddlware.getId,
   productAgentController.removeProductAgentId
 );
 router.put(
-  "/update/:id",
+  '/update/:id',
   productMiddlware.getId,
   productAgentController.updateProductAgentById
 );
 router.post(
-  "/addManufacture/:id",
+  '/addManufacture/:id',
   productMiddlware.getId,
   productAgentController.addManufactureToProductAgent
 );
