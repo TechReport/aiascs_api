@@ -15,7 +15,7 @@ require('dotenv').config();
 app.use(cors());
 
 if (app.get('env') === 'production') {
-    // app.use(logger('combined'));
+  // app.use(logger('combined'));
 } else {
   const logger = require('morgan');
   app.use(logger('dev'));
