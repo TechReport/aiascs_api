@@ -8,67 +8,76 @@ const UnregisteredProducts = require('./unregisteredProducts.model');
 
 module.exports = {
   register: async (req, res) => {
-    async function saveProductData(qrcodeIds) {
-      console.log('qrcodeIds', qrcodeIds);
-      const productData = [];
-      // eslint-disable-next-line no-plusplus
-      for (
-        let productIndex = 0;
-        productIndex < req.body.newProduct.count;
+    try {
+      async function saveProductData(qrcodeIds) {
+        console.log('qrcodeIds', qrcodeIds);
+        const productData = [];
         // eslint-disable-next-line no-plusplus
-        productIndex++
-      ) {
-        productData.push({
-          ...req.body.newProduct,
-          qrcode: qrcodeIds[productIndex],
-        });
-      }
-      // console.log('mark issued')
-      qrcodeIds.forEach((id) => {
-        QRCodeController.markIssued(id);
-      });
-      // console.log('this aint blocking')
-
-      await Products.insertMany(productData, { rawResult: true })
-        .then((response) => {
-          console.log(response);
-          console.log('products created');
-          res.status(200).json({
-            message: `'${response.insertedCount}' products have been created successfully`,
-            data: {
-              status: response.result.ok,
-              productsCreatedCount: response.insertedCount,
-              products: response.ops,
-            },
+        for (
+          let productIndex = 0;
+          productIndex < req.body.newProduct.count;
+          // eslint-disable-next-line no-plusplus
+          productIndex++
+        ) {
+          productData.push({
+            ...req.body.newProduct,
+            qrcode: qrcodeIds[productIndex],
           });
-        })
-        .catch((error) => {
-          // eslint-disable-next-line no-console
-          console.log(error);
+        }
+        // console.log('mark issued')
+        qrcodeIds.forEach((id) => {
+          QRCodeController.markIssued(id);
         });
-    }
-    const unusedQRCodes = await QRCodeModel.find({ status: 0 }, '_id', {
-      limit: Number(req.body.newProduct.count),
-    });
+        // console.log('this aint blocking')
 
-    if (unusedQRCodes.length < req.body.newProduct.count) {
-      await QRCodeController.generateQRCode(
-        req.body.newProduct.count - unusedQRCodes.length
-        // eslint-disable-next-line no-shadow
-      ).then((res) => {
-        const idsForCreatedQRCode = Object.values(res);
-        // eslint-disable-next-line no-underscore-dangle
-        const previousPresentQRCodeIds = unusedQRCodes.map((code) => code._id);
-
-        const allQRCodes = idsForCreatedQRCode.concat(previousPresentQRCodeIds);
-        saveProductData(allQRCodes);
+        await Products.insertMany(productData, { rawResult: true })
+          .then((response) => {
+            console.log(response);
+            console.log('products created');
+            res.status(200).json({
+              message: `'${response.insertedCount}' products have been created successfully`,
+              data: {
+                status: response.result.ok,
+                productsCreatedCount: response.insertedCount,
+                products: response.ops,
+              },
+            });
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+      const unusedQRCodes = await QRCodeModel.find({ status: 0 }, '_id', {
+        limit: Number(req.body.newProduct.count),
       });
-    } else {
-      // eslint-disable-next-line no-underscore-dangle
-      saveProductData(unusedQRCodes.map((code) => code._id));
+      if (unusedQRCodes.length < req.body.newProduct.count) {
+        await QRCodeController.generateQRCode(
+          req.body.newProduct.count - unusedQRCodes.length
+          // eslint-disable-next-line no-shadow
+        ).then((res) => {
+          const idsForCreatedQRCode = Object.values(res);
+          // eslint-disable-next-line no-underscore-dangle
+          const previousPresentQRCodeIds = unusedQRCodes.map(
+            (code) => code._id
+          );
+          const allQRCodes = idsForCreatedQRCode.concat(
+            previousPresentQRCodeIds
+          );
+          saveProductData(allQRCodes);
+        });
+      } else {
+        // eslint-disable-next-line no-underscore-dangle
+        saveProductData(unusedQRCodes.map((code) => code._id));
+      }
+    } catch (error) {
+      return res.status(500).json({
+        message: error.message,
+        developerMessage: error.message,
+        stack: error,
+      });
     }
   },
-  getAll: async (req, res, next) => {
+  getAll: async (req, res) => {
     try {
       const { filter } = req.query;
       const products = await Products.find(JSON.parse(filter))
@@ -81,18 +90,25 @@ module.exports = {
         data: products,
       });
     } catch (error) {
-      console.log(error);
-      next(error);
+      return res.status(500).json({
+        message: error.message,
+        developerMessage: error.message,
+        stack: error,
+      });
     }
   },
-  getOne: async (req, res, next) => {
+  getOne: async (req, res) => {
     console.log(req.params);
     await Products.findOne({ _id: req.params.productID })
       .then((product) => {
         res.json(product);
       })
-      .catch((err) => {
-        next(err);
+      .catch((error) => {
+        return res.status(500).json({
+          message: error.message,
+          developerMessage: error.message,
+          stack: error,
+        });
       });
   },
 
@@ -106,25 +122,24 @@ module.exports = {
         next(err);
       });
   },
-
-  // deleteOne: async (req) => {
-  //   console.log(req.params);
-  //   await Products.deleteOne({ _id: req.params.productID })
-  //     // eslint-disable-next-line
-  //     .then((response) => res.status(200).json({
-  //       // eslint-disable-next-line prettier/prettier
-  //       status: true,
-  //       data: {
-  //         deletedCount: response.deletedCount,
-  //         deletedProduct: req.params.productID,
-  //       },
-  //     })
-  //     )
-  //     .catch((err) => {
-  //       console.log(err);
-  //       next(err);
-  //     });
-  // },
+  deleteOne: async () => {
+    // console.log(req.params);
+    // await Products.deleteOne({ _id: req.params.productID })
+    //   // eslint-disable-next-line
+    //   .then((response) => res.status(200).json({
+    //       // eslint-disable-next-line prettier/prettier
+    //     status: true,
+    //     data: {
+    //         deletedCount: response.deletedCount,
+    //       deletedProduct: req.params.productID,
+    //       },
+    //     })
+    //   )
+    //   .catch((err) => {
+    //     console.log(err);
+    //     next(err);
+    //   });
+  },
   revokeProduct: async (req, res, next) => {
     console.log(req.body);
     const { productID } = req.body.params;
