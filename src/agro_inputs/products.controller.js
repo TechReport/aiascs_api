@@ -30,27 +30,26 @@ module.exports = {
         });
         // console.log('this aint blocking')
 
-        await Products.insertMany(productData, { rawResult: true })
-          .then((response) => {
-            console.log(response);
-            console.log('products created');
-            res.status(200).json({
-              message: `'${response.insertedCount}' products have been created successfully`,
-              data: {
-                status: response.result.ok,
-                productsCreatedCount: response.insertedCount,
-                products: response.ops,
-              },
-            });
-          })
-          .catch((error) => {
-            console.log(error);
-            return res.status(500).json({
-              message: error.message,
-              developerMessage: error.message,
-              stack: error,
-            });
+        try {
+          console.log('registering');
+          const response = await Products.insertMany(productData, {
+            rawResult: true,
           });
+          return res.status(200).json({
+            message: `'${response.insertedCount}' products have been created successfully`,
+            data: {
+              status: response.result.ok,
+              productsCreatedCount: response.insertedCount,
+              products: response.ops,
+            },
+          });
+        } catch (error) {
+          return res.status(500).json({
+            message: error.message,
+            developerMessage: error.message,
+            stack: error,
+          });
+        }
       }
       const unusedQRCodes = await QRCodeModel.find({ status: 0 }, '_id', {
         limit: Number(req.body.newProduct.count),
