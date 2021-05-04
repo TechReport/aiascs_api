@@ -39,14 +39,6 @@ const productsSchema = mongoose.Schema({
   },
 });
 
-// productsSchema.pre('validate', true, async function (next) {
-//   // eslint-disable-next-line no-console
-//   const qrcodeObject = await QrCode.findById({ _id: this.qrcode }).exec();
-//   this.token = qrcodeObject.productToken;
-//   // eslint-disable-next-line no-console
-//   // next(new Error('Enter valid Email'));
-//   next();
-// });
 productsSchema.pre('save', async function (next) {
   // eslint-disable-next-line no-console
   const qrcodeObject = await QrCode.findById({ _id: this.qrcode }).exec();
@@ -54,6 +46,7 @@ productsSchema.pre('save', async function (next) {
   // eslint-disable-next-line no-console
   next();
 });
+
 
 // eslint-disable-next-line func-names
 productsSchema.virtual('batchInfo').get(function () {
