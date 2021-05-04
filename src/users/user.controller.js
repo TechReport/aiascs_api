@@ -27,24 +27,17 @@ module.exports = {
       // CHECK IF USER EXISTS
       let user = await User.findOne({ email: req.body.email }, '+password');
       if (!user)
-        return res.status(401).json({
-          status: 'unauthorized',
+        return res.status(406).json({
           message: 'Invalid credentials',
-          developerMessage: '',
         });
-
       const passwordIsValid = bcrypt.compareSync(
         req.body.password,
         user.password
       );
 
       if (!passwordIsValid) {
-        return res.status(401).json({
-          status: false,
-          category: 'unauthorized',
+        return res.status(406).json({
           message: 'Invalid credentials',
-          developerMessage: '',
-          stack: '',
         });
       }
 
@@ -105,8 +98,6 @@ module.exports = {
     } catch (e) {
       console.log(e);
       return res.status(500).json({
-        status: false,
-        category: 'fault',
         message: 'Whoops! Something went wrong',
         developerMessage: e.message,
         stack: e,
