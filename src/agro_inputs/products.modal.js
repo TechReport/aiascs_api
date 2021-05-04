@@ -39,13 +39,13 @@ const productsSchema = mongoose.Schema({
   },
 });
 
-productsSchema.pre('save', async function (next) {
+productsSchema.pre('validate', async function (next) {
   // eslint-disable-next-line no-console
   const qrcodeObject = await QrCode.findById({ _id: this.qrcode }).exec();
   this.token = qrcodeObject.productToken;
   // eslint-disable-next-line no-console
   console.log('in presave');
-  next();
+  return next();
 });
 
 // eslint-disable-next-line func-names
