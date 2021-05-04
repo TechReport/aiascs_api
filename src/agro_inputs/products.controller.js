@@ -125,6 +125,7 @@ module.exports = {
     await (await Products.findOne({ token: req.params.token }))
       .populate('companyId')
       .populate('productAgent')
+      .replaceOne()
       .exec()
       .then((product) => {
         res.status(200).json(product);
