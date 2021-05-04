@@ -52,7 +52,7 @@ productsSchema.pre('save', async function (next) {
   const qrcodeObject = await QrCode.findById({ _id: this.qrcode }).exec();
   this.token = qrcodeObject.productToken;
   // eslint-disable-next-line no-console
-  console.log("in presave")
+  console.log('in presave');
   next();
 });
 
