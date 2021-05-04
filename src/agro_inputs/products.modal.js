@@ -44,9 +44,9 @@ productsSchema.pre('save', async function (next) {
   const qrcodeObject = await QrCode.findById({ _id: this.qrcode }).exec();
   this.token = qrcodeObject.productToken;
   // eslint-disable-next-line no-console
+  console.log('in presave');
   next();
 });
-
 
 // eslint-disable-next-line func-names
 productsSchema.virtual('batchInfo').get(function () {
