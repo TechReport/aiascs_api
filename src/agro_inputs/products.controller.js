@@ -122,7 +122,7 @@ module.exports = {
   },
 
   getProductByToken: async (req, res, next) => {
-    await (await Products.findOne({ token: req.params.token }))
+    await Products.findOne({ token: req.params.token })
       .populate('companyId')
       .populate('productAgent')
       .lean()
