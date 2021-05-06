@@ -18,6 +18,10 @@ module.exports = {
       }
       res.status(200).json(productAgent);
     })
+      .populate({
+        path: 'admin',
+        populate: [{ path: 'role', select: 'name' }],
+      })
       .populate('manufacture')
       .sort('-createdAt')
       .lean()
@@ -66,5 +70,25 @@ module.exports = {
       { new: true }
     ).exec();
     res.status(201).json(productAgent);
+  },
+  assignAdmin: async (req, res, next) => {
+    const { companyId, adminId } = req.params;
+    console.log(companyId);
+    console.log(adminId);
+
+    await ProductAgent.findByIdAndUpdate(
+      companyId,
+      { admin: adminId },
+      { new: true, useFindAndModify: false }
+    )
+      .populate({
+        path: 'admin',
+        populate: [{ path: 'role', select: 'name' }],
+      })
+      .then((updatedAgentCompany) => res.status(201).json(updatedAgentCompany))
+      .catch((err) => {
+        console.log(err);
+        next(err);
+      });
   },
 };
