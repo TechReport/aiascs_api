@@ -87,6 +87,27 @@ module.exports = {
           ),
         },
         {
+          name: 'Product Agent Admin',
+          description: 'Role for a Product Agent Admin',
+          genericName: 'ROLE_AGENT_COMPANY_ADMIN',
+          target: 'Product Agent Company',
+          type: 1,
+          approvalStatus: 1,
+          permissions: (await Permission.find({}, '_id')).map(
+            // eslint-disable-next-line comma-dangle
+            (item) => item._id
+          ),
+        },
+        {
+          name: 'Operation Personnel',
+          description: 'Role for the operation personnel',
+          type: 1,
+          target: 'Product Agent Company',
+          genericName: 'ROLE_OP_AGENT',
+          approvalStatus: 1,
+          permissions: [],
+        },
+        {
           name: 'Operation Personnel',
           description: 'Role for the operation personnel',
           type: 1,
@@ -208,7 +229,6 @@ module.exports = {
     const product = await Product.find({}).exec();
     if (product.length === 0) {
       // eslint-disable-next-line no-lone-blocks
-
       // {
       //   const productLists = [
       //     {
@@ -237,7 +257,6 @@ module.exports = {
       //     await Product.create(product);
       //   });
       // }
-
     }
   },
   manafuctureCompany: async () => {
