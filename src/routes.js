@@ -12,9 +12,8 @@ module.exports = (app) => {
   app.use('/api/v1/acc', AccessRoutes);
   app.use('/api/v1/products', ProductRoutes);
   app.use('/api/v1/qualitycontrollers', QualityControllerRoutes);
-  app.use('/products', ProductRoutes);
   app.use('/api/v1/manufacture', ManufactureRoutes);
-  app.use('/api/v1/agents', ProductAgentRoutes);
+  app.use('/api/v1/productAgent', ProductAgentRoutes);
 
   app.use('/', (req, res) =>
     // eslint-disable-next-line implicit-arrow-linebreak

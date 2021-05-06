@@ -1,61 +1,91 @@
 const ProductAgent = require('./product_agent.model');
 
 module.exports = {
-  getProductAgentById:async (req, res, next) =>{
- await ProductAgent.findById(req.productAgentId,(error,productAgent)=>{
-      if(error)
-      {
-        next(error)
+  getProductAgentById: async (req, res, next) => {
+    await ProductAgent.findById(req.productAgentId, (error, productAgent) => {
+      if (error) {
+        next(error);
       }
-    res.status(200).json(productAgent);
+      res.status(200).json(productAgent);
     }).exec();
-    },
-  
-  getAllProductAgent :async (req, res, next) => {
- await   ProductAgent.find({},(error,productAgent)=>{
-    if(error)
-    {
-      next(error)
-    }
-  res.status(200).json(productAgent);
-  }).populate("manufacture").
-  sort('-createdAt').
-  lean().
-  exec();
+  },
+
+  getAllProductAgent: async (req, res, next) => {
+    await ProductAgent.find({}, (error, productAgent) => {
+      if (error) {
+        next(error);
+      }
+      res.status(200).json(productAgent);
+    })
+      .populate({
+        path: 'admin',
+        populate: [{ path: 'role', select: 'name' }],
+      })
+      .populate('manufacture')
+      .sort('-createdAt')
+      .lean()
+      .exec();
   },
 
   createProductAgent: async (req, res, next) => {
-    const productAgents = await ProductAgent.create(req.body)
-    res.status(201).json(productAgents.toJSON())
+    const productAgents = await ProductAgent.create(req.body);
+    res.status(201).json(productAgents.toJSON());
   },
-
 
   removeProductAgentId: async (req, res, next) => {
-   await  ProductAgent.findByIdAndDelete(req.productAgentId).exec();
-   res.status(202).json({
-    "message":"sucess fully deleted"
-   });
+    await ProductAgent.findByIdAndDelete(req.productAgentId).exec();
+    res.status(202).json({
+      message: 'sucess fully deleted',
+    });
   },
-  updateProductAgentById:async (req, res, next) => {
+  updateProductAgentById: async (req, res, next) => {
     const update = req.body;
-    return await ProductAgent.findByIdAndUpdate(req.productAgentId, update, { new: true },(error,updatedProductAgent)=>{
-      if(error)
-      {
-        next(error)
-      }
-      res.status(204).json(updatedProductAgent);
-    }, { new: true }).exec();
-  },
-  addManufactureToProductAgent:async (req, res, next) => {
-    const manufacture = req.body;
-    let productAgent = await ProductAgent.findByIdAndUpdate( req.productAgentId,{
-      $push:{
-        productAgent:{
-          $each:manufacture
+    return await ProductAgent.findByIdAndUpdate(
+      req.productAgentId,
+      update,
+      { new: true },
+      (error, updatedProductAgent) => {
+        if (error) {
+          next(error);
         }
-      }
-    }, { new: true }).exec();
+        res.status(204).json(updatedProductAgent);
+      },
+      { new: true }
+    ).exec();
+  },
+  addManufactureToProductAgent: async (req, res, next) => {
+    const manufacture = req.body;
+    let productAgent = await ProductAgent.findByIdAndUpdate(
+      req.productAgentId,
+      {
+        $push: {
+          productAgent: {
+            $each: manufacture,
+          },
+        },
+      },
+      { new: true }
+    ).exec();
     res.status(201).json(productAgent);
   },
-};
+  assignAdmin: async (req, res, next) => {
+    const { companyId, adminId } = req.params;
+    console.log(companyId);
+    console.log(adminId);
 
+    await ProductAgent.findByIdAndUpdate(
+      companyId,
+      { admin: adminId },
+      { new: true, useFindAndModify: false }
+    )
+      .populate({
+        path: 'admin',
+        populate: [{ path: 'role', select: 'name' }],
+      })
+      .then((updatedAgentCompany) => res.status(201).json(updatedAgentCompany))
+      .catch((err) => {
+        console.log(err);
+        next(err);
+      });
+  },
+};
