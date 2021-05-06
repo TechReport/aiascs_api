@@ -19,7 +19,7 @@ router.get(
   productController.getUnregisteredProducts
 );
 
-router.get('/:token', productController.getProductByToken);
+router.get('/productToken/:token', productController.getProductByToken);
 router.post('/', sessionMonitor, productController.register);
 router.get('/:productID', sessionMonitor, productController.getOne);
 router.get('/', sessionMonitor, productController.getAll);

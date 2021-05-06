@@ -7,8 +7,10 @@ const QRCodeController = require('../qrCode/qrcode.controller');
 const UnregisteredProducts = require('./unregisteredProducts.model');
 
 module.exports = {
+  // eslint-disable-next-line consistent-return
   register: async (req, res) => {
     try {
+      // eslint-disable-next-line no-inner-declarations
       async function saveProductData(qrcodeIds) {
         console.log('qrcodeIds', qrcodeIds);
         const productData = [];
@@ -62,6 +64,7 @@ module.exports = {
           const idsForCreatedQRCode = Object.values(res);
           // eslint-disable-next-line no-underscore-dangle
           const previousPresentQRCodeIds = unusedQRCodes.map(
+            // eslint-disable-next-line no-underscore-dangle
             (code) => code._id
           );
           const allQRCodes = idsForCreatedQRCode.concat(
@@ -81,6 +84,7 @@ module.exports = {
       });
     }
   },
+  // eslint-disable-next-line consistent-return
   getAll: async (req, res) => {
     try {
       const { filter } = req.query;
@@ -107,20 +111,24 @@ module.exports = {
       .then((product) => {
         res.json(product);
       })
-      .catch((error) => {
-        return res.status(500).json({
+      .catch((error) =>
+        // eslint-disable-next-line implicit-arrow-linebreak
+        res.status(500).json({
           message: error.message,
           developerMessage: error.message,
           stack: error,
-        });
-      });
+          // eslint-disable-next-line prettier/prettier
+        }));
   },
 
   getProductByToken: async (req, res, next) => {
-    console.log(req.params);
     await Products.findOne({ token: req.params.token })
+      .populate('companyId')
+      .populate('productAgent')
+      .lean()
+      .exec()
       .then((product) => {
-        res.json(product);
+        res.status(200).json(product);
       })
       .catch((err) => {
         next(err);

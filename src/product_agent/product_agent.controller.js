@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 const ProductAgent = require('./product_agent.model');
 
 module.exports = {
@@ -27,12 +28,12 @@ module.exports = {
       .exec();
   },
 
-  createProductAgent: async (req, res, next) => {
+  createProductAgent: async (req, res) => {
     const productAgents = await ProductAgent.create(req.body);
     res.status(201).json(productAgents.toJSON());
   },
 
-  removeProductAgentId: async (req, res, next) => {
+  removeProductAgentId: async (req, res) => {
     await ProductAgent.findByIdAndDelete(req.productAgentId).exec();
     res.status(202).json({
       message: 'sucess fully deleted',
@@ -40,6 +41,7 @@ module.exports = {
   },
   updateProductAgentById: async (req, res, next) => {
     const update = req.body;
+    // eslint-disable-next-line no-return-await
     return await ProductAgent.findByIdAndUpdate(
       req.productAgentId,
       update,
@@ -50,12 +52,12 @@ module.exports = {
         }
         res.status(204).json(updatedProductAgent);
       },
-      { new: true }
+      { new: true },
     ).exec();
   },
-  addManufactureToProductAgent: async (req, res, next) => {
+  addManufactureToProductAgent: async (req, res) => {
     const manufacture = req.body;
-    let productAgent = await ProductAgent.findByIdAndUpdate(
+    const productAgent = await ProductAgent.findByIdAndUpdate(
       req.productAgentId,
       {
         $push: {
@@ -64,6 +66,7 @@ module.exports = {
           },
         },
       },
+      // eslint-disable-next-line comma-dangle
       { new: true }
     ).exec();
     res.status(201).json(productAgent);
