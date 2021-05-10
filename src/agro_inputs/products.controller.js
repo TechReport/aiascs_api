@@ -206,7 +206,7 @@ module.exports = {
 
         fields.photo = uploadedResponse;
         const unregistered = await UnregisteredProducts.create(fields);
-        console.log(unregistered);
+        // console.log(unregistered);
         return res.status(201).json({
           message: 'product added successfully',
           data: unregistered,
