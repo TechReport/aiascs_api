@@ -7,7 +7,7 @@ const sessionMonitor = require('../../utils/middlewares/sessionMonitor');
 
 router.post(
   '/report',
-  // sessionMonitor,
+  sessionMonitor,
   // eslint-disable-next-line comma-dangle
   productController.reportUnregisteredProduct
 );
@@ -26,7 +26,7 @@ router.get('/', sessionMonitor, productController.getAll);
 // router.delete('/:productID', sessionMonitor, productController.deleteOne);
 router.patch(
   '/revoke/:productID',
-  // sessionMonitor,
+  sessionMonitor,
   // eslint-disable-next-line comma-dangle
   productController.revokeProduct
 );
