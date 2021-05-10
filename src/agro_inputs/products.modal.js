@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const QrCode = require('../qrCode/qrcode.model');
 
-const productsSchema = mongoose.Schema(
+const productsSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -24,6 +24,19 @@ const productsSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'qrcode',
       unique: true,
+    },
+    batchInfoz: {
+      name: {
+        type: String,
+        default: new Date(Date.now()).toDateString(),
+      },
+      createdAt: {
+        type: mongoose.Schema.Types.Date,
+        default: new Date(Date.now()).toISOString(),
+      },
+      productCount: {
+        type: Number,
+      },
     },
     expiry: {
       type: mongoose.Schema.Types.Date,
@@ -56,14 +69,22 @@ productsSchema.pre('validate', async function (next) {
 
 // eslint-disable-next-line func-names
 productsSchema.virtual('batchInfo').get(function () {
-  console.log('i am called');
-  return this.createdAt;
+  //   return this.createdAt;
+  return this.createdAt.toLocaleDateString();
 });
 
 // eslint-disable-next-line func-names
 productsSchema.virtual('hasExpired').get(function () {
-  console.log('i am called');
   return this.expiry > Date.now();
+});
+
+productsSchema.pre('insertMany', async (next, docs) => {
+  console.log('pre insertMany');
+  this.batchInfoz = { productCount: docs.length };
+  next();
+  //   console.log(docs);
+  //   console.log(next.length);
+  //   docs.map((doc) => console.log(doc));
 });
 
 module.exports = mongoose.model('agroInputs', productsSchema);

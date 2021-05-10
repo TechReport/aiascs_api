@@ -21,6 +21,8 @@ router.get(
 
 router.get('/productToken/:token', productController.getProductByToken);
 router.post('/', sessionMonitor, productController.register);
+
+router.get('/batch/:companyId/:mode',sessionMonitor,productController.getBatches)
 router.get('/:productID', sessionMonitor, productController.getOne);
 router.get('/', sessionMonitor, productController.getAll);
 // router.delete('/:productID', sessionMonitor, productController.deleteOne);
