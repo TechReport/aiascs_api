@@ -154,8 +154,9 @@ module.exports = {
   },
   revokeProduct: async (req, res, next) => {
     console.log(req.body);
-    const { productID } = req.body.params;
-
+    // const { productID } = req.body.params;
+    // eslint-disable-next-line prefer-destructuring
+    const productID = req.params.productID;
     await Products.findByIdAndUpdate(
       productID,
       { isRevoked: true },
