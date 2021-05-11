@@ -164,7 +164,7 @@ module.exports = {
     )
       .then((resp) => {
         console.log(resp);
-        res.status(204).json(resp);
+        res.status(200).json(resp);
       })
       .catch((err) => {
         console.log(err);
