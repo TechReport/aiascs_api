@@ -50,7 +50,7 @@ module.exports = {
         if (error) {
           next(error);
         }
-        res.status(204).json(updatedProductAgent);
+        res.status(200).json(updatedProductAgent);
       },
       { new: true },
     ).exec();

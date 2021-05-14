@@ -51,7 +51,7 @@ module.exports = {
         if (error) {
           next(error);
         }
-        res.status(204).json(updatedManufacture);
+        res.status(200).json(updatedManufacture);
       },
       { new: true }
     ).exec();

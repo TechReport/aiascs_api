@@ -9,7 +9,7 @@ router.get('/:id', sessionMonitor, qualityControlController.getById)
 
 router.post('/register', sessionMonitor, qualityControlController.register)
 router.delete('/', sessionMonitor, qualityControlController.delete)
-router.patch('/update/:id', sessionMonitor, qualityControlController.update)
+router.put('/update/:id', sessionMonitor, qualityControlController.updateOneById)
 router.put('/assignAdmin/:companyId/:adminId', sessionMonitor, qualityControlController.assignAdmin)
 
 
