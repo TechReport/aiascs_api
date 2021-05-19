@@ -28,6 +28,8 @@ module.exports = {
           });
         }
         feedbackModel.create(req.body);
+      }).catch((err) => {
+        next(err);
       });
 },
 
