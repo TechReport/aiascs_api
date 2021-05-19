@@ -16,7 +16,7 @@ module.exports = (app) => {
   app.use('/api/v1/manufacture', ManufactureRoutes);
 
   app.use('/api/v1/agents', ProductAgentRoutes);
-  app.use('api/v1/feedback', FeedbackRoute);
+  app.use('/api/v1/feedback', FeedbackRoute);
 
 
   app.use('/', (req, res) =>
