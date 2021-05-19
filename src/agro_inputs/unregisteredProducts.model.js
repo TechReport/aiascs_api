@@ -14,7 +14,7 @@ let unregisteredProductsSchema = mongoose.Schema({
     ],
     isRevoked: {
         type: Boolean,
-        default: false
+        default: true
     },
     companyName: {
         type: String,

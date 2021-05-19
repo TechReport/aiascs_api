@@ -118,7 +118,8 @@ module.exports = {
           developerMessage: error.message,
           stack: error,
           // eslint-disable-next-line prettier/prettier
-        }));
+        })
+      );
   },
 
   getProductByToken: async (req, res, next) => {
@@ -180,25 +181,41 @@ module.exports = {
       const { cloudinary } = require('../../utils/Cloudinary');
 
       form.parse(req, async (err, fields, files) => {
-        console.log(files.photo.path);
-        const uploadedResponse = await cloudinary.uploader.upload(
-          files.photo.path,
-          {
+        if (err) {
+          return res.status(500).json({
+            message: 'At least one image is required',
+            developerMessage: 'a product photo is required',
+          });
+        }
+        if (!files.photo) {
+          return res.status(500).json({
+            message: 'At least one image is required',
+            developerMessage: 'a product photo is required',
+          });
+        }
+        const uploadedResponse = await cloudinary.uploader
+          .upload(files.photo.path, {
             upload_preset: 'aiascs',
-          }
-        );
+          })
+          .catch((error) => {
+            console.log(error);
+            return res.status(500).json({
+              message: 'Connection to cloudinary failed',
+              developerMessage: error,
+            });
+          });
 
-        console.log(uploadedResponse);
         fields.photo = uploadedResponse;
         const unregistered = await UnregisteredProducts.create(fields);
-        console.log(unregistered);
+        // console.log(unregistered);
         return res.status(201).json({
           message: 'product added successfully',
+          data: unregistered,
         });
       });
     } catch (error) {
       console.log(error);
-      res.status(500).json({
+      return res.status(500).json({
         message: error.message,
         developerMessage: error.message,
         stack: error,
@@ -218,5 +235,39 @@ module.exports = {
           stack: error,
         });
       });
+  },
+  /**
+   *
+   * @param {req} mode [distinct, details]
+   * @param {req} companyId
+   * @returns
+   */
+  getBatches: async (req, res) => {
+    console.log(req.params);
+    let batches = [];
+
+    // switch (req.params.mode) {
+    //   case 'distinct':
+    //     batches = await Products.distinct('batchInfoz.name', {
+    //       companyId: req.params.companyId,
+    //     });
+    //     break;
+    //   case 'details':
+    //     batches = await Products.distinct('batchInfoz', {
+    //       companyId: req.params.companyId,
+    //     });
+
+    //   default:
+    //     break;
+    // }
+
+    // const batches = await Products.find(req.params);
+    //   const batches = await Products.distinct('token')
+    batches = await Products.find({ companyId: req.params.companyId }).distinct(
+      'batchInfoz'
+    );
+
+    //   console.log(batches)
+    return res.status(200).json(batches);
   },
 };
