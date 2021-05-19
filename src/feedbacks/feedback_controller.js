@@ -29,7 +29,9 @@ module.exports = {
         }
         feedbackModel.create(req.body);
       }).catch((err) => {
-        next(err);
+         res.status(400).json({
+            message: 'Product is unknown with errors',
+          });
       });
 },
 
