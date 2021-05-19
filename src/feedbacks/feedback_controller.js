@@ -12,7 +12,7 @@ module.exports = {
   validateFromSMS: async (next, req, res) => {
     
     productController
-      .findOne({ token: req.body.message })
+      .findOne({ token: "cc8bb08d-f246-4124-8fa2-7c1b2407b39" })
       .populate('companyId')
       .populate('productAgent')
       .lean()
