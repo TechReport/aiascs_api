@@ -10,9 +10,9 @@ module.exports = {
   },
 
   validateFromSMS: async (next, req, res) => {
-    const number = req.body.message;
+    
     productController
-      .findOne({ token: number })
+      .findOne({ token: req.body.message })
       .populate('companyId')
       .populate('productAgent')
       .lean()
