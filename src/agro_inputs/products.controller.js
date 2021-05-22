@@ -135,23 +135,15 @@ module.exports = {
         next(err);
       });
   },
-  deleteOne: async () => {
-    // console.log(req.params);
-    // await Products.deleteOne({ _id: req.params.productID })
-    //   // eslint-disable-next-line
-    //   .then((response) => res.status(200).json({
-    //       // eslint-disable-next-line prettier/prettier
-    //     status: true,
-    //     data: {
-    //         deletedCount: response.deletedCount,
-    //       deletedProduct: req.params.productID,
-    //       },
-    //     })
-    //   )
-    //   .catch((err) => {
-    //     console.log(err);
-    //     next(err);
-    //   });
+  deleteOne: async (req, res) => {
+    const { productID } = req.params;
+    await Products.deleteOne({ _id: productID })
+      // eslint-disable-next-line
+      .then(() => res.status(201).json())
+      .catch((err) => {
+        console.log(err);
+        next(err);
+      });
   },
   revokeProduct: async (req, res, next) => {
     console.log(req.body);
