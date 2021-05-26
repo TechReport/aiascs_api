@@ -51,17 +51,9 @@ router.get(
 router.get('/:productID', sessionMonitor, productController.getOne);
 router.get('/', sessionMonitor, productController.getAll);
 router.delete('/:productID', sessionMonitor, productController.deleteOne);
-router.patch(
+router.get(
   '/revoke/:productID',
-  sessionMonitor,
-  // eslint-disable-next-line comma-dangle
-  productController.revokeProduct
-);
-
-// router.get('/:token', productController.getProductByToken);
-router.patch(
-  '/revoke/:productID',
-  sessionMonitor,
+  // sessionMonitor,
   // eslint-disable-next-line comma-dangle
   productController.revokeProduct
 );
