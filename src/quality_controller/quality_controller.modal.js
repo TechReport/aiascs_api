@@ -33,7 +33,8 @@ const qualityControllerSchema = mongoose.Schema(
       ref: 'users',
     },
     location: {
-      country: String,
+      country: { type: String, default: 'Tanzania' },
+      region: String,
       district: String,
       ward: String,
     },

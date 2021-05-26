@@ -135,23 +135,15 @@ module.exports = {
         next(err);
       });
   },
-  deleteOne: async () => {
-    // console.log(req.params);
-    // await Products.deleteOne({ _id: req.params.productID })
-    //   // eslint-disable-next-line
-    //   .then((response) => res.status(200).json({
-    //       // eslint-disable-next-line prettier/prettier
-    //     status: true,
-    //     data: {
-    //         deletedCount: response.deletedCount,
-    //       deletedProduct: req.params.productID,
-    //       },
-    //     })
-    //   )
-    //   .catch((err) => {
-    //     console.log(err);
-    //     next(err);
-    //   });
+  deleteOne: async (req, res) => {
+    const { productID } = req.params;
+    await Products.deleteOne({ _id: productID })
+      // eslint-disable-next-line
+      .then(() => res.status(201).json())
+      .catch((err) => {
+        console.log(err);
+        next(err);
+      });
   },
   revokeProduct: async (req, res, next) => {
     console.log(req.body);
@@ -269,5 +261,83 @@ module.exports = {
 
     //   console.log(batches)
     return res.status(200).json(batches);
+  },
+  getVerifiedProductsVSUnverified: async (req, res) => {
+    try {
+      const verified = await Products.find({}).countDocuments();
+      const unverified = await UnregisteredProducts.countDocuments();
+      return res.status(200).json({ registered, unregistered });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json(error);
+    }
+  },
+  getRegisteredProductsVSUnregistered: async (req, res) => {
+    try {
+      const registered = await Products.countDocuments();
+      const unregistered = await UnregisteredProducts.countDocuments();
+      return res.status(200).json({ registered, unregistered });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json(error);
+    }
+  },
+  getProductsVSCompany: async (req, res) => {
+    try {
+      const ManufacturerModel = require('../manufacturer/manufacture.model');
+      Products.aggregate([
+        { $group: { _id: '$companyId', count: { $sum: 1 } } },
+        {
+          $project: { _id: 0, company: '$_id', count: '$count' },
+        },
+      ]).exec(function (err, products) {
+        ManufacturerModel.populate(
+          products,
+          { path: 'company', select: '-_id name' },
+          function (err, populatedTransactions) {
+            const data = populatedTransactions.map((item) => {
+              return { company: item.company.name, count: item.count };
+            });
+            return res.status(200).json(data);
+          }
+        );
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json(error);
+    }
+  },
+  getProductStatsVSTime: async (req, res) => {
+    try {
+      console.log('in');
+      // const aggregatorOpts = [
+      //     {
+      //         $group: {
+      //             _id: "$companyId",
+      //         }
+      //     }
+      // ]
+      const data = await Products.aggregate([
+        {
+          $group: { _id: '$batchInfoz.name', count: { $sum: 1 } },
+        },
+        { $sort: { _id: 1 } },
+      ]);
+
+      // console.log(data)
+      return res.status(200).json(data);
+
+      // const datas = await Products.find()
+      //     // .select('companyId createdAt')
+      //     // .populate()
+      //     .then(data => {
+      //         console.log(data)
+      //         return res.status(200).json(data)
+      //     })
+      // console.log(datas)
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json(error);
+    }
   },
 };
