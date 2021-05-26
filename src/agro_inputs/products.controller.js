@@ -263,14 +263,14 @@ module.exports = {
     return res.status(200).json(batches);
   },
   getVerifiedProductsVSUnverified: async (req, res) => {
-    try {
-      const verified = await Products.find({}).countDocuments();
-      const unverified = await UnregisteredProducts.countDocuments();
-      return res.status(200).json({ registered, unregistered });
-    } catch (error) {
-      console.log(error);
-      return res.status(500).json(error);
-    }
+    // try {
+    //   const verified = await Products.find({}).countDocuments();
+    //   const unverified = await UnregisteredProducts.countDocuments();
+    //   return res.status(200).json({ registered, unregistered });
+    // } catch (error) {
+    //   console.log(error);
+    //   return res.status(500).json(error);
+    // }
   },
   getRegisteredProductsVSUnregistered: async (req, res) => {
     try {
