@@ -48,6 +48,13 @@ router.get(
   sessionMonitor,
   productController.getBatches
 );
+
+router.get(
+  '/activity/:productId',
+  sessionMonitor,
+  productController.getProductActivity
+);
+
 router.get('/:productID', sessionMonitor, productController.getOne);
 router.get('/', sessionMonitor, productController.getAll);
 router.delete('/:productID', sessionMonitor, productController.deleteOne);
@@ -58,4 +65,16 @@ router.get(
   productController.revokeProduct
 );
 
+router.patch(
+  '/revoke/:productID',
+  sessionMonitor,
+  // eslint-disable-next-line comma-dangle
+  productController.revokeProduct
+);
+router.patch(
+  '/revokebatch',
+  sessionMonitor,
+  // eslint-disable-next-line comma-dangle
+  productController.revokeBatch
+);
 module.exports = router;

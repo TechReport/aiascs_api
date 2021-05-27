@@ -36,8 +36,11 @@ module.exports = async function validateToken(req, res, next) {
       });
 
     try {
-      const userToAuth = await UserModel.findById(decoded.id, 'token');
-    //   console.log(userToAuth);
+      const userToAuth = await UserModel.findById(
+        decoded.id,
+        'token role'
+      ).populate('role', 'genericName');
+      //   console.log(userToAuth);
 
       //   If userToAuth is null or if userToAuth exists and the tokens aint equal
       if (!userToAuth || (userToAuth && userToAuth.token !== token))
@@ -55,6 +58,7 @@ module.exports = async function validateToken(req, res, next) {
 
       req.body.userId = decoded.id;
       req.body.roleId = decoded.roleId;
+      req.body.roleGenericName = userToAuth.role.genericName;
       if (decoded.accept === 'resetPassword') {
         return UserController.resetPassword(req, res);
       }

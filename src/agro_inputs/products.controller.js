@@ -106,7 +106,6 @@ module.exports = {
     }
   },
   getOne: async (req, res) => {
-    console.log(req.params);
     await Products.findOne({ _id: req.params.productID })
       .then((product) => {
         res.json(product);
@@ -145,24 +144,76 @@ module.exports = {
         next(err);
       });
   },
-  revokeProduct: async (req, res, next) => {
-    console.log(req.body);
-    // const { productID } = req.body.params;
-    // eslint-disable-next-line prefer-destructuring
-    const productID = req.params.productID;
-    await Products.findByIdAndUpdate(
-      productID,
-      { isRevoked: true },
-      { new: true, useFindAndModify: false }
-    )
-      .then((resp) => {
-        console.log(resp);
-        res.status(200).json(resp);
+  getProductActivity: async (req, res) => {
+    console.log('hellow here activityy');
+    console.log(req.params);
+    await Products.findById(req.params.productId, 'createdAt activity')
+      .populate('activity.actor', 'firstName lastName companyId')
+      .then((data) => {
+        console.log(data);
+        return res.status(200).json(data.activity);
       })
-      .catch((err) => {
-        console.log(err);
-        next(err);
+      .catch((error) => {
+        console.log(error);
+        res.status(500).json(error);
       });
+  },
+  revokeBatch: async (req, res) => {
+    try {
+      let activity = {
+        actor: req.body.userId,
+        position: req.body.roleGenericName,
+        title: 'Revoke Batch',
+        descriptions: req.body.descriptions,
+        issuedAt: Date.now(),
+      };
+      await Products.updateMany(
+        { 'batchInfoz.name': new Date(req.body.batch).toDateString() },
+        { $push: { activity }, isRevoked: true },
+        { useFindAndModify: false }
+      );
+      return res.status(201).json();
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json(error);
+    }
+  },
+  revokeProduct: async (req, res) => {
+    try {
+      let activity = {
+        actor: req.body.userId,
+        position: req.body.roleGenericName,
+        title: 'Revoke Product',
+        descriptions: req.body.descriptions,
+        issuedAt: Date.now(),
+      };
+      await Products.findOneAndUpdate(
+        { _id: req.params.productID },
+        { $push: { activity }, isRevoked: true },
+        { new: true, useFindAndModify: false }
+      );
+      return res.status(201).json();
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json(error);
+    }
+    // console.log(req.body);
+    // // const { productID } = req.body.params;
+    // // eslint-disable-next-line prefer-destructuring
+    // const productID = req.params.productID;
+    // await Products.findByIdAndUpdate(
+    //   productID,
+    //   { isRevoked: true },
+    //   { new: true, useFindAndModify: false }
+    // )
+    //   .then((resp) => {
+    //     console.log(resp);
+    //     res.status(200).json(resp);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //     next(err);
+    //   });
   },
   reportUnregisteredProduct: async (req, res) => {
     try {

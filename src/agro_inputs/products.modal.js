@@ -38,6 +38,21 @@ const productsSchema = new mongoose.Schema(
         type: Number,
       },
     },
+    activity: [
+      {
+        actor: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'users',
+        },
+        position: {
+          type: String,
+          enum: ['qualityController', 'manufacturer', 'agent'],
+        },
+        title: { type: String },
+        descriptions: {},
+        issuedAt: { type: mongoose.Schema.Types.Date },
+      },
+    ],
     expiry: {
       type: mongoose.Schema.Types.Date,
       trim: true,
@@ -75,7 +90,7 @@ productsSchema.virtual('batchInfo').get(function () {
 
 // eslint-disable-next-line func-names
 productsSchema.virtual('hasExpired').get(function () {
-  return this.expiry > Date.now();
+  return this.expiry < Date.now();
 });
 
 productsSchema.pre('insertMany', async (next, docs) => {
