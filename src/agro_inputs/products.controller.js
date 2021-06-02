@@ -163,6 +163,21 @@ module.exports = {
         res.status(500).json(error);
       });
   },
+  //   saveLogs(){
+  //     let activity = {
+  //         actor: req.body.userId,
+  //         // position: req.body.roleGenericName,
+  //         title: 'Verify Product',
+  //         // descriptions: "",
+  //         // descriptions: req.body.descriptions,
+  //         issuedAt: Date.now(),
+  //       };
+  //     await Products.findOneAndUpdate(
+  //         { token: req.params.token },
+  //         { $push: { activity } },
+  //         { new: true, useFindAndModify: false }
+  //       );
+  //   },
   revokeBatch: async (req, res) => {
     try {
       let activity = {
@@ -221,6 +236,7 @@ module.exports = {
     //   });
   },
   reportUnregisteredProduct: async (req, res) => {
+    console.log('entered register unregistered products');
     try {
       // eslint-disable-next-line global-require
       const formidable = require('formidable');
@@ -230,6 +246,7 @@ module.exports = {
 
       form.parse(req, async (err, fields, files) => {
         if (err) {
+          console.log('formidable error', err);
           return res.status(500).json({
             message: 'At least one image is required',
             developerMessage: 'a product photo is required',
@@ -246,7 +263,7 @@ module.exports = {
             upload_preset: 'aiascs',
           })
           .catch((error) => {
-            console.log(error);
+            console.log('cloudinary error ', error);
             return res.status(500).json({
               message: 'Connection to cloudinary failed',
               developerMessage: error,
@@ -262,7 +279,7 @@ module.exports = {
         });
       });
     } catch (error) {
-      console.log(error);
+      console.log('server error', error);
       return res.status(500).json({
         message: error.message,
         developerMessage: error.message,
