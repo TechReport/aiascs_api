@@ -5,6 +5,11 @@ const Products = require('./products.modal');
 const QRCodeModel = require('../qrCode/qrcode.model');
 const QRCodeController = require('../qrCode/qrcode.controller');
 const UnregisteredProducts = require('./unregisteredProducts.model');
+const ManufacturerModel = require('../manufacturer/manufacture.model');
+
+const qcModel = require('../quality_controller/quality_controller.modal');
+const agentModel = require('../product_agent/product_agent.model');
+const usersModel = require('../users/user.modal');
 
 module.exports = {
   // eslint-disable-next-line consistent-return
@@ -391,4 +396,34 @@ module.exports = {
       return res.status(500).json(error);
     }
   },
+  getAdminStats: async (req, res) => {
+    try {
+      console.log('hhellow');
+      // # of man companies
+      const totalManufacturers = await ManufacturerModel.countDocuments();
+      // # of qc companies
+      const totalQCCompanies = await qcModel.countDocuments();
+      // # of agents
+      const totalAgentCompanies = await agentModel.countDocuments();
+      // # of users
+      const totalUsers = await usersModel.countDocuments();
+      // # of batches
+      const totalProducts = await Products.countDocuments();
+
+      const unregisteredProducts = await UnregisteredProducts.countDocuments();
+
+      return res.status(200).json({
+        totalAgentCompanies,
+        totalManufacturers,
+        totalUsers,
+        totalProducts,
+        unregisteredProducts,
+        totalQCCompanies,
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json(error);
+    }
+  },
+  //   getS,
 };

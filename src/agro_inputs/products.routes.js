@@ -60,6 +60,7 @@ router.get(
   sessionMonitor,
   productController.getProductActivity
 );
+router.get('/adminstats', sessionMonitor, productController.getAdminStats);
 
 router.get('/:productID', sessionMonitor, productController.getOne);
 router.get('/', sessionMonitor, productController.getAll);
