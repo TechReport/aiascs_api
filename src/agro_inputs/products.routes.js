@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 const Router = require('express');
 
 const router = new Router();
@@ -25,27 +26,32 @@ router.post('/', sessionMonitor, productController.register);
 router.get(
   '/productVSTime',
   sessionMonitor,
+  // eslint-disable-next-line comma-dangle
   productController.getProductStatsVSTime
 );
 router.get(
   '/productsVSCompany',
   sessionMonitor,
+  // eslint-disable-next-line comma-dangle
   productController.getProductsVSCompany
 );
 router.get(
   '/registeredVSUnregistered',
   sessionMonitor,
+  // eslint-disable-next-line comma-dangle
   productController.getRegisteredProductsVSUnregistered
 );
 router.get(
   '/verifiedVSUnverified',
   sessionMonitor,
+  // eslint-disable-next-line comma-dangle
   productController.getVerifiedProductsVSUnverified
 );
 
 router.get(
   '/batch/:companyId/:mode',
   sessionMonitor,
+  // eslint-disable-next-line comma-dangle
   productController.getBatches
 );
 router.get('/:productID', sessionMonitor, productController.getOne);
