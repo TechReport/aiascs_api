@@ -127,31 +127,38 @@ module.exports = {
   },
 
   getProductByToken: async (req, res, next) => {
-    let activity = {
-      actor: req.body.userId,
-      position: req.body.roleGenericName,
-      title: 'Verify Product',
-      descriptions: '',
-      // descriptions: req.body.descriptions,
-      issuedAt: Date.now(),
-    };
+    try {
+      let activity = {
+        actor: req.body.userId,
+        position: req.body.roleGenericName,
+        title: 'Verify Product',
+        descriptions: '',
+        // descriptions: req.body.descriptions,
+        issuedAt: Date.now(),
+      };
 
-    await Products.findOne({ token: req.params.token })
-      .populate('companyId')
-      .populate('productAgent')
-      .lean()
-      .exec()
-      .then((product) => {
-        Products.findOneAndUpdate(
-          { token: req.params.token },
-          { $push: { activity } },
-          { new: true, useFindAndModify: false }
-        );
-        return res.status(200).json(product);
-      })
-      .catch((err) => {
-        next(err);
-      });
+      await Products.findOneAndUpdate(
+        { token: req.params.token },
+        { $push: { activity } },
+        { new: true, useFindAndModify: false }
+      );
+
+      await Products.findOne({ token: req.params.token })
+        .populate('companyId')
+        .populate('productAgent')
+        .lean()
+        .exec()
+        .then((product) => {
+          console.log(product);
+          return res.status(200).json(product);
+        })
+        .catch((err) => {
+          next(err);
+        });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json(error);
+    }
   },
   deleteOne: async (req, res) => {
     const { productID } = req.params;
