@@ -18,7 +18,6 @@ module.exports = (app) => {
   app.use('/api/v1/agents', ProductAgentRoutes);
   app.use('/api/v1/feedback', FeedbackRoute);
 
-
   app.use('/', (req, res) =>
     // eslint-disable-next-line implicit-arrow-linebreak
     // eslint-disable-next-line comma-dangle
