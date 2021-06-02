@@ -20,7 +20,11 @@ router.get(
   productController.getUnregisteredProducts
 );
 
-router.get('/productToken/:token', productController.getProductByToken);
+router.get(
+  '/productToken/:token',
+  sessionMonitor,
+  productController.getProductByToken
+);
 router.post('/', sessionMonitor, productController.register);
 
 router.get(

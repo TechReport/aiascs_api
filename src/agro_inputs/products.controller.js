@@ -127,13 +127,27 @@ module.exports = {
   },
 
   getProductByToken: async (req, res, next) => {
+    let activity = {
+      actor: req.body.userId,
+      position: req.body.roleGenericName,
+      title: 'Verify Product',
+      descriptions: '',
+      // descriptions: req.body.descriptions,
+      issuedAt: Date.now(),
+    };
+
     await Products.findOne({ token: req.params.token })
       .populate('companyId')
       .populate('productAgent')
       .lean()
       .exec()
       .then((product) => {
-        res.status(200).json(product);
+        Products.findOneAndUpdate(
+          { token: req.params.token },
+          { $push: { activity } },
+          { new: true, useFindAndModify: false }
+        );
+        return res.status(200).json(product);
       })
       .catch((err) => {
         next(err);
