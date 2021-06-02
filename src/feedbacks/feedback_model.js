@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 
 const feedbackSchema = new mongoose.Schema({
-  identifier: String,
   message: {
     type: String,
   },
+  fromID: String,
   feedBackFrom: {
     type: String,
     enum: ['Farmer', 'QualityController'],
