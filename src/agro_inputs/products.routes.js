@@ -24,13 +24,39 @@ router.get('/productToken/:token', productController.getProductByToken);
 router.post('/', sessionMonitor, productController.register);
 
 router.get(
+  '/productVSTime',
+  sessionMonitor,
+  // eslint-disable-next-line comma-dangle
+  productController.getProductStatsVSTime
+);
+router.get(
+  '/productsVSCompany',
+  sessionMonitor,
+  // eslint-disable-next-line comma-dangle
+  productController.getProductsVSCompany
+);
+router.get(
+  '/registeredVSUnregistered',
+  sessionMonitor,
+  // eslint-disable-next-line comma-dangle
+  productController.getRegisteredProductsVSUnregistered
+);
+router.get(
+  '/verifiedVSUnverified',
+  sessionMonitor,
+  // eslint-disable-next-line comma-dangle
+  productController.getVerifiedProductsVSUnverified
+);
+
+router.get(
   '/batch/:companyId/:mode',
   sessionMonitor,
-  productController.getBatches,
+  // eslint-disable-next-line comma-dangle
+  productController.getBatches
 );
 router.get('/:productID', sessionMonitor, productController.getOne);
 router.get('/', sessionMonitor, productController.getAll);
-// router.delete('/:productID', sessionMonitor, productController.deleteOne);
+router.delete('/:productID', sessionMonitor, productController.deleteOne);
 router.get(
   '/revoke/:productID',
   // sessionMonitor,

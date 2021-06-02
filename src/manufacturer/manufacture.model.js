@@ -33,11 +33,12 @@ const manufacture = new mongoose.Schema(
       ],
     },
     admin: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'users',
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'users',
     },
     location: {
-      country: String,
+      country: { type: String, default: 'Tanzania' },
+      region: String,
       district: String,
       ward: String,
     },
@@ -55,7 +56,7 @@ const manufacture = new mongoose.Schema(
     ],
   },
   // eslint-disable-next-line prettier/prettier
-  { timestamps: true },
+  { timestamps: true }
 );
 
 manufacture.pre('save', (next) => {
@@ -70,7 +71,7 @@ manufacture.post('remove', async (doc, next) => {
     ProductAgent.findOneAndUpdate(
       { _id: singlemanufactureDoc._id },
       // eslint-disable-next-line prettier/prettier
-      { $pullAll: { manufacture: [doc._id] } },
+      { $pullAll: { manufacture: [doc._id] } }
     );
   }).exec();
 
@@ -88,11 +89,11 @@ manufacture.post('remove', async (doc, next) => {
   });
 });
 
-manufacture.post('deleteOne', async (doc, next) => {
-    console.log('delete manufacturer')
-    // await userModal.deleteMany({ companyId: this._id })
-    await AgroInputsModal.deleteMany({ companyId: this._id })
-    next()
-})
+// manufacture.post('deleteOne', async (doc, next) => {
+//     console.log('delete manufacturer')
+//     // await userModal.deleteMany({ companyId: this._id })
+//     await AgroInputsModal.deleteMany({ companyId: this._id })
+//     next()
+// })
 
 module.exports = mongoose.model('manufacture', manufacture);
