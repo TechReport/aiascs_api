@@ -238,6 +238,8 @@ module.exports = {
   reportUnregisteredProduct: async (req, res) => {
     console.log('entered register unregistered products');
     try {
+      console.log(req.body);
+      console.log(req.files);
       // eslint-disable-next-line global-require
       const formidable = require('formidable');
       const form = formidable({ multiples: true });
