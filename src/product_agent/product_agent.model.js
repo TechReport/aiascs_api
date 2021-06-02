@@ -33,7 +33,10 @@ const productAgent = new mongoose.Schema(
         'Please enter a valid email',
       ],
     },
-
+    admin: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'users',
+    },
     location: {
       country: String,
       district: String,
@@ -53,7 +56,7 @@ const productAgent = new mongoose.Schema(
     ],
   },
   // eslint-disable-next-line
- {timestamps:true}
+  { timestamps: true }
 );
 
 productAgent.pre('save', (next) => {
