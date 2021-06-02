@@ -79,6 +79,7 @@ module.exports = {
     await ProductAgent.findByIdAndUpdate(
       companyId,
       { admin: adminId },
+      // eslint-disable-next-line comma-dangle
       { new: true, useFindAndModify: false }
     )
       .populate({
