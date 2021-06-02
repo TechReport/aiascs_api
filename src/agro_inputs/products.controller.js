@@ -238,8 +238,7 @@ module.exports = {
   reportUnregisteredProduct: async (req, res) => {
     console.log('entered register unregistered products');
     try {
-      console.log(req.body);
-      console.log(req.files);
+      //   console.log(req.body);
       // eslint-disable-next-line global-require
       const formidable = require('formidable');
       const form = formidable({ multiples: true });
@@ -248,18 +247,27 @@ module.exports = {
 
       form.parse(req, async (err, fields, files) => {
         if (err) {
-          console.log('formidable error', err);
+          //   console.log('formidable error', err);
           return res.status(500).json({
             message: 'At least one image is required',
             developerMessage: 'a product photo is required',
           });
         }
+        // console.log(files);
         if (!files.photo) {
           return res.status(500).json({
             message: 'At least one image is required',
             developerMessage: 'a product photo is required',
           });
         }
+
+        // const result = await cloudinary.uploader
+        // .upload(file.tempFilePath, {
+        //   public_id: `${Date.now()}`,
+        //   resource_type: 'auto',
+        // });
+        console.log(files.photo.path);
+
         const uploadedResponse = await cloudinary.uploader
           .upload(files.photo.path, {
             upload_preset: 'aiascs',
@@ -271,7 +279,7 @@ module.exports = {
               developerMessage: error,
             });
           });
-
+        // console.log(uploadedResponse);
         fields.photo = uploadedResponse;
         const unregistered = await UnregisteredProducts.create(fields);
         // console.log(unregistered);
