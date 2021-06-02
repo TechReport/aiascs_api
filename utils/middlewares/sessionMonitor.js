@@ -67,7 +67,7 @@ module.exports = async function validateToken(req, res, next) {
       //   if (decoded.accept === 'resetPassword') {
       //     return UserController.resetPassword(req, res);
       //   }
-      console.log('donoe verifying');
+
       next();
     } catch (err) {
       console.log('err', err);
