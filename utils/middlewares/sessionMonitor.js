@@ -63,11 +63,11 @@ module.exports = async function validateToken(req, res, next) {
       req.body.userId = decoded.id;
       req.body.roleId = decoded.roleId;
       req.body.roleGenericName = userToAuth.role.genericName;
-      console.log('donoe verifying');
 
-      if (decoded.accept === 'resetPassword') {
-        return UserController.resetPassword(req, res);
-      }
+      //   if (decoded.accept === 'resetPassword') {
+      //     return UserController.resetPassword(req, res);
+      //   }
+      console.log('donoe verifying');
       next();
     } catch (err) {
       console.log('err', err);
