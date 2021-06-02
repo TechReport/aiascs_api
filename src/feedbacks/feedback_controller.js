@@ -24,6 +24,7 @@ module.exports = {
       .lean()
       .exec()
       .then((product) => {
+        console.log(typeof (product.isRevoked));
         if (product.isRevoked) {
           const feedback = new FeedbackModel(
             {
