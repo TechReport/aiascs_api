@@ -43,30 +43,30 @@ module.exports = {
 
       const displayName = user.firstName + ' ' + user.lastName;
 
-      if (user.firstTimeLoginStatus === 0) {
-        console.log('hi');
-        let authToken = jwt.sign(
-          {
-            id: user._id,
-            email: user.email,
-            displayName,
-            accept: 'resetPassword',
-          },
-          process.env.JWT_SECRET,
-          { expiresIn: 20 * 60 }
-        );
-        const authenticatedUser = await User.findOneAndUpdate(
-          { email: req.body.email },
-          { token: authToken },
-          { useFindAndModify: false, new: true }
-        );
+      //   if (user.firstTimeLoginStatus === 0) {
+      //     console.log('hi');
+      //     let authToken = jwt.sign(
+      //       {
+      //         id: user._id,
+      //         email: user.email,
+      //         displayName,
+      //         accept: 'resetPassword',
+      //       },
+      //       process.env.JWT_SECRET,
+      //       { expiresIn: 20 * 60 }
+      //     );
+      //     const authenticatedUser = await User.findOneAndUpdate(
+      //       { email: req.body.email },
+      //       { token: authToken },
+      //       { useFindAndModify: false, new: true }
+      //     );
 
-        return res.status(200).json({
-          user: authenticatedUser,
-          status: 'firstTimeLogin',
-          message: 'First time login',
-        });
-      }
+      //     return res.status(200).json({
+      //       user: authenticatedUser,
+      //       status: 'firstTimeLogin',
+      //       message: 'First time login',
+      //     });
+      //   }
 
       // PREPARE USER AUTH TOKEN
       const token = jwt.sign(
@@ -77,7 +77,7 @@ module.exports = {
           roleId: user.role._id,
         },
         process.env.JWT_SECRET,
-        { expiresIn: 86400 }
+        { expiresIn: '2 days' }
       );
 
       // UPDATE USER AUTHTOKEN

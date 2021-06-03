@@ -59,6 +59,7 @@ module.exports = async function validateToken(req, res, next) {
       //       developerMessage: `Token mismatch:::: ${token}}`,
       //     });
       //   }
+      console.log('decoded', decoded);
 
       req.body.userId = decoded.id;
       req.body.roleId = decoded.roleId;
