@@ -46,7 +46,7 @@ const userSchema = mongoose.Schema(
     firstTimeLoginStatus: {
       type: Number,
       enum: [0, 1],
-      default: 0,
+      default: 1,
     },
     companyId: {
       type: mongoose.Schema.Types.ObjectId,

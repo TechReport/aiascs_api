@@ -96,6 +96,7 @@ module.exports = {
       const products = await Products.find(JSON.parse(filter))
         .select('+hasExpired +batchInfo')
         .populate('qrcode')
+        .populate('companyId')
         .sort('-createdAt')
         .exec();
       res.status(200).json({
