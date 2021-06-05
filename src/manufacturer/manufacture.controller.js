@@ -28,7 +28,18 @@ module.exports = {
       next(err);
     }
   },
+  getAssociatedAgents: async (req, res) => {
+    console.log(req.params);
+    console.log(req.query);
 
+    await Manufacture.findById(req.params.companyId, 'productAgent')
+      .populate('productAgent', 'name email phoneNumber createdAt')
+      .then((data) => res.status(200).json(data.productAgent))
+      .catch((error) => {
+        console.log(error);
+        res.status(500).json(error);
+      });
+  },
   createManufacture: async (req, res, next) => {
     console.log(req.body);
     const manufactures = await Manufacture.create(req.body);
