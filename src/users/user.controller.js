@@ -141,6 +141,26 @@ module.exports = {
         });
       });
   },
+  updateUser: async (req, res) => {
+    console.log(req.body);
+    const update = req.body.userDetails;
+    return await User.findByIdAndUpdate(
+      req.params.userId,
+      update,
+      { new: true },
+      (error, updatedUser) => {
+        if (error) {
+          return res.status(500).json({
+            message: error.message,
+            developerMessage: error.message,
+            stack: error,
+          });
+        }
+        res.status(200).json(updatedUser);
+      },
+      { new: true }
+    ).exec();
+  },
   signOut: async (req, res) => {
     console.log('sign out');
     await User.updateOne(

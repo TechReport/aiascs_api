@@ -12,6 +12,7 @@ router.get(
   // eslint-disable-next-line comma-dangle
   productAgentController.getProductAgentById
 );
+
 router.post('/register', productAgentController.createProductAgent);
 router.delete(
   '/:id',
@@ -24,6 +25,10 @@ router.put(
   productMiddlware.getId,
   // eslint-disable-next-line comma-dangle
   productAgentController.updateProductAgentById
+);
+router.patch(
+  '/associateManufacturer/:agentId/:manufId',
+  productAgentController.associateManufacturer
 );
 router.post(
   '/addManufacture/:id',
