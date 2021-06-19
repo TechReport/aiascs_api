@@ -10,6 +10,8 @@ const ManufacturerModel = require('../manufacturer/manufacture.model');
 const qcModel = require('../quality_controller/quality_controller.modal');
 const agentModel = require('../product_agent/product_agent.model');
 const usersModel = require('../users/user.modal');
+const batchModel = require('./batch.model');
+const mongoose = require('mongoose');
 
 module.exports = {
   // eslint-disable-next-line consistent-return
@@ -93,7 +95,12 @@ module.exports = {
   getAll: async (req, res) => {
     try {
       const { filter } = req.query;
+      console.log(JSON.parse(filter));
+
       const products = await Products.find(JSON.parse(filter))
+        //   const products = await Products.find({
+        //     batch: '60ce24253da802b92f9340c7',
+        //   })
         .select('+hasExpired +batchInfo')
         .populate('qrcode')
         .populate('companyId')
@@ -333,40 +340,6 @@ module.exports = {
         });
       });
   },
-  /**
-   *
-   * @param {req} mode [distinct, details]
-   * @param {req} companyId
-   * @returns
-   */
-  getBatches: async (req, res) => {
-    console.log(req.params);
-    let batches = [];
-
-    // switch (req.params.mode) {
-    //   case 'distinct':
-    //     batches = await Products.distinct('batchInfoz.name', {
-    //       companyId: req.params.companyId,
-    //     });
-    //     break;
-    //   case 'details':
-    //     batches = await Products.distinct('batchInfoz', {
-    //       companyId: req.params.companyId,
-    //     });
-
-    //   default:
-    //     break;
-    // }
-
-    // const batches = await Products.find(req.params);
-    //   const batches = await Products.distinct('token')
-    batches = await Products.find({ companyId: req.params.companyId }).distinct(
-      'batchInfoz'
-    );
-
-    //   console.log(batches)
-    return res.status(200).json(batches);
-  },
   getVerifiedProductsVSUnverified: async (req, res) => {
     try {
       const verified = await Products.find({}).countDocuments();
@@ -474,5 +447,92 @@ module.exports = {
       return res.status(500).json(error);
     }
   },
-  //   getS,
+  //   BATCHES CONTROLLERS
+
+  /**
+   *
+   * @param {req} mode [distinct, details]
+   * @param {req} companyId
+   * @returns
+   * @deprecated
+   */
+  getBatchesOld: async (req, res) => {
+    console.log(req.params);
+    let batches = [];
+
+    // switch (req.params.mode) {
+    //   case 'distinct':
+    //     batches = await Products.distinct('batchInfoz.name', {
+    //       companyId: req.params.companyId,
+    //     });
+    //     break;
+    //   case 'details':
+    //     batches = await Products.distinct('batchInfoz', {
+    //       companyId: req.params.companyId,
+    //     });
+
+    //   default:
+    //     break;
+    // }
+
+    // const batches = await Products.find(req.params);
+    //   const batches = await Products.distinct('token')
+    batches = await Products.find({ companyId: req.params.companyId }).distinct(
+      'batchInfoz'
+    );
+
+    //   console.log(batches)
+    return res.status(200).json(batches);
+  },
+  createBatch: async (req, res) => {
+    try {
+      const BatchModel = require('./batch.model');
+      console.log(req.body);
+      let batch = await BatchModel.create(req.body);
+      console.log(batch);
+      return res.status(200).json(batch);
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json(error);
+    }
+  },
+  getBatchesVSProductsByCompanyId: async (req, res) => {
+    try {
+      const { companyId } = req.params;
+      console.log('companyId', companyId);
+      const result = await Products.aggregate([
+        { $match: { companyId: mongoose.Types.ObjectId(companyId) } },
+        {
+          $group: { _id: '$batch', productsCount: { $sum: 1 } },
+        },
+        {
+          $lookup: {
+            from: 'batches',
+            localField: '_id',
+            foreignField: '_id',
+            as: 'batch',
+          },
+        },
+        { $sort: { _id: 1 } },
+      ]);
+      await batchModel.find({ companyId: companyId }).then((response) => {
+        console.log(response);
+      });
+      //   console.log(result);
+      return res.status(200).json(result);
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json(error);
+    }
+  },
+  getBatchesByCompanyId: async (req, res) => {
+    try {
+      const { companyId } = req.params;
+      const batches = await batchModel.find({ companyId });
+      return res.status(200).json(batches);
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json(error);
+    }
+  },
 };
