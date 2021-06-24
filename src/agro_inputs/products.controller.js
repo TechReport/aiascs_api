@@ -387,32 +387,27 @@ module.exports = {
   },
   getProductStatsVSTime: async (req, res) => {
     try {
-      console.log('in');
-      // const aggregatorOpts = [
-      //     {
-      //         $group: {
-      //             _id: "$companyId",
-      //         }
-      //     }
-      // ]
-      const data = await Products.aggregate([
-        {
-          $group: { _id: '$batchInfoz.name', count: { $sum: 1 } },
-        },
-        { $sort: { _id: 1 } },
-      ]);
+      let data = [];
 
-      // console.log(data)
+      const { companyId } = req.query;
+      const { roleGenericName } = req.body;
+      if (roleGenericName === 'ROLE_MANUFACTURING_COMPANY_ADMIN') {
+        data = await Products.aggregate([
+          { $match: { companyId: mongoose.Types.ObjectId(companyId) } },
+          {
+            $group: { _id: '$batchInfoz.name', count: { $sum: 1 } },
+          },
+          { $sort: { _id: 1 } },
+        ]);
+      } else {
+        data = await Products.aggregate([
+          {
+            $group: { _id: '$batchInfoz.name', count: { $sum: 1 } },
+          },
+          { $sort: { _id: 1 } },
+        ]);
+      }
       return res.status(200).json(data);
-
-      // const datas = await Products.find()
-      //     // .select('companyId createdAt')
-      //     // .populate()
-      //     .then(data => {
-      //         console.log(data)
-      //         return res.status(200).json(data)
-      //     })
-      // console.log(datas)
     } catch (error) {
       console.log(error);
       return res.status(500).json(error);
@@ -515,9 +510,9 @@ module.exports = {
         },
         { $sort: { _id: 1 } },
       ]);
-      await batchModel.find({ companyId: companyId }).then((response) => {
-        console.log(response);
-      });
+      //   await batchModel.find({ companyId: companyId }).then((response) => {
+      //     console.log(response);
+      //   });
       //   console.log(result);
       return res.status(200).json(result);
     } catch (error) {
