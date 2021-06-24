@@ -18,7 +18,7 @@ const UserController = require('../../src/users/user.controller');
  */
 
 module.exports = async function validateToken(req, res, next) {
-  console.log('enter sesssioin monitor');
+  //   console.log('enter sesssioin monitor');
   // Check if the Authorization Header is present
   if (typeof req.headers.authorization === 'undefined') {
     return res.status(401).json({
@@ -29,7 +29,7 @@ module.exports = async function validateToken(req, res, next) {
 
   // Obtain and verify the copy of token from Authorization Header
   const token = req.headers.authorization.split(' ')[1];
-  console.log('token', token);
+  //   console.log('token', token);
   jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
     if (err)
       return res.status(401).json({
@@ -51,7 +51,7 @@ module.exports = async function validateToken(req, res, next) {
           developerMessage: 'invalid token',
         });
 
-      console.log('userToAuth', userToAuth);
+      //   console.log('userToAuth', userToAuth);
 
       //   if (userToAuth && userToAuth.token !== token) {
       //     return res.status(401).json({
@@ -59,7 +59,7 @@ module.exports = async function validateToken(req, res, next) {
       //       developerMessage: `Token mismatch:::: ${token}}`,
       //     });
       //   }
-      console.log('decoded', decoded);
+      //   console.log('decoded', decoded);
 
       req.body.userId = decoded.id;
       req.body.roleId = decoded.roleId;

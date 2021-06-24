@@ -159,7 +159,10 @@ module.exports = {
         res.status(200).json(updatedUser);
       },
       { new: true }
-    ).exec();
+    )
+      .populate('companyId', 'name')
+      .populate('role', 'name')
+      .exec();
   },
   signOut: async (req, res) => {
     console.log('sign out');

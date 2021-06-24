@@ -25,6 +25,10 @@ const productsSchema = new mongoose.Schema(
       ref: 'qrcode',
       unique: true,
     },
+    batch: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'batches',
+    },
     batchInfoz: {
       name: {
         type: String,
