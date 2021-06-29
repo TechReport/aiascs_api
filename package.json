@@ -27,6 +27,7 @@
   "author": "Danford Kija,Daniel Ernest",
   "license": "ISC",
   "dependencies": {
+    "alphanum-increment": "0.0.2",
     "axios": "^0.21.1",
     "base64-img": "^1.0.4",
     "bcrypt": "^5.0.1",
