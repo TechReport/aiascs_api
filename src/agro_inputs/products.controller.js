@@ -10,8 +10,9 @@ const ManufacturerModel = require('../manufacturer/manufacture.model');
 const qcModel = require('../quality_controller/quality_controller.modal');
 const agentModel = require('../product_agent/product_agent.model');
 const usersModel = require('../users/user.modal');
-const batchModel = require('./batch.model');
+const BatchModel = require('./batch.model');
 const mongoose = require('mongoose');
+const alphanumIncrement = require('alphanum-increment');
 
 module.exports = {
   // eslint-disable-next-line consistent-return
@@ -63,9 +64,14 @@ module.exports = {
       const unusedQRCodes = await QRCodeModel.find({ status: 0 }, '_id', {
         limit: Number(req.body.newProduct.count),
       });
+
+      console.log(req.body);
+
       if (unusedQRCodes.length < req.body.newProduct.count) {
         await QRCodeController.generateQRCode(
-          req.body.newProduct.count - unusedQRCodes.length
+          req.body.newProduct.count - unusedQRCodes.length,
+          { batchId: req.body.newProduct.batch }
+          //   req.body.newProduct.batch
           // eslint-disable-next-line no-shadow
         ).then((res) => {
           const idsForCreatedQRCode = Object.values(res);
@@ -77,11 +83,12 @@ module.exports = {
           const allQRCodes = idsForCreatedQRCode.concat(
             previousPresentQRCodeIds
           );
+          console.log('here lesser');
           saveProductData(allQRCodes);
         });
       } else {
         // eslint-disable-next-line no-underscore-dangle
-        saveProductData(unusedQRCodes.map((code) => code._id));
+        // saveProductData(unusedQRCodes.map((code) => code._id));
       }
     } catch (error) {
       return res.status(500).json({
@@ -481,10 +488,19 @@ module.exports = {
   },
   createBatch: async (req, res) => {
     try {
-      const BatchModel = require('./batch.model');
       console.log(req.body);
-      let batch = await BatchModel.create(req.body);
-      console.log(batch);
+      const increment = alphanumIncrement.increment;
+
+      let lastCode = await BatchModel.findOne(
+        { companyId: req.body.companyId },
+        'code createdAt'
+      ).sort({
+        createdAt: -1,
+      });
+
+      let newCode = '00';
+      if (lastCode) newCode = increment(lastCode.code, { dashes: false });
+      let batch = await BatchModel.create({ ...req.body, code: newCode });
       return res.status(200).json(batch);
     } catch (error) {
       console.log(error);
@@ -523,7 +539,7 @@ module.exports = {
   getBatchesByCompanyId: async (req, res) => {
     try {
       const { companyId } = req.params;
-      const batches = await batchModel.find({ companyId });
+      const batches = await BatchModel.find({ companyId });
       return res.status(200).json(batches);
     } catch (error) {
       console.log(error);
