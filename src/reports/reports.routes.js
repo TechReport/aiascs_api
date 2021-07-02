@@ -9,6 +9,11 @@ router.get(
   sessionMonitor,
   reportController.getProductVSCompany
 );
+router.get(
+  '/productsvsbatch/:companyId',
+  sessionMonitor,
+  reportController.productsVSBatch
+);
 // router.get('/:id', sessionMonitor, reportController.viewReport);
 
 router.post('/', reportController.generateReport);
