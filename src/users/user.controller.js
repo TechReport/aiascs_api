@@ -261,4 +261,38 @@ module.exports = {
       });
     }
   },
+  changePassword: async (req, res) => {
+    try {
+      const { password, userId, newPassword, oldPassword } = req.body;
+      console.log(req.body);
+
+      let user = await User.findById(userId, 'password');
+      let isPasswordCorrect = bcrypt.compareSync(oldPassword, user.password);
+
+      if (isPasswordCorrect) {
+        let encryPassword = bcrypt.hashSync(newPassword, 8);
+
+        await User.updateOne({ _id: userId }, { password: encryPassword }).then(
+          () =>
+            res.status(201).json({
+              message: 'Password Successfully changed',
+            })
+        );
+      } else {
+        return res.status(405).json({
+          message: 'Password change failed. Password does not Match',
+        });
+      }
+      //   res.status(201).json({
+      //     message: 'Password Successfully changed',
+      //   });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({
+        message: err.message,
+        developerMessage: err.message,
+        stack: err,
+      });
+    }
+  },
 };

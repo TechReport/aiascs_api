@@ -11,6 +11,11 @@ const manufacture = new mongoose.Schema(
       unique: true,
       required: true,
     },
+    code: {
+      type: String,
+      unique: true,
+      //   required: true,
+    },
     name: {
       type: String,
       min: 5,

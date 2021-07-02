@@ -5,6 +5,7 @@ const router = new Router();
 const productController = require('./products.controller');
 
 const sessionMonitor = require('../../utils/middlewares/sessionMonitor');
+const { logEventToProduct } = require('./products.middleware');
 
 router.post(
   '/report',
@@ -33,16 +34,18 @@ router.get(
 );
 router.post('/batches', sessionMonitor, productController.createBatch);
 
-router.get(
-  '/batch/:companyId/:mode',
-  sessionMonitor,
-  // eslint-disable-next-line comma-dangle
-  productController.getBatchesOld
-);
+//DONT USE THIS
+// router.get(
+//   '/batch/:companyId/:mode',
+//   sessionMonitor,
+//   // eslint-disable-next-line comma-dangle
+//   productController.getBatchesOld
+// );
 
 router.get(
   '/productToken/:token',
   sessionMonitor,
+  logEventToProduct,
   productController.getProductByToken
 );
 router.post('/', sessionMonitor, productController.register);

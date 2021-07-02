@@ -1,4 +1,5 @@
 const Manufacture = require('./manufacture.model');
+const alphanuminc = require('alphanum-increment');
 
 module.exports = {
   getManufuctureById: async (req, res, next) => {
@@ -42,7 +43,19 @@ module.exports = {
   },
   createManufacture: async (req, res, next) => {
     console.log(req.body);
-    const manufactures = await Manufacture.create(req.body);
+    const increment = alphanuminc.increment;
+
+    let lastCode = await Manufacture.findOne({}, 'code createdAt').sort({
+      createdAt: -1,
+    });
+
+    let newCode = '00';
+    if (lastCode) newCode = increment(lastCode.code);
+
+    const manufactures = await Manufacture.create({
+      ...req.body,
+      code: newCode,
+    });
     res.status(201).json(manufactures.toJSON());
   },
 

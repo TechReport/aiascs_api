@@ -7,6 +7,11 @@ const batchesSchema = new mongoose.Schema(
       trim: true,
       required: true,
     },
+    code: {
+      type: String,
+      trim: true,
+      required: true,
+    },
     companyId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'manufacture',
