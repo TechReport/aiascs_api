@@ -1,35 +1,62 @@
 const mongoose = require('mongoose');
 
-let unregisteredProductsSchema = mongoose.Schema({
+let unregisteredProductsSchema = mongoose.Schema(
+  {
     name: {
-        type: String,
-        trim: true,
-        required: true,
+      type: String,
+      trim: true,
+      required: true,
     },
     photo: [
-        {
-            type: Object,
-            trim: true
-        }
+      {
+        type: Object,
+        trim: true,
+      },
     ],
     isRevoked: {
-        type: Boolean,
-        default: true
+      type: Boolean,
+      default: true,
     },
     companyName: {
-        type: String,
+      type: String,
     },
     descriptions: {
-        type: String,
+      type: String,
     },
+    activity: [
+      {
+        actor: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'users',
+        },
+        position: {
+          type: String,
+          enum: ['qualityController', 'manufacturer', 'agent'],
+        },
+        title: { type: String },
+        descriptions: {
+          type: String,
+        },
+        location: {
+          region: String,
+          district: String,
+          ward: String,
+        },
+        productStatus: {
+          type: String,
+          enum: ['genuine', 'non genuine'],
+        },
+        issuedAt: { type: mongoose.Schema.Types.Date },
+      },
+    ],
     location: {
-        country: String,
-        district: String,
-        ward: String,
+      country: String,
+      district: String,
+      ward: String,
     },
-},
-    { timestamps: true }
-)
+  },
+  { timestamps: true }
+);
 
 // productsSchema.virtual('batchInfo').get(function () {
 //     console.log('i am called')
@@ -41,5 +68,7 @@ let unregisteredProductsSchema = mongoose.Schema({
 //     return this.expiry > Date.now() ? true : false
 // })
 
-
-module.exports = mongoose.model('unregisteredProducts', unregisteredProductsSchema)
+module.exports = mongoose.model(
+  'unregisteredProducts',
+  unregisteredProductsSchema
+);
