@@ -53,7 +53,18 @@ const productsSchema = new mongoose.Schema(
           enum: ['qualityController', 'manufacturer', 'agent'],
         },
         title: { type: String },
-        descriptions: {},
+        descriptions: {
+          type: String,
+        },
+        location: {
+          region: String,
+          district: String,
+          ward: String,
+        },
+        productStatus: {
+          type: String,
+          enum: ['genuine', 'non genuine'],
+        },
         issuedAt: { type: mongoose.Schema.Types.Date },
       },
     ],
