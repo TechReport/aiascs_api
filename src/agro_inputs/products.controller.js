@@ -186,7 +186,6 @@ module.exports = {
       });
   },
   getProductActivity: async (req, res) => {
-    console.log('hellow here activityy');
     console.log(req.params);
     await Products.findById(req.params.productId, 'createdAt activity')
       .populate('activity.actor', 'firstName lastName companyId')
