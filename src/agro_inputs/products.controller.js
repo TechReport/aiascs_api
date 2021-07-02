@@ -108,7 +108,8 @@ module.exports = {
         //   const products = await Products.find({
         //     batch: '60ce24253da802b92f9340c7',
         //   })
-        .select('+hasExpired +batchInfo')
+        .select('+hasExpired')
+        .populate('batch')
         .populate('qrcode')
         .populate('companyId')
         .sort('-createdAt')
@@ -143,20 +144,20 @@ module.exports = {
 
   getProductByToken: async (req, res, next) => {
     try {
-      let activity = {
-        actor: req.body.userId,
-        position: req.body.roleGenericName,
-        title: 'Verify Product',
-        descriptions: '',
-        // descriptions: req.body.descriptions,
-        issuedAt: Date.now(),
-      };
+      //   let activity = {
+      //     actor: req.body.userId,
+      //     position: req.body.roleGenericName,
+      //     title: 'Verify Product',
+      //     descriptions: '',
+      //     // descriptions: req.body.descriptions,
+      //     issuedAt: Date.now(),
+      //   };
 
-      await Products.findOneAndUpdate(
-        { token: req.params.token },
-        { $push: { activity } },
-        { new: true, useFindAndModify: false }
-      );
+      //   await Products.findOneAndUpdate(
+      //     { token: req.params.token },
+      //     { $push: { activity } },
+      //     { new: true, useFindAndModify: false }
+      //   );
 
       await Products.findOne({ token: req.params.token })
         .populate('companyId')
@@ -188,7 +189,10 @@ module.exports = {
   getProductActivity: async (req, res) => {
     console.log(req.params);
     await Products.findById(req.params.productId, 'createdAt activity')
-      .populate('activity.actor', 'firstName lastName companyId')
+      .populate({
+        path: 'activity.actor',
+        populate: [{ path: 'companyId', select: 'name' }],
+      })
       .then((data) => {
         console.log(data);
         return res.status(200).json(data.activity);
@@ -215,16 +219,19 @@ module.exports = {
   //   },
   revokeBatch: async (req, res) => {
     try {
-      let activity = {
-        actor: req.body.userId,
-        position: req.body.roleGenericName,
-        title: 'Revoke Batch',
-        descriptions: req.body.descriptions,
-        issuedAt: Date.now(),
-      };
+      //   let activity = {
+      //     actor: req.body.userId,
+      //     position: req.body.roleGenericName,
+      //     title: 'Revoke Batch',
+      //     descriptions: req.body.descriptions,
+      //     issuedAt: Date.now(),
+      //   };
+      //   console.log(req.body);
+      const { batch } = req.body;
+      console.log(batch);
       await Products.updateMany(
-        { 'batchInfoz.name': new Date(req.body.batch).toDateString() },
-        { $push: { activity }, isRevoked: true },
+        { batch: batch._id },
+        { isRevoked: true },
         { useFindAndModify: false }
       );
       return res.status(201).json();
@@ -401,14 +408,25 @@ module.exports = {
         data = await Products.aggregate([
           { $match: { companyId: mongoose.Types.ObjectId(companyId) } },
           {
-            $group: { _id: '$batchInfoz.name', count: { $sum: 1 } },
+            $group: {
+              _id: {
+                $dateToString: { format: '%Y-%m-%d', date: '$createdAt' },
+              },
+              count: { $sum: 1 },
+            },
           },
           { $sort: { _id: 1 } },
         ]);
       } else {
         data = await Products.aggregate([
+          //   { $group: { _id: { $year: '$createdAt' }, count: { $sum: 1 } } },
           {
-            $group: { _id: '$batchInfoz.name', count: { $sum: 1 } },
+            $group: {
+              _id: {
+                $dateToString: { format: '%Y-%m-%d', date: '$createdAt' },
+              },
+              count: { $sum: 1 },
+            },
           },
           { $sort: { _id: 1 } },
         ]);
