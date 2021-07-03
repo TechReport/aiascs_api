@@ -81,7 +81,12 @@ module.exports = {
         },
         { $unwind: '$batch' },
         {
-          $project: { _id: 0, batch: '$batch.name', count: '$count' },
+          $project: {
+            _id: 0,
+            batch: '$batch.name',
+            batchId: '$batch._id',
+            count: '$count',
+          },
         },
       ];
       if (from) {
@@ -97,6 +102,99 @@ module.exports = {
       Products.aggregate(pipelineStages).then((batches) => {
         return res.status(200).json(batches);
       });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json(error);
+    }
+  },
+  batchSummary: async (req, res) => {
+    try {
+      const { companyId, batchId, from, to } = req.query;
+      //   console.log('companyId', companyId);
+      //   console.log('batchId', batchId);
+      //getting total products pipeline stages
+
+      let pipelineStages = [
+        // { $match: { companyId: mongoose.Types.ObjectId(companyId) } },
+        { $match: { batch: mongoose.Types.ObjectId(batchId) } },
+
+        { $group: { _id: '$batch', count: { $sum: 1 } } },
+        {
+          $lookup: {
+            from: 'batches',
+            localField: '_id',
+            foreignField: '_id',
+            as: 'batch',
+          },
+        },
+        { $unwind: '$batch' },
+        {
+          $lookup: {
+            from: 'manufactures',
+            localField: 'batch.companyId',
+            foreignField: '_id',
+            as: 'company',
+          },
+        },
+        { $unwind: '$company' },
+
+        {
+          $project: {
+            _id: 0,
+            batchName: '$batch.name',
+            companyName: '$company.name',
+            batchId: '$batch._id',
+            total: '$count',
+          },
+        },
+      ];
+      let pipelineStageFake = [
+        // { $match: { companyId: mongoose.Types.ObjectId(companyId) } },
+        { $match: { batch: mongoose.Types.ObjectId(batchId) } },
+        { $match: { isRevoked: true } },
+        { $group: { _id: '$batch', count: { $sum: 1 } } },
+      ];
+
+      let pipelineStageActivities = [
+        { $match: { batch: mongoose.Types.ObjectId(batchId) } },
+        // { $match: { activity: { $exists: true, $not: { $size: 0 } } } },
+        {
+          $match: {
+            'activity.title': { $regex: 'scan product', $options: 'g' },
+          },
+        },
+        { $group: { _id: '$batch', count: { $sum: 1 } } },
+      ];
+
+      if (from) {
+        const dateFilter = {
+          $match: {
+            createdAt: {
+              $gte: new Date(from),
+              $lt: new Date(to),
+            },
+          },
+        };
+        pipelineStages.unshift(dateFilter);
+        pipelineStageFake.unshift(dateFilter);
+        pipelineStageActivities.unshift(dateFilter);
+      }
+
+      let batchInfo = await Products.aggregate(pipelineStages);
+      let activity = await Products.aggregate(pipelineStageActivities);
+      let fake = await Products.aggregate(pipelineStageFake);
+
+      //   console.log(batchInfo);
+      //   console.log(activity);
+      //   console.log(fake);
+
+      const batchSummary = {
+        ...batchInfo[0],
+        scannedProducts: activity[0] ? activity[0].count : 0,
+        flaggedProducts: fake[0] ? fake[0].count : 0,
+      };
+
+      return res.status(200).json(batchSummary);
     } catch (error) {
       console.log(error);
       return res.status(500).json(error);

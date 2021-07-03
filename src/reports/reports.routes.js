@@ -14,6 +14,7 @@ router.get(
   sessionMonitor,
   reportController.productsVSBatch
 );
+router.get('/batchsummary', sessionMonitor, reportController.batchSummary);
 // router.get('/:id', sessionMonitor, reportController.viewReport);
 
 router.post('/', reportController.generateReport);
