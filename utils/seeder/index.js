@@ -320,27 +320,27 @@ module.exports = {
             ward: 'Sayansi',
           },
         },
-        {
-          regno: '0892091845',
-          name: 'BIRWARO Seed',
-          phonenumber: 295620410226,
-          email: 'birraro@gmail.com',
-          location: {
-            country: 'Tanzania',
-            district: 'Kinondoni',
-            ward: 'Sayansi',
-          },
-        },
-        {
-          regno: '0898093835',
-          name: 'Swaswa Hill',
-          phonenumber: 255620410296,
-          email: 'hillswalso@gmail.com',
-          location: {
-            country: 'Tanznkaai',
-            district: 'Kinondoni',
-          },
-        },
+        // {
+        //   regno: '0892091845',
+        //   name: 'BIRWARO Seed',
+        //   phonenumber: 295620410226,
+        //   email: 'birraro@gmail.com',
+        //   location: {
+        //     country: 'Tanzania',
+        //     district: 'Kinondoni',
+        //     ward: 'Sayansi',
+        //   },
+        // },
+        // {
+        //   regno: '0898093835',
+        //   name: 'Swaswa Hill',
+        //   phonenumber: 255620410296,
+        //   email: 'hillswalso@gmail.com',
+        //   location: {
+        //     country: 'Tanznkaai',
+        //     district: 'Kinondoni',
+        //   },
+        // },
       ];
       // eslint-disable-next-line
       productAgnties.forEach(async (product_Agent) => {

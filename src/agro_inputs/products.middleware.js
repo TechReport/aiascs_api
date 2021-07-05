@@ -35,7 +35,7 @@ module.exports = {
       actor: req.body.userId,
       position,
       title: req.body.title,
-      //title => scanned product, verified product, revoke batch, revoke product
+      //title => scan product, verify product, revoke batch, revoke product
       descriptions: req.body.descriptions,
       //   location:{req.body.location},
       location: {
