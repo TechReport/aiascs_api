@@ -28,6 +28,16 @@ const qualityControllerSchema = mongoose.Schema(
         'Please enter a valid email',
       ],
     },
+    logo: {
+      type: String,
+    },
+    postalBox: {
+      boxNumber: Number,
+      boxLocation: {
+        region: String,
+        country: String,
+      },
+    },
     admin: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'users',

@@ -52,7 +52,16 @@ const manufacture = new mongoose.Schema(
       required: true,
       default: Date.now(),
     },
-
+    logo: {
+      type: String,
+    },
+    postalBox: {
+      boxNumber: Number,
+      boxLocation: {
+        region: String,
+        country: String,
+      },
+    },
     productAgent: [
       {
         type: mongoose.Schema.Types.ObjectId,
