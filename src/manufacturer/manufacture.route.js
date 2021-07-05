@@ -46,6 +46,11 @@ router.put(
   sessionMonitor,
   manufactureController.assignAdmin
 );
+router.post(
+  '/updatelogo/:companyId',
+  sessionMonitor,
+  manufactureController.updateManufactureLogo
+);
 // router.put('/addUser', sessionMonitor, manufactureController.addUser)
 
 module.exports = router;

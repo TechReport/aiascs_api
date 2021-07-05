@@ -86,7 +86,7 @@ module.exports = {
         { token },
         { useFindAndModify: false, new: true }
       )
-        .populate('companyId', 'name')
+        .populate('companyId')
         .populate({
           path: 'role',
           populate: [{ path: 'permission', select: 'genericName moduleName' }],
