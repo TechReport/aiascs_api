@@ -11,6 +11,11 @@ const manufacture = new mongoose.Schema(
       unique: true,
       required: true,
     },
+    code: {
+      type: String,
+      unique: true,
+      //   required: true,
+    },
     name: {
       type: String,
       min: 5,
@@ -47,7 +52,16 @@ const manufacture = new mongoose.Schema(
       required: true,
       default: Date.now(),
     },
-
+    logo: {
+      type: String,
+    },
+    postalBox: {
+      boxNumber: Number,
+      boxLocation: {
+        region: String,
+        country: String,
+      },
+    },
     productAgent: [
       {
         type: mongoose.Schema.Types.ObjectId,

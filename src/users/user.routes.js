@@ -14,6 +14,8 @@ router.post('/login', userController.login);
 router.post('/signout', sessionMonitor, userController.signOut);
 router.post('/register', sessionMonitor, userController.register);
 router.patch('/resetPassword', sessionMonitor, userController.resetPassword);
+router.patch('/changePassword', sessionMonitor, userController.changePassword);
+router.put('/update/:userId', sessionMonitor, userController.updateUser);
 router.delete('/:userId', sessionMonitor, userController.deleteUser);
 
 module.exports = router;

@@ -3,10 +3,10 @@
  * @author daniel ernest
  */
 module.exports = {
-  CLOUD_NAME: '',
-  API_KEY_CLOUDINARY: '',
-  API_SECRET_CLOUDINARY: '',
+  CLOUD_NAME: 'dae54',
+  API_KEY_CLOUDINARY: '665139212543697',
+  API_SECRET_CLOUDINARY: 'pvoKtuFchqv10qNSybguHIpXfYE',
   CLOUDINARY_ENV_VARIABLE: '',
   DB_URL: 'mongodb://localhost:27017/aiascs',
-  PORT: 5531,
+  PORT: 5400,
 };

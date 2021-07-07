@@ -43,30 +43,30 @@ module.exports = {
 
       const displayName = user.firstName + ' ' + user.lastName;
 
-      if (user.firstTimeLoginStatus === 0) {
-        console.log('hi');
-        let authToken = jwt.sign(
-          {
-            id: user._id,
-            email: user.email,
-            displayName,
-            accept: 'resetPassword',
-          },
-          process.env.JWT_SECRET,
-          { expiresIn: 20 * 60 }
-        );
-        const authenticatedUser = await User.findOneAndUpdate(
-          { email: req.body.email },
-          { token: authToken },
-          { useFindAndModify: false, new: true }
-        );
+      //   if (user.firstTimeLoginStatus === 0) {
+      //     console.log('hi');
+      //     let authToken = jwt.sign(
+      //       {
+      //         id: user._id,
+      //         email: user.email,
+      //         displayName,
+      //         accept: 'resetPassword',
+      //       },
+      //       process.env.JWT_SECRET,
+      //       { expiresIn: 20 * 60 }
+      //     );
+      //     const authenticatedUser = await User.findOneAndUpdate(
+      //       { email: req.body.email },
+      //       { token: authToken },
+      //       { useFindAndModify: false, new: true }
+      //     );
 
-        return res.status(200).json({
-          user: authenticatedUser,
-          status: 'firstTimeLogin',
-          message: 'First time login',
-        });
-      }
+      //     return res.status(200).json({
+      //       user: authenticatedUser,
+      //       status: 'firstTimeLogin',
+      //       message: 'First time login',
+      //     });
+      //   }
 
       // PREPARE USER AUTH TOKEN
       const token = jwt.sign(
@@ -77,7 +77,7 @@ module.exports = {
           roleId: user.role._id,
         },
         process.env.JWT_SECRET,
-        { expiresIn: 86400 }
+        { expiresIn: '2 days' }
       );
 
       // UPDATE USER AUTHTOKEN
@@ -86,7 +86,7 @@ module.exports = {
         { token },
         { useFindAndModify: false, new: true }
       )
-        .populate('companyId', 'name')
+        .populate('companyId')
         .populate({
           path: 'role',
           populate: [{ path: 'permission', select: 'genericName moduleName' }],
@@ -140,6 +140,29 @@ module.exports = {
           stack: error,
         });
       });
+  },
+  updateUser: async (req, res) => {
+    console.log(req.body);
+    const update = req.body.userDetails;
+    return await User.findByIdAndUpdate(
+      req.params.userId,
+      update,
+      { new: true },
+      (error, updatedUser) => {
+        if (error) {
+          return res.status(500).json({
+            message: error.message,
+            developerMessage: error.message,
+            stack: error,
+          });
+        }
+        res.status(200).json(updatedUser);
+      },
+      { new: true }
+    )
+      .populate('companyId', 'name')
+      .populate('role', 'name')
+      .exec();
   },
   signOut: async (req, res) => {
     console.log('sign out');
@@ -231,6 +254,40 @@ module.exports = {
         data: {},
       });
     } catch (err) {
+      return res.status(500).json({
+        message: err.message,
+        developerMessage: err.message,
+        stack: err,
+      });
+    }
+  },
+  changePassword: async (req, res) => {
+    try {
+      const { password, userId, newPassword, oldPassword } = req.body;
+      console.log(req.body);
+
+      let user = await User.findById(userId, 'password');
+      let isPasswordCorrect = bcrypt.compareSync(oldPassword, user.password);
+
+      if (isPasswordCorrect) {
+        let encryPassword = bcrypt.hashSync(newPassword, 8);
+
+        await User.updateOne({ _id: userId }, { password: encryPassword }).then(
+          () =>
+            res.status(201).json({
+              message: 'Password Successfully changed',
+            })
+        );
+      } else {
+        return res.status(405).json({
+          message: 'Password change failed. Password does not Match',
+        });
+      }
+      //   res.status(201).json({
+      //     message: 'Password Successfully changed',
+      //   });
+    } catch (err) {
+      console.log(err);
       return res.status(500).json({
         message: err.message,
         developerMessage: err.message,

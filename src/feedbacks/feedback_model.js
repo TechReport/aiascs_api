@@ -5,6 +5,13 @@ const feedbackSchema = new mongoose.Schema({
     type: String,
   },
   fromID: String,
+  messageType: {
+    type: String,
+    enum: ['1', '2'],
+    //*  1 - for varefying product , 2- for feedbacks  */
+    default: '2',
+    toLowerCase: true,
+  },
   feedBackFrom: {
     type: String,
     enum: ['Farmer', 'QualityController'],
@@ -13,8 +20,9 @@ const feedbackSchema = new mongoose.Schema({
   },
 });
 
+// eslint-disable-next-line func-names
 feedbackSchema.pre('validate', async function (next) {
-  if (this.fromID.length > 102 && this.message.length > 16) {
+  if (this.fromID.length > 12 && this.message.length > 16) {
     this.feedBackFrom = 'QualityController';
   }
   next();

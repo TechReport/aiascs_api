@@ -25,19 +25,56 @@ const productsSchema = new mongoose.Schema(
       ref: 'qrcode',
       unique: true,
     },
-    batchInfoz: {
-      name: {
-        type: String,
-        default: new Date(Date.now()).toDateString(),
-      },
-      createdAt: {
-        type: mongoose.Schema.Types.Date,
-        default: new Date(Date.now()).toISOString(),
-      },
-      productCount: {
-        type: Number,
-      },
+    batch: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'batches',
     },
+    //TODO batchInfoz: {
+    //   name: {
+    //     type: String,
+    //     default: new Date(Date.now()).toDateString(),
+    //   },
+    //   createdAt: {
+    //     type: mongoose.Schema.Types.Date,
+    //     default: new Date(Date.now()).toISOString(),
+    //   },
+    //   productCount: {
+    //     type: Number,
+    //   },
+    // },
+    productStatus: {
+      type: String,
+      enum: ['genuine', 'fake'],
+    },
+    activity: [
+      {
+        actor: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'users',
+        },
+        position: {
+          type: String,
+          enum: ['Quality Controller', 'Manufacturer', 'Agent'],
+        },
+        title: {
+          type: String,
+          required: true,
+        },
+        descriptions: {
+          type: String,
+        },
+        location: {
+          region: String,
+          district: String,
+          ward: String,
+        },
+        productStatus: {
+          type: String,
+          enum: ['genuine', 'non genuine'],
+        },
+        issuedAt: { type: mongoose.Schema.Types.Date },
+      },
+    ],
     expiry: {
       type: mongoose.Schema.Types.Date,
       trim: true,
@@ -68,23 +105,23 @@ productsSchema.pre('validate', async function (next) {
 });
 
 // eslint-disable-next-line func-names
-productsSchema.virtual('batchInfo').get(function () {
-  //   return this.createdAt;
-  return this.createdAt.toLocaleDateString();
-});
+//TODO productsSchema.virtual('batchInfo').get(function () {
+//   return this.createdAt;
+//   return this.createdAt.toLocaleDateString();
+// });
 
 // eslint-disable-next-line func-names
 productsSchema.virtual('hasExpired').get(function () {
-  return this.expiry > Date.now();
+  return this.expiry < Date.now();
 });
 
-productsSchema.pre('insertMany', async (next, docs) => {
-  console.log('pre insertMany');
-  this.batchInfoz = { productCount: docs.length };
-  next();
-  //   console.log(docs);
-  //   console.log(next.length);
-  //   docs.map((doc) => console.log(doc));
-});
+// TODO productsSchema.pre('insertMany', async (next, docs) => {
+//   console.log('pre insertMany');
+//   this.batchInfoz = { productCount: docs.length };
+//   next();
+//   console.log(docs);
+//   console.log(next.length);
+//   docs.map((doc) => console.log(doc));
+// });
 
 module.exports = mongoose.model('agroInputs', productsSchema);

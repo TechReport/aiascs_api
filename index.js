@@ -17,8 +17,8 @@ if (process.env.STATUS !== 'production' || process.env.STATUS === undefined) {
 const server = http.createServer(app);
 // const io = require('socket.io')(server)
 
-const connect = () =>
-  mongoose.connect(
+const connect = async () =>
+  await mongoose.connect(
     // 'mongodb://localhost:27017/aiascs',
     // // eslint-disable-next-line spaced-comment
     ENV.DB_URL,

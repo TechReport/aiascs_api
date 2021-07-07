@@ -1,4 +1,6 @@
 /* eslint-disable prettier/prettier */
+// const ProductAgent = require('./product_agent.model');
+const manufactureModel = require('../manufacturer/manufacture.model');
 const ProductAgent = require('./product_agent.model');
 
 module.exports = {
@@ -12,6 +14,10 @@ module.exports = {
   },
 
   getAllProductAgent: async (req, res, next) => {
+    //   const ProdAgents = await ProductAgent.find().
+
+    // const prods = await product_agentModel.
+
     await ProductAgent.find({}, (error, productAgent) => {
       if (error) {
         next(error);
@@ -23,6 +29,10 @@ module.exports = {
         populate: [{ path: 'role', select: 'name' }],
       })
       .populate('manufacture')
+      //   .populate({
+      //     path: 'manufacture',
+      //     populate: [{ path: 'role', select: 'name' }],
+      //   })
       .sort('-createdAt')
       .lean()
       .exec();
@@ -52,24 +62,51 @@ module.exports = {
         }
         res.status(200).json(updatedProductAgent);
       },
-      { new: true },
-    ).exec();
-  },
-  addManufactureToProductAgent: async (req, res) => {
-    const manufacture = req.body;
-    const productAgent = await ProductAgent.findByIdAndUpdate(
-      req.productAgentId,
-      {
-        $push: {
-          productAgent: {
-            $each: manufacture,
-          },
-        },
-      },
-      // eslint-disable-next-line comma-dangle
       { new: true }
     ).exec();
-    res.status(201).json(productAgent);
+  },
+  /** Endpoint to associate product agent to the manufacturer
+   *  It adds entries to two models, manufacturer model and product agent moodel
+   */
+  associateManufacturer: async (req, res, next) => {
+    const { agentId, manufId } = req.params;
+    await ProductAgent.findByIdAndUpdate(
+      agentId,
+      { $push: { manufacture: manufId } },
+      { new: true, useFindAndModify: false }
+    );
+    await manufactureModel
+      .findByIdAndUpdate(
+        manufId,
+        { $push: { productAgent: agentId } },
+        { new: true, useFindAndModify: false }
+      )
+      .then((data) => {
+        console.log(data);
+        res.status(200).json();
+      })
+      .catch((error) => {
+        console.log(error);
+        res.status(500).json(error);
+      });
+  },
+  addManufactureToProductAgent: async (req, res) => {
+    // const manufacture = req.body;
+    console.log(req.body);
+    console.log(req.params);
+    // const productAgent = await ProductAgent.findByIdAndUpdate(
+    //   req.productAgentId,
+    //   {
+    //     $push: {
+    //       productAgent: {
+    //         $each: manufacture,
+    //       },
+    //     },
+    //   },
+    //   // eslint-disable-next-line comma-dangle
+    //   { new: true }
+    // ).exec();
+    // res.status(201).json(productAgent);
   },
   assignAdmin: async (req, res, next) => {
     const { companyId, adminId } = req.params;

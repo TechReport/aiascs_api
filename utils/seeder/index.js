@@ -268,6 +268,7 @@ module.exports = {
           name: 'KILIPO POA',
           phonenumber: 255623419226,
           email: 'kja@gmail.com',
+          code: '00',
           location: {
             country: 'Tanzania',
             district: 'Kinondoni',
@@ -279,6 +280,7 @@ module.exports = {
           name: 'Seedco',
           phonenumber: 295620419226,
           email: 'ka@gmail.com',
+          code: '01',
           location: {
             country: 'Tanzania',
             district: 'Kinondoni',
@@ -290,6 +292,7 @@ module.exports = {
           name: 'AgroBot',
           phonenumber: 255620419296,
           email: 'botTz@gmail.com',
+          code: '02',
           location: {
             country: 'Tanznkaai',
             district: 'Kinondoni',
@@ -317,27 +320,27 @@ module.exports = {
             ward: 'Sayansi',
           },
         },
-        {
-          regno: '0892091845',
-          name: 'BIRWARO Seed',
-          phonenumber: 295620410226,
-          email: 'birraro@gmail.com',
-          location: {
-            country: 'Tanzania',
-            district: 'Kinondoni',
-            ward: 'Sayansi',
-          },
-        },
-        {
-          regno: '0898093835',
-          name: 'Swaswa Hill',
-          phonenumber: 255620410296,
-          email: 'hillswalso@gmail.com',
-          location: {
-            country: 'Tanznkaai',
-            district: 'Kinondoni',
-          },
-        },
+        // {
+        //   regno: '0892091845',
+        //   name: 'BIRWARO Seed',
+        //   phonenumber: 295620410226,
+        //   email: 'birraro@gmail.com',
+        //   location: {
+        //     country: 'Tanzania',
+        //     district: 'Kinondoni',
+        //     ward: 'Sayansi',
+        //   },
+        // },
+        // {
+        //   regno: '0898093835',
+        //   name: 'Swaswa Hill',
+        //   phonenumber: 255620410296,
+        //   email: 'hillswalso@gmail.com',
+        //   location: {
+        //     country: 'Tanznkaai',
+        //     district: 'Kinondoni',
+        //   },
+        // },
       ];
       // eslint-disable-next-line
       productAgnties.forEach(async (product_Agent) => {

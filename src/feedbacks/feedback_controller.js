@@ -16,7 +16,8 @@ module.exports = {
 
   validateFromSMS: async (req, res, next) => {
     // const number = req.body.message;
-
+    console.log('kijacode welcome');
+console.log('in geneartee');
     productController
       .findOne({ token: req.body.message })
       .populate('companyId')
@@ -24,7 +25,6 @@ module.exports = {
       .lean()
       .exec()
       .then((product) => {
-        console.log(product.isRevoked));
         if (product.isRevoked) {
           const feedback = new FeedbackModel(
             {

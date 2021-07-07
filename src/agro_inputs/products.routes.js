@@ -5,6 +5,7 @@ const router = new Router();
 const productController = require('./products.controller');
 
 const sessionMonitor = require('../../utils/middlewares/sessionMonitor');
+// const { logEventToProduct } = require('./products.middleware');
 
 router.post(
   '/report',
@@ -20,7 +21,33 @@ router.get(
   productController.getUnregisteredProducts
 );
 
-router.get('/productToken/:token', productController.getProductByToken);
+router.get('/batches', sessionMonitor, productController.getOne);
+router.get(
+  '/batches/:companyId',
+  sessionMonitor,
+  productController.getBatchesByCompanyId,
+);
+router.get(
+  '/batchesVSProducts/:companyId',
+  sessionMonitor,
+  productController.getBatchesVSProductsByCompanyId,
+);
+router.post('/batches', sessionMonitor, productController.createBatch);
+
+// DONT USE THIS
+// router.get(
+//   '/batch/:companyId/:mode',
+//   sessionMonitor,
+//   // eslint-disable-next-line comma-dangle
+//   productController.getBatchesOld
+// );
+
+router.get(
+  '/productToken/:token',
+  sessionMonitor,
+  // logEventToProduct,
+  productController.getProductByToken,
+);
 router.post('/', sessionMonitor, productController.register);
 
 router.get(
@@ -49,11 +76,12 @@ router.get(
 );
 
 router.get(
-  '/batch/:companyId/:mode',
+  '/activity/:productId',
   sessionMonitor,
-  // eslint-disable-next-line comma-dangle
-  productController.getBatches
+  productController.getProductActivity,
 );
+router.get('/adminstats', sessionMonitor, productController.getAdminStats);
+
 router.get('/:productID', sessionMonitor, productController.getOne);
 router.get('/', sessionMonitor, productController.getAll);
 router.delete('/:productID', sessionMonitor, productController.deleteOne);
@@ -64,4 +92,16 @@ router.get(
   productController.revokeProduct
 );
 
+router.patch(
+  '/revoke/:productID',
+  sessionMonitor,
+  // eslint-disable-next-line comma-dangle
+  productController.revokeProduct
+);
+router.patch(
+  '/revokebatch',
+  sessionMonitor,
+  // eslint-disable-next-line comma-dangle
+  productController.revokeBatch
+);
 module.exports = router;
