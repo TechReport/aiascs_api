@@ -15,6 +15,18 @@ router.get(
   reportController.productsVSBatch
 );
 router.get('/batchsummary', sessionMonitor, reportController.batchSummary);
+router.get(
+  '/companiesWithRevokedProducts',
+  sessionMonitor,
+  reportController.companiesWithRevokedProducts
+);
+
+router.get(
+  '/batchesWithCounterfeitProducts',
+  sessionMonitor,
+  reportController.batchesWithCounterfeitProducts
+);
+
 // router.get('/:id', sessionMonitor, reportController.viewReport);
 
 router.post('/', reportController.generateReport);

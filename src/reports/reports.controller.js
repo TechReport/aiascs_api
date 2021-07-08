@@ -2,6 +2,7 @@ const batchModel = require('../agro_inputs/batch.model');
 const Products = require('../agro_inputs/products.modal');
 const ManufacturerModel = require('../manufacturer/manufacture.model');
 const mongoose = require('mongoose');
+const productsModal = require('../agro_inputs/products.modal');
 
 async function generateReportFn() {
   console.log('generate report');
@@ -197,6 +198,109 @@ module.exports = {
       return res.status(200).json(batchSummary);
     } catch (error) {
       console.log(error);
+      return res.status(500).json(error);
+    }
+  },
+  companiesWithRevokedProducts: async (req, res) => {
+    try {
+      console.log('wlco');
+      //   console.log(req.body);
+      //   console.log(req.query);
+      //   const { companyId, batchId, from, to } = req.query;
+      //   console.log(from);
+      //   console.log(to);
+      //   console.log();
+      const { from, to } = JSON.parse(req.query.filter);
+      console.log(from);
+      //   await productsModal.find
+      let pipelineStages = [
+        { $match: { isRevoked: true } },
+        { $group: { _id: '$companyId', count: { $sum: 1 } } },
+        {
+          $lookup: {
+            from: 'manufactures',
+            localField: '_id',
+            // localField: 'batch.companyId',
+            foreignField: '_id',
+            as: 'company',
+          },
+        },
+        { $unwind: '$company' },
+        {
+          $project: {
+            _id: 0,
+            // batchName: '$batch.name',
+            companyName: '$company.name',
+            companyId: '$company._id',
+            // batchId: '$companbatch._id',
+            total: '$count',
+          },
+        },
+      ];
+      if (from) {
+        const dateFilter = {
+          $match: {
+            createdAt: {
+              $gte: new Date(from),
+              $lt: new Date(to),
+            },
+          },
+        };
+        pipelineStages.unshift(dateFilter);
+      }
+      let resp = await productsModal.aggregate(pipelineStages);
+      console.log(resp);
+      return res.status(200).json(resp);
+    } catch (error) {
+      return res.status(500).json(error);
+    }
+  },
+
+  batchesWithCounterfeitProducts: async (req, res) => {
+    try {
+      console.log(req.body);
+      console.log(req.query.companyId);
+      const { from, to } = JSON.parse(req.query.filter);
+      console.log(from);
+      let pipelineStages = [
+        { $match: { companyId: mongoose.Types.ObjectId(req.query.companyId) } },
+        { $match: { isRevoked: true } },
+        { $group: { _id: '$batch', count: { $sum: 1 } } },
+        {
+          $lookup: {
+            from: 'batches',
+            localField: '_id',
+            foreignField: '_id',
+            as: 'batch',
+          },
+        },
+        { $unwind: '$batch' },
+        {
+          $project: {
+            _id: 0,
+            batchName: '$batch.name',
+            batchId: '$batch._id',
+            total: '$count',
+          },
+        },
+      ];
+
+      if (from) {
+        const dateFilter = {
+          $match: {
+            createdAt: {
+              $gte: new Date(from),
+              $lt: new Date(to),
+            },
+          },
+        };
+        pipelineStages.unshift(dateFilter);
+      }
+
+      let resp = await productsModal.aggregate(pipelineStages);
+      console.log(resp);
+      return res.status(200).json(resp);
+    } catch (error) {
       return res.status(500).json(error);
     }
   },
