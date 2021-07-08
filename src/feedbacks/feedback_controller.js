@@ -52,4 +52,9 @@ module.exports = {
     const newFeedback = await FeedbackModel.find({ feedBackFrom: 'Farmer' });
     return res.status(201).json(newFeedback);
   },
+
+  getAll: async (req, res, next) => {
+    const newFeedback = await FeedbackModel.find({});
+    return res.status(201).json(newFeedback);
+  },
 };
