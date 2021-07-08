@@ -21,12 +21,9 @@ module.exports = {
 console.log('in geneartee');
     productController
       .findOne({ token: req.body.message })
-      .populate('companyId')
-      .populate('productAgent')
-      .lean()
       .exec()
       .then((product) => {
-        console.log('on data feedback' + product);
+        console.log('on data feedback      ' + product);
         if (true) {
           const feedback = new FeedbackModel(
             {
