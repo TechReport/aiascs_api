@@ -8,5 +8,6 @@ const feedbackController = require('./feedback_controller');
 
 // eslint-disable-next-line prettier/prettier
 router.post('/verify', feedbackController.validateFromSMS);
+router.get('/farmer', feedbackController.getFeedbacks);
 
 module.exports = router;

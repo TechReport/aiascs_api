@@ -69,4 +69,8 @@ module.exports = {
         }
       });
   },
+  getFeedbacks: async (req, res, next) => {
+    const newFeedback = await FeedbackModel.find({ feedBackFrom: 'Farmer' });
+    return res.status(201).json(newFeedback);
+  },
 };
