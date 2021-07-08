@@ -36,12 +36,12 @@ module.exports = {
       position,
       title: req.body.title,
       // title => scan product, verify product, revoke batch, revoke product
-      descriptions: req.body.descriptions,
+      descriptions:"Descriptions",
       //   location:{req.body.location},
       location: {
-        region: req.body.location.region,
-        district: req.body.location.district,
-        ward: req.body.location.ward,
+        region: "Dodoma",
+        district: "Mjini",
+        ward: "Mjini",
       },
       issuedAt: Date.now(),
     };
