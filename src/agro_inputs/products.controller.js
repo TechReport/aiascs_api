@@ -188,7 +188,7 @@ module.exports = {
   },
   getProductActivity: async (req, res) => {
     console.log(req.params);
-    await Products.findById(req.params.productId, 'createdAt activity')
+    await Products.findById(req.params.productId)
       .populate({
         path: 'activity.actor',
         populate: [{ path: 'companyId', select: 'name' }],
