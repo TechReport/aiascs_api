@@ -18,39 +18,38 @@ module.exports = {
   validateFromSMS: async (req, res, next) => {
     // const number = req.body.message;
     console.log('kijacode welcome');
-console.log('in geneartee');
+    console.log('in geneartee');
     productController
       .findOne({ token: req.body.message })
       .exec()
       .then((product) => {
         if (product.isRevoked) {
-          const feedback = new FeedbackModel(
-            {
-              // eslint-disable-next-line quote-props
-              'message': req.body.message,
-              // eslint-disable-next-line quote-props
-              'fromID': req.body.fromID,
-            }
-          );
+          const feedback = new FeedbackModel({
+            // eslint-disable-next-line quote-props
+            message: req.body.message,
+            // eslint-disable-next-line quote-props
+            fromID: req.body.fromID,
+          });
           feedback.save();
           res.status(200).json({
             message: 'Product is Fake',
           });
         } else {
-          const feedback = new FeedbackModel(
-            {
-              // eslint-disable-next-line quote-props
-              'message': req.body.message,
-              // eslint-disable-next-line quote-props
-              'fromID': req.body.fromID
-            }
-          );
+          const feedback = new FeedbackModel({
+            // eslint-disable-next-line quote-props
+            message: req.body.message,
+            // eslint-disable-next-line quote-props
+            fromID: req.body.fromID,
+          });
           feedback.save();
           res.status(200).json({
             message: 'Product is Genuine',
           });
         }
       });
-},
-
-    };
+  },
+  getFeedbacks: async (req, res, next) => {
+    const newFeedback = await FeedbackModel.find({ feedBackFrom: 'Farmer' });
+    return res.status(201).json(newFeedback);
+  },
+};
