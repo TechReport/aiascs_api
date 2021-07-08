@@ -5,9 +5,9 @@
 /* eslint-disable indent */
 /* eslint-disable prettier/prettier */
 const FeedbackModel = require('./feedback_model');
-// const productController = require('../agro_inputs/products.modal');
+const productController = require('../agro_inputs/products.modal');
 
-const productController = require('../manufacturer/manufacture.model');
+// const productController = require('../manufacturer/manufacture.model');
 
 module.exports = {
   createFeedback: async (req, res, next) => {
