@@ -26,7 +26,7 @@ console.log('in geneartee');
       .lean()
       .exec()
       .then((product) => {
-        console.log('on data feedback');
+        console.log('on data feedback' + product);
         if (true) {
           const feedback = new FeedbackModel(
             {
