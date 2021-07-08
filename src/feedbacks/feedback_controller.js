@@ -27,8 +27,7 @@ console.log('in geneartee');
       .exec()
       .then((product) => {
         console.log('on data feedback');
-        console.log(product);
-        if (product.isRevoked) {
+        if (product.isRevoked == null || product.isRevoked) {
           const feedback = new FeedbackModel(
             {
               // eslint-disable-next-line quote-props
