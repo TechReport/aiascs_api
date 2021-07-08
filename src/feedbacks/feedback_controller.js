@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable comma-dangle */
 /* eslint-disable space-before-blocks */
 /* eslint-disable no-unused-vars */
@@ -25,7 +26,7 @@ console.log('in geneartee');
       .lean()
       .exec()
       .then((product) => {
-        console.log("on data feedback");
+        console.log('on data feedback');
         console.log(product.isRevoked);
         if (product.isRevoked) {
           const feedback = new FeedbackModel(
