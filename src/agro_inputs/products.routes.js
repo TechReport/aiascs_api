@@ -25,12 +25,12 @@ router.get('/batches', sessionMonitor, productController.getOne);
 router.get(
   '/batches/:companyId',
   sessionMonitor,
-  productController.getBatchesByCompanyId,
+  productController.getBatchesByCompanyId
 );
 router.get(
   '/batchesVSProducts/:companyId',
   sessionMonitor,
-  productController.getBatchesVSProductsByCompanyId,
+  productController.getBatchesVSProductsByCompanyId
 );
 router.post('/batches', sessionMonitor, productController.createBatch);
 
@@ -46,7 +46,7 @@ router.get(
   '/productToken/:token',
   sessionMonitor,
   logEventToProduct,
-  productController.getProductByToken,
+  productController.getProductByToken
 );
 router.post('/', sessionMonitor, productController.register);
 
@@ -78,7 +78,7 @@ router.get(
 router.get(
   '/activity/:productId',
   sessionMonitor,
-  productController.getProductActivity,
+  productController.getProductActivity
 );
 router.get('/adminstats', sessionMonitor, productController.getAdminStats);
 
@@ -87,7 +87,7 @@ router.get('/', sessionMonitor, productController.getAll);
 router.delete('/:productID', sessionMonitor, productController.deleteOne);
 router.get(
   '/revoke/:productID',
-  // sessionMonitor,
+  sessionMonitor,
   // eslint-disable-next-line comma-dangle
   productController.revokeProduct
 );
