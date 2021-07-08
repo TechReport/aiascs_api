@@ -563,4 +563,18 @@ module.exports = {
       return res.status(500).json(error);
     }
   },
+  getProductIDs: async (req, res) => {
+    try {
+      const { companyID } = req.params;
+      let comps = await Products.find(
+        { companyId: companyID, assignedToAgent: false },
+        'token'
+      );
+
+      console.log(comps.length);
+      return res.status(200).json(comps);
+    } catch (error) {
+      return res.status(500).json(error);
+    }
+  },
 };

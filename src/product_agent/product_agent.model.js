@@ -47,7 +47,22 @@ const productAgent = new mongoose.Schema(
       required: true,
       default: Date.now(),
     },
-
+    productsRange: [
+      {
+        from: {
+          type: String,
+          ref: 'products',
+        },
+        to: {
+          type: String,
+          ref: 'products',
+        },
+        manufacture: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'manufacture',
+        },
+      },
+    ],
     manufacture: [
       {
         type: mongoose.Schema.Types.ObjectId,
