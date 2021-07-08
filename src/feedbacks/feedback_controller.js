@@ -31,7 +31,7 @@ console.log('in geneartee');
               // eslint-disable-next-line quote-props
               'message': req.body.message,
               // eslint-disable-next-line quote-props
-              'fromID': req.body.fromID
+              'fromID': req.body.fromID,
             }
           );
           feedback.save();

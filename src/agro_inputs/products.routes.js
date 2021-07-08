@@ -5,7 +5,7 @@ const router = new Router();
 const productController = require('./products.controller');
 
 const sessionMonitor = require('../../utils/middlewares/sessionMonitor');
-// const { logEventToProduct } = require('./products.middleware');
+const { logEventToProduct } = require('./products.middleware');
 
 router.post(
   '/report',
@@ -45,7 +45,7 @@ router.post('/batches', sessionMonitor, productController.createBatch);
 router.get(
   '/productToken/:token',
   sessionMonitor,
-  // logEventToProduct,
+  logEventToProduct,
   productController.getProductByToken,
 );
 router.post('/', sessionMonitor, productController.register);
