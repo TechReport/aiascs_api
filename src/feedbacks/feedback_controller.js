@@ -27,7 +27,7 @@ console.log('in geneartee');
       .exec()
       .then((product) => {
         console.log('on data feedback');
-        console.log(product.isRevoked);
+        console.log(product);
         if (product.isRevoked) {
           const feedback = new FeedbackModel(
             {
