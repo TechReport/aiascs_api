@@ -68,12 +68,15 @@ const manufacture = new mongoose.Schema(
         ref: 'productAgent',
       },
     ],
+    // eslint-disable-next-line prettier/prettier
+
   },
   // eslint-disable-next-line prettier/prettier
-  { timestamps: true }
+  // { timestamps: true }
 );
 
 manufacture.pre('save', (next) => {
+  // eslint-disable-next-line no-constant-condition
   if (true) {
     next();
   }
@@ -85,7 +88,7 @@ manufacture.post('remove', async (doc, next) => {
     ProductAgent.findOneAndUpdate(
       { _id: singlemanufactureDoc._id },
       // eslint-disable-next-line prettier/prettier
-      { $pullAll: { manufacture: [doc._id] } }
+      { $pullAll: { manufacture: [doc._id] } },
     );
   }).exec();
 

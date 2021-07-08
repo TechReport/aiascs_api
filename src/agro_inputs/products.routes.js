@@ -25,16 +25,16 @@ router.get('/batches', sessionMonitor, productController.getOne);
 router.get(
   '/batches/:companyId',
   sessionMonitor,
-  productController.getBatchesByCompanyId
+  productController.getBatchesByCompanyId,
 );
 router.get(
   '/batchesVSProducts/:companyId',
   sessionMonitor,
-  productController.getBatchesVSProductsByCompanyId
+  productController.getBatchesVSProductsByCompanyId,
 );
 router.post('/batches', sessionMonitor, productController.createBatch);
 
-//DONT USE THIS
+// DONT USE THIS
 // router.get(
 //   '/batch/:companyId/:mode',
 //   sessionMonitor,
@@ -46,7 +46,7 @@ router.get(
   '/productToken/:token',
   sessionMonitor,
   logEventToProduct,
-  productController.getProductByToken
+  productController.getProductByToken,
 );
 router.post('/', sessionMonitor, productController.register);
 
@@ -78,7 +78,7 @@ router.get(
 router.get(
   '/activity/:productId',
   sessionMonitor,
-  productController.getProductActivity
+  productController.getProductActivity,
 );
 router.get('/adminstats', sessionMonitor, productController.getAdminStats);
 

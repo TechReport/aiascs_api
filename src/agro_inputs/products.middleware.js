@@ -31,17 +31,17 @@ module.exports = {
         position = '';
         break;
     }
-    let activity = {
+    const activity = {
       actor: req.body.userId,
       position,
       title: req.body.title,
-      //title => scan product, verify product, revoke batch, revoke product
-      descriptions: req.body.descriptions,
+      // title => scan product, verify product, revoke batch, revoke product
+      descriptions:"Descriptions",
       //   location:{req.body.location},
       location: {
-        region: req.body.location.region,
-        district: req.body.location.district,
-        ward: req.body.location.ward,
+        region: "Dodoma",
+        district: "Mjini",
+        ward: "Mjini",
       },
       issuedAt: Date.now(),
     };
@@ -55,6 +55,7 @@ module.exports = {
     await Products.updateOne(
       { token: req.params.token },
       { $push: { activity } },
+      // eslint-disable-next-line comma-dangle
       { new: true, useFindAndModify: false }
     );
     next();
