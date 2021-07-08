@@ -35,7 +35,10 @@ module.exports = {
 
     await Manufacture.findById(req.params.companyId, 'productAgent')
       .populate('productAgent', 'name email phoneNumber createdAt')
-      .then((data) => res.status(200).json(data.productAgent))
+      .then((data) => {
+        console.log(data);
+        res.status(200).json(data.productAgent);
+      })
       .catch((error) => {
         console.log(error);
         res.status(500).json(error);

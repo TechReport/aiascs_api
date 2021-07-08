@@ -43,4 +43,16 @@ router.put(
   productAgentController.assignAdmin
 );
 
+router.post(
+  '/assignProductsRange/:companyId',
+  sessionMonitor,
+  productAgentController.assignProductsRange
+);
+
+router.get(
+  '/assignedProducts/:companyId',
+  sessionMonitor,
+  productAgentController.assignedProducts
+);
+
 module.exports = router;

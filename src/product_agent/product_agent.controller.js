@@ -3,6 +3,9 @@
 const manufactureModel = require('../manufacturer/manufacture.model');
 const ProductAgent = require('./product_agent.model');
 
+const alphanuminc = require('alphanum-increment');
+const ProductsModal = require('../agro_inputs/products.modal');
+
 module.exports = {
   getProductAgentById: async (req, res, next) => {
     await ProductAgent.findById(req.productAgentId, (error, productAgent) => {
@@ -128,5 +131,62 @@ module.exports = {
         console.log(err);
         next(err);
       });
+  },
+  assignProductsRange: async (req, res) => {
+    try {
+      console.log(req.body);
+      const { productsRange, manCompanyId } = req.body;
+      const { companyId } = req.params;
+      //   console.log(companyId);
+      // agentCompanyID
+      // manCompanyID
+      //   let ls = await ProductAgent.find({ _id: companyId });
+      //   console.log(ls);
+      //   console.log(productsRange);
+      await ProductAgent.updateOne(
+        { _id: companyId },
+        {
+          $push: {
+            productsRange: { ...productsRange, manufacture: manCompanyId },
+          },
+        }
+      );
+
+      // START MARKING PRODUCT TOKEN AS ASSIGNED TO AGENTS
+      const increment = alphanuminc.increment;
+      let currentProduct = productsRange.from;
+      let to = increment(productsRange.to).toUpperCase();
+      //   console.log(currentProduct);
+      //   console.log(to);
+
+      while (currentProduct !== to) {
+        await ProductsModal.updateOne(
+          { token: currentProduct },
+          { assignedToAgent: true }
+        );
+        currentProduct = increment(currentProduct).toUpperCase();
+      }
+      //   END MARKING PRODUCT TOKEN AS ASSIGNED TO AGENTS
+      return res.status(200).json();
+    } catch (error) {
+      return res.status(500).json(error);
+    }
+  },
+  assignedProducts: async (req, res) => {
+    try {
+      const prods = req.body;
+      console.log(req.query);
+      const { manCompanyId } = req.query;
+      console.log(manCompanyId);
+      let data = await ProductAgent.findOne(
+        {
+          _id: req.params.companyId,
+          'productsRange.manufacture': manCompanyId,
+        },
+        'productsRange'
+      );
+      console.log(data);
+      return res.status(200).json(data);
+    } catch (error) {}
   },
 };

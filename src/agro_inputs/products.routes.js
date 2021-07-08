@@ -104,4 +104,10 @@ router.patch(
   // eslint-disable-next-line comma-dangle
   productController.revokeBatch
 );
+
+router.get(
+  '/productIDs/:companyID',
+  sessionMonitor,
+  productController.getProductIDs
+);
 module.exports = router;
