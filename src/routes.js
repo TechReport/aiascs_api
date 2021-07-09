@@ -9,6 +9,7 @@ const QualityControllerRoutes = require('./quality_controller/qualit_controller.
 const FeedbackRoute = require('./feedbacks/feedback_route');
 const ReportRoutes = require('./reports/reports.routes');
 const LocationRoutes = require('./location/location.routes');
+const notificationRoutes = require('./notifications/notification.routes');
 
 module.exports = (app) => {
   app.use('/api/v1/user', UserRoutes);
@@ -21,6 +22,7 @@ module.exports = (app) => {
   app.use('/api/v1/feedback', FeedbackRoute);
   app.use('/api/v1/reports', ReportRoutes);
   app.use('/api/v1/location', LocationRoutes);
+  app.use('/api/v1/notifications', notificationRoutes);
 
   app.use('/', (req, res) =>
     // eslint-disable-next-line implicit-arrow-linebreak

@@ -13,6 +13,9 @@ const usersModel = require('../users/user.modal');
 const BatchModel = require('./batch.model');
 const mongoose = require('mongoose');
 const alphanumIncrement = require('alphanum-increment');
+const {
+  storeNotification,
+} = require('../notifications/notification.controller');
 
 module.exports = {
   // eslint-disable-next-line consistent-return
@@ -219,21 +222,28 @@ module.exports = {
   //   },
   revokeBatch: async (req, res) => {
     try {
-      //   let activity = {
-      //     actor: req.body.userId,
-      //     position: req.body.roleGenericName,
-      //     title: 'Revoke Batch',
-      //     descriptions: req.body.descriptions,
-      //     issuedAt: Date.now(),
-      //   };
+      let activity = {
+        actor: req.body.userId,
+        position: req.body.roleGenericName,
+        title: 'Revoke Batch',
+        descriptions: req.body.descriptions,
+        issuedAt: Date.now(),
+      };
+      console.log(activity);
       //   console.log(req.body);
       const { batch } = req.body;
-      console.log(batch);
+      //   console.log(batch);
       await Products.updateMany(
         { batch: batch._id },
-        { isRevoked: true },
+        { isRevoked: true, $push: { activity } },
         { useFindAndModify: false }
       );
+      await storeNotification({
+        createdBy: req.body.userId,
+        subject: 'Revoke Batch',
+        body: batch._id,
+        onBodyModel: 'batches',
+      });
       return res.status(201).json();
     } catch (error) {
       console.log(error);
@@ -254,6 +264,12 @@ module.exports = {
         { $push: { activity }, isRevoked: true },
         { new: true, useFindAndModify: false }
       );
+      await storeNotification({
+        createdBy: req.body.userId,
+        subject: 'Revoke Product',
+        body: req.params.productID,
+        onBodyModel: 'agroInputs',
+      });
       return res.status(201).json();
     } catch (error) {
       console.log(error);
