@@ -23,6 +23,12 @@ module.exports = {
       .findOne({ token: req.body.message })
       .exec()
       .then((product) => {
+      if(product == null)
+      {
+          res.status(200).json({
+            message: 'PEMBEJEO HII HAITAMBULIKI NA HAIFAI KWA MATUMIZI',
+          });
+      }
         if (product.isRevoked) {
           const feedback = new FeedbackModel({
             // eslint-disable-next-line quote-props
