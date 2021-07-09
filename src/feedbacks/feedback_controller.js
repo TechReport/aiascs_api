@@ -32,7 +32,7 @@ module.exports = {
           });
           feedback.save();
           res.status(200).json({
-            message: 'Product is Fake',
+            message: 'PEMBEJEO HII HAIFAI KWA MATUMIZI',
           });
         } else {
           const feedback = new FeedbackModel({
@@ -43,7 +43,7 @@ module.exports = {
           });
           feedback.save();
           res.status(200).json({
-            message: 'Product is Genuine',
+            message: 'PEMBEJEO HII NI SALAMA',
           });
         }
       });
